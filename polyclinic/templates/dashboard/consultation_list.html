@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row clearfix">
+	<div class="text"> <h1>List of all Consultations</h1> </div>
+    
+</div>
+
+<br>
+<div class="body">
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <th>N°</th>
+                <th>Consultation</th>
+                <th>Price</th>           
+            </thead>
+            <tbody>
+                {%for cons in list%}
+                <tr>
+                    <td></td>
+                    <td>{{cons.name}}</td>
+                    <td>{{cons.price}}</td>        
+                </tr>
+                {%endfor%}             
+            </tbody>
+        </table>
+    </div>
+</div>
+<span class="page" style="text-align:center;">
+    {% if list.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ list.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+        Page {{ list.number }} of {{ list.paginator.num_pages }}.
+    </span>
+
+    {% if list.has_next %}
+        <a href="?page={{ list.next_page_number }}&&name={{select_name}}">next</a>
+        <a href="?page={{ list.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+</span>
+
+{%endblock content%}

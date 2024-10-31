@@ -1,0 +1,10 @@
+.idea
+
+venv
+.metadata
+
+__pycache__
+.pyc
+.env
+db.sqlite3
+mon_env/

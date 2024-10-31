@@ -1,0 +1,70 @@
+{%load static %}
+<link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'https://fonts.googleapis.com/icon?family=Material+Icons' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'assets/plugins/morrisjs/morris.css' %}"/>
+<!-- Custom Css -->
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}"/>
+<script src = "{% static 'common/js/pharmacist_bill/bill.js'%}" type = "text/javascript"></script>
+<style>
+    a:link, a:visited{
+    background-color: gray;
+    color: aliceblue;
+    padding: 10px 25px;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+a:hover{
+    background-color: brown;
+    color: black;
+}
+</style>
+<body style = "background-color: aliceblue;">
+    <a href="/home" class="btn btn-raised" style = "display: none;" id ="home">Back home</a>
+
+    <div>
+            
+        <h1>POLYCLINIC FULTANG Bill N°: {{bill.id}}</h1>
+        <hr><br>
+        <div style="display: flex; width: 100%;">
+                
+            <div style="width: fit-content; display: flex; flex-direction: column;margin-right: 50px;">   
+                <h2>Customer Name : <u>{{bill.customer}}</u> </h2>
+                <h2>Total Items : <u>{{bill.totalItems}}</u> </h2>
+
+            </div>
+            <div style="width: fit-content">
+                <h2>Date : <u>{{bill.date}} </u></h2>
+                <h2>Total Amount : <u>{{bill.amount}}</u> </h2>
+
+            </div>
+        </div>
+        <br>
+
+        <div  style="margin-left:50px;margin-right:50px">
+            <table class="table table-striped">
+                <thead>
+                    <th></th>
+                    <th>designation</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                </thead>
+                <tbody>
+                    {%for item in list%}
+                    <tr>
+                        <td></td>
+                        <td>{{item.designation}}</td> 
+                        <td>{{item.quantity}}</td> 
+                        <td>{{item.unitP}}</td>
+                        <td>{{item.totalP}}</td>
+                        
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id = "print" onclick="printed()"class= "btn btn-primary">Printed</button>
+
+</body>

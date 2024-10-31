@@ -1,0 +1,73 @@
+{%load static %}
+<link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'https://fonts.googleapis.com/icon?family=Material+Icons' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'assets/plugins/morrisjs/morris.css' %}"/>
+<!-- Custom Css -->
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}"/>
+<script src = "{% static 'common/js/pharmacist_bill/bill.js'%}" type = "text/javascript"></script>
+<style>
+    a:link, a:visited{
+    background-color: gray;
+    color: aliceblue;
+    padding: 10px 25px;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+a:hover{
+    background-color: brown;
+    color: black;
+}
+</style>
+<body style = "background-color: aliceblue;">
+    <a href="/home" class="btn btn-raised" style = "display: none;" id ="home">Back home</a>
+
+<h1>POLYCLINIC FULTANG Consultation N°: {{consultation.id}}</h1>
+        <hr><br>
+        <div style="display: flex; width: 100%;">
+                
+            <div style="width: fit-content; display: flex; flex-direction: column;margin-right: 50px;">   
+                
+				<h1>Doctor: {{staff.first_name}}</h1>
+				<h1>Date : {{consultation.consultationDate}} </h1>
+				<h1>Time : {{consultation.consultationTime}} </h1>
+				<h1>Type : {{type.name}} </h1>
+				<h1>Amount : {{consultation.consultationCost}} </h1>
+
+            </div>
+            <div style="width: fit-content">
+                Patient Informations
+				<h2> First Name : {{patient.firstName}} </h2>
+				<h2> Last Name : {{patient.lastName}} </h2>
+				<h2> Gender : {{patient.gender}} </h2>
+				<h2> Birth date : {{patient.birthDate}} </h2>
+				<h2> Tel : {{patient.phoneNumber}} </h2>
+				<h2> Address : {{patient.address}} </h2>
+
+            </div>
+        </div>
+		
+		<div style="display: flex; width: 100%;">
+                
+            <div style="width: fit-content; display: flex; flex-direction: column;margin-right: 50px;">   
+                List of parameters
+				<h2> Date : {{param.addDate}} </h2>
+				<h2> Time : {{param.addTime}} </h2>
+				<h2> Weight : {{param.weight}} </h2>
+				<h2> Height: {{param.height}} </h2>
+				<h2> Temperature : {{param.temperature}} </h2>
+				<h2> Presure : {{param.arterialPressure}} </h2>
+				<h2> Appearance: {{param.skinAppearance}} </h2>
+
+            </div>
+            <div style="width: fit-content">
+                Consultation details
+				<h2>Reason : {{consultation.consultationReason}} </h2>
+				<h2>Notes : {{consultation.consultationNotes}} </h2>
+				<h2>Allergy : {{consultation.allergy}} </h2>
+				<h2>Previous History : {{consultation.previousHistory}} </h2>
+    
+            </div>
+        </div>
+<button id = "print" onclick="printed()"class= "btn btn-primary">Printed</button>
+</body>
