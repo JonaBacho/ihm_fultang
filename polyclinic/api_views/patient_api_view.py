@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Patient
 from polyclinic.permissions import MedicalStaffPermission
 from polyclinic.serializers import PatientSerializer
+from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
@@ -13,6 +14,7 @@ from django.utils.decorators import method_decorator
 class PatientViewSet(ModelViewSet):
 
     permission_classes = [MedicalStaffPermission]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         queryset = Patient.objects.all()

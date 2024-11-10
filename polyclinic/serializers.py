@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from polyclinic.models import MedicalStaff, Department, Patient, Appointment, Parameters, Consultation, \
     ConsultationType, MedicalFolder, MedicalFolderPage, Exam, ExamRequest, ExamResult, Medicament, Prescription, Room, \
-    Bill, BillItem, Message, PatientAccess
+    Bill, BillItem, Message, PatientAccess, Hospitalisation
 
 
 class MedicalStaffSerializer(serializers.ModelSerializer):
@@ -87,6 +87,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class HospitalisationSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Hospitalisation
         fields = '__all__'
 
 class BillSerializer(serializers.ModelSerializer):

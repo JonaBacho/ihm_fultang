@@ -2,17 +2,19 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Appointment
 from polyclinic.permissions import MedicalStaffPermission
 from polyclinic.serializers import AppointmentSerializer
+from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 
 
 @method_decorator(swagger_auto_schema(manual_parameters=[
-    openapi.Parameter(name="Appointmaent", in_=openapi.IN_QUERY, type=openapi.TYPE_STRING)
+    openapi.Parameter(name="Appointment", in_=openapi.IN_QUERY, type=openapi.TYPE_STRING)
 ]), name="list")
 class AppointmentViewSet(ModelViewSet):
 
     permission_classes = [MedicalStaffPermission]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         queryset = Appointment.objects.all()
