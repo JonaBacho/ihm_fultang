@@ -1,4 +1,4 @@
-import {useAuthentication} from "../../Utils/provider.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
 export function LandingPage()
 {
@@ -11,7 +11,7 @@ export function LandingPage()
                 <p className="text-8xl font-bold">LandingPage</p>
 
                 <p className="ml-20 text-3xl font-bold mt-5">
-                    Bienvenue sur l'application
+                    Bienvenue sur l application
                 </p>
                 {renderOne()}
             </div>

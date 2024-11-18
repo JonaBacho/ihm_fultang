@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom";
-import {Loading} from "../Components/loading.jsx";
+import {Loading} from "../Components/Loading.jsx";
 import {AppRoutesPaths} from "./appRouterPaths.js";
 
 
@@ -9,11 +9,11 @@ export function AppRoute()
 {
 
     const LoginPage = React.lazy(async () => ({
-        default: (await import("../Pages/Login/login")).LoginPage
+        default: (await import("../Pages/Login/Login.jsx")).LoginPage
     }));
 
     const LandingPage = React.lazy(async () => ({
-        default: (await import("../Pages/LandingPage/landingPage")).LandingPage
+        default: (await import("../Pages/LandingPage/LandingPage.jsx")).LandingPage
     }));
 
     return (

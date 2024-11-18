@@ -1,6 +1,6 @@
 import {BrowserRouter} from "react-router-dom";
-import {AppRoute} from "./Router/appRouter.jsx";
-import {FulltangProvider} from "./Utils/provider.jsx";
+import {AppRoute} from "./Router/AppRouter.jsx";
+import {FulltangProvider} from "./Utils/Provider.jsx";
 
 
 
