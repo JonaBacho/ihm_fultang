@@ -5,7 +5,7 @@ export function LandingPage()
     const {renderOne} = useAuthentication();
     return (
 
-        <div className="flex justify-center min-h-screen bg-gradient-to-r from-blue-400 to-green-400 items-center">
+        <div className="flex justify-center min-h-screen bg-gradient-to-r from-primary-start to-primary-end items-center">
 
             <div className="flex flex-col">
                 <p className="text-8xl font-bold">LandingPage</p>
