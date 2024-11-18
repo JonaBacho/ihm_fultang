@@ -3,6 +3,8 @@ from polyclinic.models import MedicalStaff, Department, Patient, Appointment, Pa
     ConsultationType, MedicalFolder, MedicalFolderPage, Exam, ExamRequest, ExamResult, Medicament, Prescription, Room, \
     Bill, BillItem, Message, PatientAccess, Hospitalisation
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class MedicalStaffSerializer(serializers.ModelSerializer):
     class Meta:
@@ -104,3 +106,18 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
+
+
+# personnalisation des serializers pour le login
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Ajoutez des informations supplémentaires sur l'utilisateur
+        data['user'] = dict()
+        data['user']['id'] = self.user.id
+        data['user']['username'] = self.user.username
+        data['user']['email'] = self.user.email
+        data['user']['role'] = self.user.role
+
+        return data
