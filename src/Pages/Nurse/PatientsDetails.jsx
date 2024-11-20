@@ -1,7 +1,7 @@
 import {useLocation, useParams} from "react-router-dom";
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
-import userIcon from "../../../public/userIcon.png";
+import userIcon from "../../assets/userIcon.png";
 
 export function PatientsDetails()
 {

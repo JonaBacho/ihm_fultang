@@ -1,6 +1,6 @@
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
-import userIcon from "../../../public/userIcon.png"
+import userIcon from "../../assets/userIcon.png"
 import {FaArrowLeft, FaArrowRight, FaSearch, FaUserNurse} from "react-icons/fa";
 import {HeartCrack} from 'lucide-react';
 import {useNavigate} from "react-router-dom";

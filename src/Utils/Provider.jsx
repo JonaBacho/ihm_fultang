@@ -18,6 +18,6 @@ function useLogin() {
 
     const authMethods = useMemo(() => ({
         renderOne
-    }), [renderOne]);
+    }), []);
     return {authMethods}
 }

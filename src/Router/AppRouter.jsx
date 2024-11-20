@@ -16,6 +16,8 @@ export function AppRoute()
     const ConsultationHistoryPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/ConsultationHistory.jsx")).ConsultationHistory}));
     const HelpCenterPage = React.lazy(async () => ({default: (await import("../Pages/HelpCenter/HelpCenter.jsx")).HelpCenter}));
     const PatientDetailsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/PatientsDetails.jsx")).PatientsDetails}));
+    const PharmacyPage = React.lazy(async () => ({default: (await import("../Pages/Pharmacy/Pharmacy.jsx")).Pharmacy}));
+
 
 
     return (
@@ -24,6 +26,7 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.welcomePage} element={<LandingPage />}/>
                 <Route path={AppRoutesPaths.loginPage} element={<LoginPage />}/>
                 <Route path={AppRoutesPaths.nursePage} element={<NursePage />}/>
+                <Route path={AppRoutesPaths.pharmacyPage} element={<PharmacyPage />}/>
                 <Route path={AppRoutesPaths.medicalStaffsPage} element={<MedicalStaffsPage />}/>
                 <Route path={AppRoutesPaths.consultationHistoryPage} element={<ConsultationHistoryPage/>}/>
                 <Route path={AppRoutesPaths.helpCenterPage} element={<HelpCenterPage/>}/>
