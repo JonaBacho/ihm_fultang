@@ -43,7 +43,6 @@ export function NurseDashboard() {
             <nav className="flex flex-col">
                 {NavLink.map((item, index) => {
                     const IconComponent = item.icon;
-                   // const isActive = (activeLink === item.link);
                     const isActive = activeLink.startsWith(item.link);
                     return (
                         <Link
