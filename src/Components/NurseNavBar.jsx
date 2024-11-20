@@ -16,7 +16,7 @@ export function NurseNavBar()
                 Nurse
             </div>
 
-            <div className="flex gap-2 mt-8 ml-[650px] mb-4 mr-5">
+            <div className="flex gap-2 mt-8 mb-4 mr-5">
                 <button className={applyNavLinkBtnStyle()}>
                     <FaFlag  className={applyNavLinkStyle()}/>
                 </button>
