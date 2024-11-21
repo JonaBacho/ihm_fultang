@@ -38,6 +38,8 @@ public class UMLClassParser {
                 parseRelation(classes, cell, "Aggregation");
             } else if (isCompositionRelation(cell)){
                 parseRelation(classes, cell, "Composition");
+            } else if (isRelationWithCardinality(cell)){
+                parseRelationWithCardinality(classes, cell);
             }
         }
         return classes;
@@ -91,6 +93,48 @@ public class UMLClassParser {
         }
     }
 
+    private void parseRelationWithCardinality(List<UMLClass> classes, Element cell) {
+        UMLRelationWithCardinality relation = new UMLRelationWithCardinality();
+    
+        // Source et cible
+        String targetId = cell.getAttribute("target");
+        String sourceId = cell.getAttribute("source");
+    
+        Optional<UMLClass> targetClass = classes.stream().filter(c -> c.getId().equals(targetId)).findFirst();
+        Optional<UMLClass> sourceClass = classes.stream().filter(c -> c.getId().equals(sourceId)).findFirst();
+    
+        String relationName = cell.getAttribute("value");
+    
+        String sourceCardinality = null;
+        String targetCardinality = null;
+    
+        for (int i = 0; i < mxCells.getLength(); i++) {
+            Element potentialChild = (Element) mxCells.item(i);
+    
+            if (potentialChild.getAttribute("parent").equals(cell.getAttribute("id"))
+                    && isCardinality(potentialChild.getAttribute("value"))) {
+    
+                String x = potentialChild.getAttribute("x"); // Exemple hypothétique
+                if ("1".equals(x)) { // `x=1` : cible
+                    targetCardinality = potentialChild.getAttribute("value");
+                } else if ("-1".equals(x)) { // `x=-1` : source
+                    sourceCardinality = potentialChild.getAttribute("value");
+                }
+            }
+        }
+    
+        if (sourceClass.isPresent() && targetClass.isPresent()) {
+            relation.setType("AssociationWithCardinality");
+            relation.setRelationName(relationName);
+            relation.setTarget(targetClass.get().getClassName());
+            relation.setSourceCardinality(sourceCardinality);
+            relation.setTargetCardinality(targetCardinality);
+    
+            sourceClass.get().getRelations().add(relation);
+        }
+    }
+    
+
     private boolean isUMLClass(Element cell) {
         return cell.getAttribute("style").contains("swimlane");
     }
@@ -120,4 +164,14 @@ public class UMLClassParser {
         String style = cell.getAttribute("style");
         return style.contains("endArrow=diamondThin") && style.contains("endFill=0");
     }
+
+    private boolean isRelationWithCardinality(Element cell) {
+        return cell.getAttribute("style").contains("endArrow=none");
+    }
+    
+    private boolean isCardinality(String value) {
+        // Une cardinalité typique : "0..n", "1", "1..*", "*", etc.
+        return value.matches("\\d+|\\d+\\.\\.\\d+|\\d+\\.\\.\\*|\\*");
+    }
+    
 }

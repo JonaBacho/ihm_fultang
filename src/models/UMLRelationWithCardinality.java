@@ -1,10 +1,29 @@
 package models;
 
 public class UMLRelationWithCardinality extends UMLRelation{
-    
-    String cardinality;
 
-    public String getCardinality(){ return this.cardinality; }
-    public void setCardinality(String cardinality){ this.cardinality = cardinality; }
+    String sourceCardinality;
+    String targetCardinality;
+    String relationName;
+    public String getRelationName() {
+        return relationName;
+    }
+    public void setRelationName(String relationName) {
+        this.relationName = relationName;
+    }
+    public String getSourceCardinality() {
+        return sourceCardinality;
+    }
+    public void setSourceCardinality(String sourceCardinality) {
+        this.sourceCardinality = sourceCardinality;
+    }
+    public String getTargetCardinality() {
+        return targetCardinality;
+    }
+    public void setTargetCardinality(String targetCardinality) {
+        this.targetCardinality = targetCardinality;
+    }
+
+
 
 }

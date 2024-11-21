@@ -10,6 +10,7 @@ import models.UMLAttribute;
 import models.UMLClass;
 import models.UMLMethod;
 import models.UMLRelation;
+import models.UMLRelationWithCardinality;
 import utils.GenerateForAttribute;
 
 public class JavaClassGenerator {
@@ -35,9 +36,11 @@ public class JavaClassGenerator {
             writeClassDefinition(writer, className, umlClass.getRelations());
             System.out.println("Generating attributes...........................");
             writeAttributes(writer, umlClass);
+            writeAttributesWithCardinality(writer, umlClass.getRelations());
             System.out.println("Generating methods...........................");
             writeConstructors(writer, umlClass);
             writeMethods(writer, umlClass);
+            writeMethodsForRelationsWithCardinality(writer, umlClass.getRelations());
 
             writer.write("}\n");
             System.out.println("*************************** Class Generated! **********************************");
@@ -118,6 +121,26 @@ public class JavaClassGenerator {
         writer.write("\n");
     }
 
+    private void writeAttributesWithCardinality(FileWriter writer, List<UMLRelation> relations) throws IOException {
+        for (UMLRelation relation : relations) {
+            if (relation instanceof UMLRelationWithCardinality) {
+                UMLRelationWithCardinality rel = (UMLRelationWithCardinality) relation;
+                String targetCard = rel.getTargetCardinality();
+                String target = rel.getTarget();
+                String variableName = target.substring(0, 1).toLowerCase() + target.substring(1);
+    
+                if (targetCard.equals("1")) {
+                    writer.write("\tprivate " + target + " " + variableName + ";\n");
+                } else if (targetCard.matches("\\d+\\.\\.\\*") || targetCard.equals("*")) {
+                    writer.write("\tprivate List<" + target + "> " + variableName + "s = new ArrayList<>();\n");
+                }
+            }
+        }
+        writer.write("\n");
+    }
+    
+
+
     private void writeConstructors(FileWriter writer, UMLClass umlClass) throws IOException {
         // Default constructor
         writer.write("\tpublic " + umlClass.getClassName() + "() {\n\t\t// Default constructor\n\t}\n\n");
@@ -185,4 +208,33 @@ public class JavaClassGenerator {
 
         writer.write("\n");
     }
+
+    private void writeMethodsForRelationsWithCardinality(FileWriter writer, List<UMLRelation> relations) throws IOException {
+        for (UMLRelation relation : relations) {
+            if (relation instanceof UMLRelationWithCardinality) {
+                UMLRelationWithCardinality rel = (UMLRelationWithCardinality) relation;
+                String target = rel.getTarget();
+                String variableName = target.substring(0, 1).toLowerCase() + target.substring(1);
+    
+                if (rel.getTargetCardinality().equals("1")) {
+                    writer.write("\tpublic " + target + " get" + target + "() {\n");
+                    writer.write("\t\treturn " + variableName + ";\n");
+                    writer.write("\t}\n\n");
+    
+                    writer.write("\tpublic void set" + target + "(" + target + " " + variableName + ") {\n");
+                    writer.write("\t\tthis." + variableName + " = " + variableName + ";\n");
+                    writer.write("\t}\n\n");
+                } else if (rel.getTargetCardinality().matches("\\d+\\.\\.\\*") || rel.getTargetCardinality().equals("*")) {
+                    writer.write("\tpublic List<" + target + "> get" + target + "s() {\n");
+                    writer.write("\t\treturn " + variableName + "s;\n");
+                    writer.write("\t}\n\n");
+    
+                    writer.write("\tpublic void set" + target + "s(List<" + target + "> " + variableName + "s) {\n");
+                    writer.write("\t\tthis." + variableName + "s = " + variableName + "s;\n");
+                    writer.write("\t}\n\n");
+                }
+            }
+        }
+    }
+    
 }
