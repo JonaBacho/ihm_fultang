@@ -1,123 +1,194 @@
-"use server";
-import  { useState } from 'react';
+import loginBackground from "../../assets/logIn.png";
+import {FaExclamation} from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import {useState} from "react";
+import axios from "axios";
+import Wait from "../Modals/wait.jsx";
+import { Eye, EyeOff } from 'lucide-react';
 
-export const LoginPage = () => {
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-    });
 
-    const handleSubmit = (e) => {
+// Dans votre composant
+
+
+
+export function LoginPage()
+{
+
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [loginError, setLoginError] = useState("");
+    const [isLoginErrorPresent, setIsLoginErrorPresent] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+
+
+    const data = {
+        username: username,
+        password: password
+    }
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Gérer la soumission du formulaire
-    };
+        setIsLoading(true);
+        try
+        {
+            const response = await axios.post("http://localhost:8000/api/v1/login/", data);
+            if (response.status === 200)
+            {
+                setIsLoading(false);
+                console.log(response);
+                localStorage.setItem("token_key_fulltang", response.data.access);
+                localStorage.setItem("refresh_token_fulltang", response.data.refresh);
+                const userRole = response.data.user.role;
+                if (userRole === "Pharmacist")
+                {
+                    window.location.href = "/pharmacy";
+                }
+                else if (userRole === "Doctor")
+                {
+                    window.location.href = "/doctor";
+                }
+                else if (userRole === "Nurse")
+                {
+                    window.location.href = "nurse/patients";
+                }
+                else
+                {
+                    setIsLoginErrorPresent(true);
+                    setLoginError("bad role")
+                }
+            }
+        }
+        catch (error)
+        {
+            setIsLoading(false);
+            setIsLoginErrorPresent(true);
+            if (error.status === 401)
+            {
+                setLoginError("Invalid username or password, please retry!")
+            }
+            else
+            {
+                setLoginError("An error occurred, please retry!")
+            }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+
+            console.log(error);
+
+        }
+
+    }
+
 
     return (
-        <div className="min-h-screen relative overflow-hidden">
-            {/* Première couleur (moitié supérieure) */}
-            <div className="absolute top-0 left-0 right-0 h-[55%] bg-teal-400 rounded-br-[100px] rounded-bl-[100px] z-10"></div>
-
-            {/* Deuxième couleur (moitié inférieure) */}
-            <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-blue-800 rounded-tl-[100px] rounded-tr-[100px] z-20"></div>
-
-            {/* Contenu */}
-            <div className="relative z-30 container mx-auto px-4 py-8 min-h-screen flex items-center">
-                <div className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-xl overflow-hidden">
-                    <div className="flex flex-col md:flex-row">
-                        {/* Section gauche avec le titre et la description */}
-                        <div className="md:w-1/2 p-8 bg-transparent">
-                            <h1 className="text-4xl font-bold text-blue-800 mb-6">
-                                WELCOME ON FULTANG
-                            </h1>
-                            <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                                Polyclinic fultang is a hospital management application, providing care and monitoring
-                                of patients from arrival to discharge, this via the platform. We first register the patient at
-                                the reception level, then follow the chain of follow-up according to his problem or his
-                                situation. Polyclinic fultang has several departments namely the dental service, the
-                                ophthalmological service, the general medicine, the laboratory, as well as a pharmacy.
+        <>
+            <div className="flex flex-col"
+                 style={{
+                     backgroundImage: `url(${loginBackground})`,
+                     height: "100vh",
+                     backgroundSize: "cover",
+                     backgroundRepeat: "no-repeat",
+                 }}
+            >
+                <p className="text-3xl text-white font-bold mt-6 ml-8">
+                    FullTang
+                </p>
+                <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="flex ml-56 mt-28 w-[1400px] h-[480px]">
+                        <div className= "flex flex-col w-[620px]">
+                            <p className="text-white mt-28 mb-2 font-bold text-5xl ml-4">
+                                WELCOME ON FULLTANG
                             </p>
+                            <p className="text-justify font-bold text-md leading-10">
+                                Polyclinic fulltang is a hospital management application, providing care and monitoring of patients from arrival to discharge,
+                                this via the platform. We first register the patient at the reception level, then follow the chain of follow-up according to his problem or his situation.
+                                Polyclinic Fulltang has several departments namely the dental service, the ophthalmology service, the general medicine, the laboratory,
+                                as well as a pharmacy.
+                            </p>
+                            <p className="italic mt-4 text-blue-400 text-xl ">
+                                Note: cette page est la page de connexion du personnel de l'hopital
+                            </p>
+                            <button className="w-44 h-14  py-2 border-secondary border-2 text-secondary rounded-lg px-1 mt-4 font-bold hover:text-white hover:bg-secondary transition-all duration-300">
+                                <div className="flex justify-center items-center">
+                                    <FaExclamation className="mr-1 "/>
+                                    <p>Notify A problem</p>
+                                </div>
+                            </button>
                         </div>
+                        <div className="bg-white shadow-2xl border-2 w-[550px] mt-6 ml-16 flex flex-col rounded-lg">
+                            <div className="flex mb-10">
+                                <p className="text-3xl font-bold mt-4 ml-4  ">Log In</p>
+                                {isLoginErrorPresent && (
+                                    <p className="text-red-500 text-md font-bold mt-6 ml-8 mr-2">{loginError}</p>)}
 
-                        {/* Section droite avec le formulaire de connexion */}
-                        <div className="md:w-1/2 p-8 bg-white">
-                            <div className="max-w-md mx-auto">
-                                <h2 className="text-2xl font-semibold mb-2">Welcome,Back!</h2>
-                                <h3 className="text-xl mb-6">Log in</h3>
-
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label
-                                            htmlFor="username"
-                                            className="block text-sm font-medium text-gray-700 mb-1"
-                                        >
-                                            Username
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="username"
-                                            name="username"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            htmlFor="password"
-                                            className="block text-sm font-medium text-gray-700 mb-1"
-                                        >
-                                            Password
-                                        </label>
-                                        <input
-                                            type="password"
-                                            id="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                id="remember"
-                                                className="h-4 w-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500"
-                                            />
-                                            <label htmlFor="remember" className="ml-2 text-sm text-gray-600">
-                                                Remember me
-                                            </label>
-                                        </div>
-                                        <a href="#" className="text-sm text-teal-600 hover:text-teal-500">
-                                            Forgotten Password?
-                                        </a>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        className="w-full bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition-colors duration-200"
-                                    >
-                                        Log in
-                                    </button>
-                                </form>
                             </div>
+
+
+                            <form className="ml-4 mr-8 flex flex-col" onSubmit={handleLogin}>
+                                <div>
+                                    <label className="text-md font-bold">
+                                        username
+                                    </label>
+                                    <div className="bg-gray-300 h-12 mt-2 rounded-lg mb-4">
+                                        <input type="text"
+                                               name="username"
+                                               onChange={(e) => {
+                                                   setUsername(e.target.value)
+                                               }}
+                                               className="w-full rounded-lg h-12 ml-2 mr-2 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
+                                               placeholder={"Enter your username"}/>
+                                    </div>
+                                </div>
+                                <div className="mt-5">
+                                    <label className="text-md font-bold">
+                                        Password
+                                    </label>
+                                    <div className="bg-gray-300 h-12 mt-2 rounded-lg flex items-center relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value)
+                                            }}
+                                            className="w-full rounded-lg h-12 ml-2 mr-10 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
+                                            placeholder="Enter your password"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-2 p-2 hover:bg-gray-400 rounded-full transition-all duration-300"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="w-5 h-5 text-gray-600"/>
+                                            ) : (
+                                                <Eye className="w-5 h-5 text-gray-600"/>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <Link to={"/login"}>
+                                        <p className="text-end mt-1 text-sm text-blue-700 hover:text-secondary hover:font-bold transition-all duration-300 hover:underline">
+                                            Forgotten password?
+                                        </p>
+                                    </Link>
+                                </div>
+
+                                <div className="flex mt-5">
+                                    <input type="checkbox" id="rememberMeCheckbox" value="yes"
+                                           className="mr-2 w-5 h-5 border-secondary border-2"/>
+                                    <label htmlFor="maCheckbox" className="font-bold text-sm">Remember Me</label>
+                                </div>
+
+                                <button type="submit"
+                                        className="text-white text-2xl bg-gradient-to-r from-primary-start to-primary-end w-full h-12 rounded-lg mt-5 mb-5 font-bold">
+                                    Log In
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-};
-
+            {isLoading && (<Wait/>)}
+        </>
+    )
+}

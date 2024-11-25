@@ -2,12 +2,12 @@ import { FaFlag, FaBell, FaEnvelope, FaUser, FaCog, FaSignOutAlt } from 'react-i
 
 export function NurseNavBar()
 {
-    const applyNavLinkStyle= () => {
-        return "text-secondary text-xl hover:text-white"
-    }
+
     const applyNavLinkBtnStyle = () => {
-        return " w-12 h-10 border-2 bg-gay-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary "
+        return " w-12 h-10 border-2 bg-gay-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary text-secondary text-xl hover:text-white transition-all duration-300";
     }
+
+
 
     return (
         <div className="h-[70px] w-full flex justify-between">
@@ -18,22 +18,22 @@ export function NurseNavBar()
 
             <div className="flex gap-2 mt-8 mb-4 mr-5">
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaFlag  className={applyNavLinkStyle()}/>
+                    <FaFlag  />
                 </button>
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaCog className={applyNavLinkStyle()} />
+                    <FaCog  />
                 </button>
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaBell className={applyNavLinkStyle()}/>
+                    <FaBell />
                 </button>
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaEnvelope className={applyNavLinkStyle()}/>
+                    <FaEnvelope />
                 </button>
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaUser className={applyNavLinkStyle()}/>
+                    <FaUser />
                 </button>
                 <button className={applyNavLinkBtnStyle()}>
-                    <FaSignOutAlt className={applyNavLinkStyle()}/>
+                    <FaSignOutAlt />
                 </button>
             </div>
         </div>
