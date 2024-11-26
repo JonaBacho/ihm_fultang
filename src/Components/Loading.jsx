@@ -3,7 +3,7 @@ export function Loading()
 {
     return (
         <div
-            className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-primary-start to-primary-end">
+            className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-primary-start to-primary-end opacity-75">
             <div className="text-center">
                 {/* Logo animé */}
                 <div className="inline-block animate-spin ">

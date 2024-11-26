@@ -3,12 +3,18 @@ import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png"
 import {FaArrowLeft, FaArrowRight, FaSearch, FaUserNurse} from "react-icons/fa";
 import {HeartCrack} from 'lucide-react';
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+import {AccessDenied} from "../../Components/AccessDenied.jsx";
+
 
 
 
 export function Nurse()
 {
+
+    const {isAuthenticated, hasRole} = useAuthentication();
+
     const patients = [
         {
             id: 1,
@@ -84,16 +90,21 @@ export function Nurse()
 
     const navigate = useNavigate();
 
+    if (!isAuthenticated()) {
+        return <Navigate to="/login" />;
+    }
+
+    if (!hasRole('Nurse')) {
+        return <AccessDenied Role={"Nurse"}/>;
+    }
+
     return (
         <>
-            <div className="flex ">
-                <NurseDashboard/>
-                <div className="flex-1 flex flex-col">
-                    <div>
-                        <NurseNavBar/>
-                    </div>
-                    <div className="mt-5 flex flex-col">
-                        <div className=" ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
+            <NurseDashboard>
+                <NurseNavBar>
+                    <div className="flex flex-col">
+                        <div
+                            className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
                             <div className="flex gap-4">
 
                                 <div className="mt-5 mb-5 ml-5 w-28 h-28 border-4 border-white rounded-full">
@@ -155,7 +166,8 @@ export function Nurse()
                                         <td className="p-4 text-md text-center ">{patient.lastName}</td>
                                         <td className="p-4 text-md text-center ">{patient.gender}</td>
                                         <td className="p-4 items-center ">
-                                            <div className="w-20 h-10 rounded-full border-2 border-red-500 flex justify-center items-center">
+                                            <div
+                                                className="w-20 h-10 rounded-full border-2 border-red-500 flex justify-center items-center">
                                                 <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
                                                 <p className="text-red-500">{patient.state}</p>
 
@@ -205,8 +217,8 @@ export function Nurse()
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </NurseNavBar>
+            </NurseDashboard>
         </>
     )
 }

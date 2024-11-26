@@ -1,13 +1,15 @@
 import loginBackground from "../../assets/logIn.png";
 import {FaExclamation} from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {useState} from "react";
 import axios from "axios";
 import Wait from "../Modals/wait.jsx";
 import { Eye, EyeOff } from 'lucide-react';
+import {AppRoutesPaths as appRouterPaths} from "../../Router/appRouterPaths.js";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
 
-// Dans votre composant
+
 
 
 
@@ -17,10 +19,11 @@ export function LoginPage()
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
     const [isLoginErrorPresent, setIsLoginErrorPresent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const {isLoading, setIsLoading, login} = useAuthentication();
+    const navigate = useNavigate();
 
 
 
@@ -29,54 +32,45 @@ export function LoginPage()
         password: password
     }
 
+
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        try
+        const response = await login(data);
+        console.log(response);
+        if (response === "Pharmacist")
         {
-            const response = await axios.post("http://localhost:8000/api/v1/login/", data);
-            if (response.status === 200)
-            {
-                setIsLoading(false);
-                console.log(response);
-                localStorage.setItem("token_key_fulltang", response.data.access);
-                localStorage.setItem("refresh_token_fulltang", response.data.refresh);
-                const userRole = response.data.user.role;
-                if (userRole === "Pharmacist")
-                {
-                    window.location.href = "/pharmacy";
-                }
-                else if (userRole === "Doctor")
-                {
-                    window.location.href = "/doctor";
-                }
-                else if (userRole === "Nurse")
-                {
-                    window.location.href = "nurse/patients";
-                }
-                else
-                {
-                    setIsLoginErrorPresent(true);
-                    setLoginError("bad role")
-                }
-            }
+
+            navigate(appRouterPaths.pharmacyPage);
         }
-        catch (error)
+        else if (response === "Doctor")
         {
-            setIsLoading(false);
+            window.location.href = "/doctor";
+        }
+        else if (response === "Nurse")
+        {
+            navigate(appRouterPaths.nursePage)
+        }
+        else if (response === "bad role")
+        {
             setIsLoginErrorPresent(true);
-            if (error.status === 401)
-            {
-                setLoginError("Invalid username or password, please retry!")
-            }
-            else
-            {
-                setLoginError("An error occurred, please retry!")
-            }
-
-
-            console.log(error);
-
+            setLoginError("bad role")
+        }
+        if (response === 401)
+        {
+            setIsLoginErrorPresent(true);
+            setLoginError("Invalid username or password, please retry!")
+        }
+        else if (response === 404)
+        {
+            setIsLoginErrorPresent(true);
+            setLoginError("You're not registered in our application!")
+        }
+        else
+        {
+            setIsLoginErrorPresent(true);
+            setLoginError("An error occurred, please retry!")
         }
 
     }
@@ -138,7 +132,7 @@ export function LoginPage()
                                                    setUsername(e.target.value)
                                                }}
                                                className="w-full rounded-lg h-12 ml-2 mr-2 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
-                                               placeholder={"Enter your username"}/>
+                                               placeholder={"Enter your username here"}/>
                                     </div>
                                 </div>
                                 <div className="mt-5">
@@ -152,7 +146,7 @@ export function LoginPage()
                                                 setPassword(e.target.value)
                                             }}
                                             className="w-full rounded-lg h-12 ml-2 mr-10 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
-                                            placeholder="Enter your password"
+                                            placeholder="Enter your password here"
                                         />
                                         <button
                                             type="button"

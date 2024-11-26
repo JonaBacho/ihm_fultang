@@ -1,10 +1,11 @@
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
 import {FaArrowLeft, FaArrowRight, FaSearch} from "react-icons/fa";
-import {HeartCrack} from "lucide-react";
+
 
 export function MedicalStaffs()
 {
+
 
     const medicalStaffs = [
         {
@@ -53,12 +54,8 @@ export function MedicalStaffs()
 
     return (
        <>
-           <div className="flex">
-               <NurseDashboard/>
-               <div className="flex-1 flex-col">
-                   <NurseNavBar/>
-
-
+           <NurseDashboard>
+               <NurseNavBar>
                    <div className="flex justify-between mt-10 mb-5">
                        <div className="flex flex-col ml-5">
                            <p className="font-bold text-2xl">Reception</p>
@@ -77,7 +74,6 @@ export function MedicalStaffs()
                            </button>
                        </div>
                    </div>
-
 
                    <div className="ml-5 mr-5 mt-2 border-2 h-[500px] rounded-lg shadow-lg  p-2">
                        <table className="w-full border-separate border-spacing-y-2">
@@ -127,12 +123,8 @@ export function MedicalStaffs()
                            </button>
                        </div>
                    </div>
-
-
-               </div>
-
-
-           </div>
+               </NurseNavBar>
+           </NurseDashboard>
        </>
     )
 }

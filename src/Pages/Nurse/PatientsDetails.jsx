@@ -3,21 +3,20 @@ import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png";
 
+
 export function PatientsDetails()
 {
     const {id} = useParams();
     const { state } = useLocation();
     const patient = state?.patient;
 
+
+
     return (
         <>
-            <div className="flex">
-                <NurseDashboard/>
-
-                <div className="flex-1 flex flex-col">
-                    <NurseNavBar/>
-
-                    <div className="flex mt-8">
+            <NurseDashboard>
+                <NurseNavBar>
+                    <div className="flex mt-6">
                         <div className="w-2/6 flex flex-col ml-5 border-2 shadow-xl mb-5 rounded-lg">
                             <div className="w-full flex justify-center items-center flex-col mb-10">
                                 <div className="mt-5 mb-5 ml-5 w-36 h-36 border-4 border-gray-300 rounded-full">
@@ -87,7 +86,8 @@ export function PatientsDetails()
                                         <div className="grid grid-cols-3 gap-5">
                                             <div>
                                                 <p className="text-md  mb-2">Weight</p>
-                                                <div className="border-2 border-secondary rounded-lg  flex justify-center items-center">
+                                                <div
+                                                    className="border-2 border-secondary rounded-lg  flex justify-center items-center">
                                                     <input
                                                         className=" h-10  border-none outline:none ring-0 focus:outline-none focus:ring-0  rounded-lg w-4/5 ml-3"/>
                                                     <p className="w-1/5  text-end mr-3">Kg</p>
@@ -135,7 +135,8 @@ export function PatientsDetails()
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
                                                 <p className="text-md mb-2">Tension arterielle</p>
-                                                <div className="border-2 border-secondary  rounded-lg  flex justify-center items-center">
+                                                <div
+                                                    className="border-2 border-secondary  rounded-lg  flex justify-center items-center">
                                                     <input
                                                         className=" h-10 border-none focus:outline-none focus:ring-0 rounded-lg w-4/5 ml-3"/>
                                                     <p className="w-1/5 text-end mr-3">mmHg</p>
@@ -164,16 +165,16 @@ export function PatientsDetails()
                                                 <p className="text-md mb-2">Maladies chroniques</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
-                                                    <textarea
-                                                        className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
+                                                        <textarea
+                                                            className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
                                                 </div>
                                             </div>
                                             <div className="col-span-3">
                                                 <p className="text-md mb-2">Allergies </p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
-                                                    <textarea
-                                                        className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
+                                                        <textarea
+                                                            className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
                                                 </div>
                                             </div>
 
@@ -181,8 +182,8 @@ export function PatientsDetails()
                                                 <p className="text-md mb-2">Chirurgies </p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
-                                                    <textarea
-                                                        className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
+                                                        <textarea
+                                                            className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -191,16 +192,16 @@ export function PatientsDetails()
                                                 <p className="text-md mb-2">Medicaments actuels</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
-                                                    <textarea
-                                                        className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
+                                                        <textarea
+                                                            className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
                                                 </div>
                                             </div>
                                             <div className="col-span-1">
                                                 <p className="text-md mb-2">Antecedants familiaux</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
-                                                    <textarea
-                                                        className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
+                                                        <textarea
+                                                            className="w-full ml-2 border-none focus:outline-none focus:ring-0 rounded-lg"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -218,20 +219,13 @@ export function PatientsDetails()
                                         >
                                             Prescire un medecin
                                         </button>
-
                                     </div>
-
                                 </div>
                             </form>
-
-
                         </div>
-
                     </div>
-
-                </div>
-
-            </div>
+                </NurseNavBar>
+            </NurseDashboard>
         </>
     )
 }
