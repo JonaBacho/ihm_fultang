@@ -5,7 +5,7 @@ import axios from "axios";
 
 
 
-export const [FulltangProvider, useAuthentication] = constate(useLogin, value => value.authMethods);
+export const [FultangProvider, useAuthentication] = constate(useLogin, value => value.authMethods);
 
 
 function useLogin() {
@@ -18,7 +18,7 @@ function useLogin() {
 
 
     useEffect(() => {
-        const token = localStorage.getItem("token_key_fulltang");
+        const token = localStorage.getItem("token_key_fultang");
         if (token) {
             setIsLogged(true);
             setUserRole(localStorage.getItem("role"));
@@ -28,8 +28,8 @@ function useLogin() {
 
 
     function saveAuthParameters(token, refreshToken, userRole) {
-        localStorage.setItem("token_key_fulltang", token);
-        localStorage.setItem("refresh_token_fulltang", refreshToken);
+        localStorage.setItem("token_key_fultang", token);
+        localStorage.setItem("refresh_token_fultang", refreshToken);
         localStorage.setItem("role", userRole)
     }
 
@@ -96,8 +96,8 @@ function useLogin() {
      */
     function logout()
     {
-        localStorage.removeItem("token_key_fulltang");
-        localStorage.removeItem("refresh_token_fulltang");
+        localStorage.removeItem("token_key_fultang");
+        localStorage.removeItem("refresh_token_fultang");
         localStorage.removeItem("role");
         setIsLogged(false);
         setUserRole("");

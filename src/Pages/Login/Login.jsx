@@ -2,7 +2,6 @@ import loginBackground from "../../assets/logIn.png";
 import {FaExclamation} from "react-icons/fa";
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from "react";
-import axios from "axios";
 import Wait from "../Modals/wait.jsx";
 import { Eye, EyeOff } from 'lucide-react';
 import {AppRoutesPaths as appRouterPaths} from "../../Router/appRouterPaths.js";
@@ -93,12 +92,12 @@ export function LoginPage()
                     <div className="flex ml-56 mt-28 w-[1400px] h-[480px]">
                         <div className= "flex flex-col w-[620px]">
                             <p className="text-white mt-28 mb-2 font-bold text-5xl ml-4">
-                                WELCOME ON FULLTANG
+                                WELCOME ON FULTANG
                             </p>
                             <p className="text-justify font-bold text-md leading-10">
-                                Polyclinic fulltang is a hospital management application, providing care and monitoring of patients from arrival to discharge,
+                                Polyclinic fultang is a hospital management application, providing care and monitoring of patients from arrival to discharge,
                                 this via the platform. We first register the patient at the reception level, then follow the chain of follow-up according to his problem or his situation.
-                                Polyclinic Fulltang has several departments namely the dental service, the ophthalmology service, the general medicine, the laboratory,
+                                Polyclinic Fultang has several departments namely the dental service, the ophthalmology service, the general medicine, the laboratory,
                                 as well as a pharmacy.
                             </p>
                             <p className="italic mt-4 text-blue-400 text-xl ">

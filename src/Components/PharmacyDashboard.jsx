@@ -31,7 +31,7 @@ export const PharmacyDashboard = ({ children }) => {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="h-screen w-64 bg-gradient-to-b from-[#1A73A3] to-[#50C2B9] text-white p-4 fixed">
-        <div className="text-2xl font-bold mb-8">Fulltang P</div>
+        <div className="text-2xl font-bold mb-8">Fultang P</div>
         <nav className="space-y-4">
           <button  className="flex items-center gap-2 p-2 rounded hover:bg-white/10">
             <FiGrid />

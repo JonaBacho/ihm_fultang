@@ -20,7 +20,7 @@ export function LandingPage()
 
             <button onClick={() => navigate("/login")}
                     className="w-52 h-16  border-secondary rounded-lg border-2 bg-secondary text-white mt-5 font-bold text-2xl">
-                Login to fulltang
+                Login to fultang
             </button>
 
         </div>

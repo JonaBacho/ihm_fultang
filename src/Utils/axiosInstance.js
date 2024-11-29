@@ -4,7 +4,7 @@ import axios from "axios";
 const AuthInterceptor = (axiosInstance) => {
     axiosInstance.interceptors.request.use(
         (req) => {
-            const token = localStorage.getItem("token_key_fulltang");
+            const token = localStorage.getItem("token_key_fultang");
 
             if (token) {
                 req.headers["Authorization"] = "Bearer " + token;
