@@ -115,7 +115,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Ajoutez des informations supplémentaires sur l'utilisateur
         data['user'] = dict()
-        data['user']['id'] = self.user.id
+        #data['user']['id'] = self.user.id
         data['user']['username'] = self.user.username
         data['user']['email'] = self.user.email
         data['user']['role'] = self.user.role

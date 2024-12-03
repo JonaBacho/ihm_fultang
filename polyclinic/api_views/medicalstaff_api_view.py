@@ -7,6 +7,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework import status
 
 
 auth_header_param = openapi.Parameter(
@@ -100,5 +103,20 @@ class MedicalStaffViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+    @swagger_auto_schema(
+        operation_description="Renvoie les informations de la personne connecté",
+        responses={
+            200: MedicalStaffSerializer,
+            403: openapi.Response(description="Token invalide ou expiré"),
+        }
+        #manual_parameters=[
+        #    openapi.Parameter('user_id', openapi.IN_QUERY, description="ID de l'utilisateur", type=openapi.TYPE_INTEGER)
+        #]
+    )
+    @action(methods=['get'], detail=False, url_path='me')
+    def me(self, request, *args, **kwargs):
+        serializer = MedicalStaffSerializer(request.user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
