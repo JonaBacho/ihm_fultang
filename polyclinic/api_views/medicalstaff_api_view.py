@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import MedicalStaff
-from polyclinic.permissions import MedicalStaffPermission
+from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
 from polyclinic.serializers import MedicalStaffSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -102,6 +102,8 @@ class MedicalStaffViewSet(ModelViewSet):
         return MedicalStaffSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         serializer.save()
 
     @swagger_auto_schema(
@@ -117,6 +119,6 @@ class MedicalStaffViewSet(ModelViewSet):
     @action(methods=['get'], detail=False, url_path='me')
     def me(self, request, *args, **kwargs):
         serializer = MedicalStaffSerializer(request.user)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK, content_type='application/json')
 
 

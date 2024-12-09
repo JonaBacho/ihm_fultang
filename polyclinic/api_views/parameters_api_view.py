@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Parameters
-from polyclinic.permissions import MedicalStaffPermission
 from polyclinic.serializers import ParametersSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -99,4 +98,6 @@ class ParametersViewSet(ModelViewSet):
         return ParametersSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         serializer.save()

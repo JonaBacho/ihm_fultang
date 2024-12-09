@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Patient
-from polyclinic.permissions import MedicalStaffPermission
+from polyclinic.models import Patient, PatientAccess
+from polyclinic.permissions.patient_permissions import PatientPermission
 from polyclinic.serializers import PatientSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -88,15 +88,26 @@ auth_header_param = openapi.Parameter(
 )
 class PatientViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, PatientPermission]
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Patient.objects.all()
-        return queryset
+        user = self.request.user
+        if user.role=="Admin" or user.role=="Receptionist":
+            return Patient.objects.all()
+
+        return Patient.objects.filter(
+            id__in=PatientAccess.objects.filter(
+                idMedicalStaff=user,
+                access=True
+            ).values_list("idPatient", flat=True)
+        )
+
 
     def get_serializer_class(self):
         return PatientSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         serializer.save()

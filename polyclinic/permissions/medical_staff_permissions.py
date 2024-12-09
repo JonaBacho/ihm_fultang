@@ -20,10 +20,7 @@ class MedicalStaffPermission(BasePermission):
         if request.user.role == "Admin":
             return True
         # Autoriser un utilisateur à accéder uniquement à ses propres informations
-        elif view.action == "retrieve":
-            return obj == request.user
-        # Autoriser la mise à jour partielle si l'utilisateur est lui-même
-        elif view.action in ["update", "partial_update"]:
+        elif view.action in ["update", "partial_update", "retrieve"]:
             return obj == request.user
         return False
 

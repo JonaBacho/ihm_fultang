@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Message
-from polyclinic.permissions import MedicalStaffPermission
+from polyclinic.permissions.message_permissions import MessagePermission
 from polyclinic.serializers import MessageSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -87,7 +87,7 @@ auth_header_param = openapi.Parameter(
 )
 class MessageViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MessagePermission]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -98,4 +98,6 @@ class MessageViewSet(ModelViewSet):
         return MessageSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         serializer.save()

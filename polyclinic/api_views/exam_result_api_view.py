@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import ExamResult
-from polyclinic.permissions import MedicalStaffPermission
 from polyclinic.serializers import ExamResultSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -99,4 +98,6 @@ class ExamResultViewSet(ModelViewSet):
         return ExamResultSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         serializer.save()

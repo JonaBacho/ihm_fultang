@@ -12,6 +12,13 @@ class MedicalStaffSerializer(serializers.ModelSerializer):
         exclude = ['password']
         #fields = ['id', 'first_name', 'last_name']
 
+    """
+    def validate(self, attrs):
+        if self.instance is None and 'id' in attrs:  # L'objet est en création
+            raise serializers.ValidationError("L'ID ne peut pas être défini manuellement.")
+        return attrs
+    """
+
 class DepartementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department

@@ -12,6 +12,8 @@ from django.forms.widgets import Select
 from django.utils import tree, timezone
 from django import forms
 from django.shortcuts import reverse
+from datetime import timedelta
+from django.utils.timezone import now
 
 from polyclinic.managers import MedicalStaffManager
 
@@ -89,14 +91,34 @@ class Department(models.Model):
         return self.reference
 
 
+####### Il y'a à faire par rapport à ce model, il faut mettre l'acces d'un objet à jour dans la BD en fonction des dates #########"
 class PatientAccess(models.Model):
     givenAt = models.DateTimeField(auto_now=True, blank=True)
-    lostAt = models.DateTimeField(auto_now=True, blank=True)
+    lostAt = models.DateTimeField(blank=True)
 
     access = models.BooleanField(default=True)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+
+    def save(self, *args, **kwargs):
+        # Vérifie si une entrée existe déjà pour le couple (idPatient, idMedicalStaff)
+        existing_access = PatientAccess.objects.filter(
+            idPatient=self.idPatient,
+            idMedicalStaff=self.idMedicalStaff
+        ).first()
+
+        if existing_access:
+            # Mettre à jour l'accès existant
+            existing_access.access = True
+            existing_access.givenAt = now()
+            existing_access.lostAt = existing_access.givenAt + timedelta(weeks=2)
+            existing_access.save()
+        else:
+            # Créer une nouvelle entrée si aucune n'existe
+            if not self.lostAt:
+                self.lostAt = (self.givenAt or now()) + timedelta(weeks=2)
+            super().save(*args, **kwargs)
 
 
 # classe qui definie le patient
