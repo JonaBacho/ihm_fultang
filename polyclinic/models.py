@@ -1,6 +1,4 @@
 from datetime import timezone
-from operator import mod
-from tkinter.tix import Tree
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
