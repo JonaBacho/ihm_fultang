@@ -13,6 +13,8 @@ class MedicalStaffPermission(BasePermission):
             return request.user.is_authenticated and request.user.role == "Admin"
         elif view.action in ["retrieve", "update", "partial_update"]:
             return request.user.is_authenticated
+        elif request.method == "GET":
+            return request.user.is_authenticated
         return False
 
     def has_object_permission(self, request, view, obj):
