@@ -2,6 +2,8 @@ import {useLocation, useParams} from "react-router-dom";
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png";
+import PatientInformation from "./PatientInformation.jsx";
+import {useEffect, useState} from "react";
 
 
 export function PatientsDetails()
@@ -12,62 +14,13 @@ export function PatientsDetails()
 
 
 
+
     return (
         <>
             <NurseDashboard>
                 <NurseNavBar>
                     <div className="flex mt-6">
-                        <div className="w-2/6 flex flex-col ml-5 border-2 shadow-xl mb-5 rounded-lg">
-                            <div className="w-full flex justify-center items-center flex-col mb-10">
-                                <div className="mt-5 mb-5 ml-5 w-36 h-36 border-4 border-gray-300 rounded-full">
-                                    <img src={userIcon} alt="user icon" className="h-[136px] w-[136px] mb-2"/>
-                                </div>
-                                <p className="font-bold text-3xl mt-2 mb-1">{patient.name}</p>
-                                <p className="font-bold text-3xl mt-1 mb-4">{patient.lastName}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200 p-6 mr-2 ml-2">
-                                <p className="mr-10 w-1/4">Gender</p>
-                                <p className="w-3/4 text-center">{patient?.gender}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">CNI</p>
-                                <p className="w-3/4 text-center">{patient.CNI}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">Address</p>
-                                <p className="w-3/4 text-center">{patient?.address}</p>
-                            </div>
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">Email</p>
-                                <p className="w-3/4 text-center">{patient?.email}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">BirthDate</p>
-                                <p className="w-3/4 text-center">{patient?.birthDate}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">Contact</p>
-                                <p className="w-3/4 text-center">{patient?.userContact}</p>
-                            </div>
-
-                            <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">Contact d'urgence</p>
-                                <p className="w-3/4 text-center">{patient?.urgenceContact}</p>
-                            </div>
-
-                            <div
-                                className="flex border-t-2 border-t-gray-200 border-b-2 border-b-gray-200 p-6 ml-2 mr-2">
-                                <p className="mr-10 w-1/4">Added At</p>
-                                <p className="w-3/4 text-center">{patient.createdAt}</p>
-                            </div>
-                        </div>
-
-
+                       <PatientInformation patient={patient}/>
                         {/*Patient's medical Parameters*/}
                         <div className="flex-1 ml-4 mr-5 flex flex-col">
                             <div
@@ -130,11 +83,11 @@ export function PatientsDetails()
                                     {/*Parametres cardiovasculaires*/}
                                     <div>
                                         <div className="border-b-2 border-b-gray-400 m-3">
-                                            <p className="font-bold text-xl mb-3">Parametres cardiovasculaire</p>
+                                            <p className="font-bold text-xl mb-3">Cardiovascular parameters</p>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
-                                                <p className="text-md mb-2">Tension arterielle</p>
+                                                <p className="text-md mb-2">Blood Pressure</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg  flex justify-center items-center">
                                                     <input
@@ -143,7 +96,7 @@ export function PatientsDetails()
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-md mb-2">Frequence cardique </p>
+                                                <p className="text-md mb-2">Pulse </p>
                                                 <div
                                                     className="border-2 border-secondary rounded-lg  flex justify-center items-center">
                                                     <input
@@ -158,11 +111,11 @@ export function PatientsDetails()
                                     {/*Antecedents medicaux*/}
                                     <div>
                                         <div className="border-b-2 border-b-gray-400 m-3">
-                                            <p className="font-bold text-xl mb-3">Antecedants medicaux</p>
+                                            <p className="font-bold text-xl mb-3">Medical History</p>
                                         </div>
                                         <div className="grid grid-cols-8 gap-2">
                                             <div className="col-span-2">
-                                                <p className="text-md mb-2">Maladies chroniques</p>
+                                                <p className="text-md mb-2">Chronics Diseases</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
                                                         <textarea
@@ -179,7 +132,7 @@ export function PatientsDetails()
                                             </div>
 
                                             <div className="col-span-3">
-                                                <p className="text-md mb-2">Chirurgies </p>
+                                                <p className="text-md mb-2">Surgeries </p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
                                                         <textarea
@@ -189,7 +142,7 @@ export function PatientsDetails()
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 mt-3 mb-2">
                                             <div className="col-span-1">
-                                                <p className="text-md mb-2">Medicaments actuels</p>
+                                                <p className="text-md mb-2">Current Medication</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
                                                         <textarea
@@ -197,7 +150,7 @@ export function PatientsDetails()
                                                 </div>
                                             </div>
                                             <div className="col-span-1">
-                                                <p className="text-md mb-2">Antecedants familiaux</p>
+                                                <p className="text-md mb-2">Family Medical History</p>
                                                 <div
                                                     className="border-2 border-secondary  rounded-lg flex justify-center items-center">
                                                         <textarea
@@ -217,7 +170,7 @@ export function PatientsDetails()
                                             className="bg-gradient-to-r from-primary-start to-primary-end w-full h-14 rounded-lg text-white  text-xl font-bold disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
                                             disabled
                                         >
-                                            Prescire un medecin
+                                            Prescribe a doctor
                                         </button>
                                     </div>
                                 </div>

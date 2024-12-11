@@ -5,7 +5,7 @@ export function Loading()
         <div
             className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-primary-start to-primary-end opacity-75">
             <div className="text-center">
-                {/* Logo animé */}
+                {/* animated logo */}
                 <div className="inline-block animate-spin ">
                     <svg className="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                          xmlns="http://www.w3.org/2000/svg">
@@ -14,9 +14,9 @@ export function Loading()
                     </svg>
                 </div>
 
-                {/* Texte de chargement */}
+                {/* text loading */}
                 <h2 className="mt-4 text-2xl font-semibold text-white animate-pulse">
-                    Chargement...
+                    Loading...
                 </h2>
 
                 {/* Points de chargement animés */}

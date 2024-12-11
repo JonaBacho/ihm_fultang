@@ -2,6 +2,7 @@ import { FaFlag, FaBell, FaEnvelope, FaUser, FaCog, FaSignOutAlt } from 'react-i
 import {useAuthentication} from "../Utils/Provider.jsx";
 import {Tooltip} from "antd";
 import PropTypes from "prop-types";
+import {useEffect, useState} from "react";
 
 export function NurseNavBar({children})
 {
@@ -11,18 +12,19 @@ export function NurseNavBar({children})
         children: PropTypes.node.isRequired,
     };
 
+
+
     const {logout} = useAuthentication();
     const applyNavLinkBtnStyle = () => {
-        return " w-12 h-10 border-2 bg-gay-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary text-secondary text-xl hover:text-white transition-all duration-300";
+        return " w-12 h-10 border-2 bg-gray-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary text-secondary text-xl hover:text-white transition-all duration-300";
     }
-
 
 
 
 
     return (
         <div>
-            <div className="h-[70px] w-full  flex justify-between">
+             <div className="h-[70px] w-full  flex justify-between">
                 <div className="text-5xl font-bold mt-7 ml-5">
                     <span>Nurse</span>
                 </div>
@@ -51,13 +53,13 @@ export function NurseNavBar({children})
                             onClick={() => {
                                 logout()
                             }}
-                            className={applyNavLinkBtnStyle()}>
+                            className={" w-12 h-10 border-2 bg-red-500 flex justify-center items-center rounded-xl shadow-xl hover:bg-white text-white text-xl hover:text-red-500 transition-all duration-300"}>
                             <FaSignOutAlt/>
                         </button>
                     </Tooltip>
                 </div>
             </div>
-            <div className="flex-1 mt-5">
+            <div className="flex-1  min-h-screen mt-5">
                 {children}
             </div>
         </div>

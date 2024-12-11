@@ -40,7 +40,6 @@ export function LoginPage()
         console.log(response);
         if (response === "Pharmacist")
         {
-
             navigate(appRouterPaths.pharmacyPage);
         }
         else if (response === "Doctor")

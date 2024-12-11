@@ -1,7 +1,8 @@
-
 import constate from "constate";
 import {useEffect, useMemo, useState} from "react";
 import axios from "axios";
+import axiosInstance from "./axiosInstance.js";
+
 
 
 
@@ -17,30 +18,21 @@ function useLogin() {
     const [userRole, setUserRole] = useState("");
 
 
-    useEffect(() => {
-        const token = localStorage.getItem("token_key_fultang");
-        if (token) {
-            setIsLogged(true);
-            setUserRole(localStorage.getItem("role"));
-            console.log("role" , userRole);
-        }
-    }, [userRole]);
-
-
-    function saveAuthParameters(token, refreshToken, userRole) {
+    function saveAuthParameters(token, refreshToken) {
         localStorage.setItem("token_key_fultang", token);
         localStorage.setItem("refresh_token_fultang", refreshToken);
         localStorage.setItem("role", userRole)
     }
 
 
+    function clearLocalStorage()
+    {
+        localStorage.removeItem("token_key_fultang");
+        localStorage.removeItem("refresh_token_fultang");
+        localStorage.removeItem("role");
+    }
 
-    /**
-     * Log in the user and set the auth parameters.
-     * @param {object} data - The data to send in the request body.
-     * @returns {Promise<string | number>} The user's role if the login is
-     * successful or the error status if the login fails.
-     */
+
     async function login (data)
     {
         try
@@ -50,7 +42,7 @@ function useLogin() {
             {
                 setIsLoading(false);
                 console.log(response);
-                saveAuthParameters(response.data.access, response.data.refresh, response.data.user.role);
+                saveAuthParameters(response.data.access, response.data.refresh);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
                 setIsLogged(true);
@@ -66,21 +58,53 @@ function useLogin() {
     }
 
 
+    async function getUserInfos()
+    {
+        try
+        {
+            const response = await axiosInstance.get("/medical-staff/me");
+            if (response.status === 200)
+            {
+                console.log(response);
+              //  setIsLogged(true);
+               // setUserData(response.data);
+              //  setUserRole(response.data.role);
+            }
+        }
+        catch (error)
+        {
+            console.log(error);
+           // setIsLogged(false);
+        }
+    }
 
-    /**
-     * Checks if the user is authenticated.
-     * @returns {boolean} `true` if the user is authenticated, `false` otherwise.
-     */
+
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token_key_fultang");
+        if (token) {
+            if (isLogged)
+            {
+                const getCurrentUser = async () => {
+                    await getUserInfos();
+                }
+                getCurrentUser()
+            }
+        }
+        else
+        {
+            setIsLogged(false);
+            clearLocalStorage();
+        }
+    }, [isLogged]);
+
+
     function isAuthenticated() {
         return isLogged;
     }
 
 
-    /**
-     * Checks if the user is authenticated and has the given role.
-     * @param {string} requiredRole - The role to check against.
-     * @returns {boolean} `true` if the user is authenticated and has the given role, `false` otherwise.
-     */
     function hasRole(requiredRole) {
         if(isLogged)
         {
@@ -89,21 +113,28 @@ function useLogin() {
 
     }
 
+    useEffect(() => {
+        const token = localStorage.getItem("token_key_fultang");
+        const role = localStorage.getItem("role");
+        if (token)
+        {
+            setIsLogged(true);
+            if(role)
+            {
+                setUserRole(role);
+            }
+        }
+    }, []);
 
-    /**
-     * Logout the user by removing the token and role from local storage and
-     * setting {@link isLogged} to `false`.
-     */
+
+
     function logout()
     {
-        localStorage.removeItem("token_key_fultang");
-        localStorage.removeItem("refresh_token_fultang");
-        localStorage.removeItem("role");
+        clearLocalStorage();
         setIsLogged(false);
-        setUserRole("");
+        setUserData({});
         window.location.href = "/";
     }
-
 
 
 
@@ -118,6 +149,6 @@ function useLogin() {
         hasRole,
         userRole,
         logout
-    }), [isLoading, userData, isLogged, isAuthenticated, hasRole, userRole]);
+    }), [login,isLoading, userData, isLogged, isAuthenticated, hasRole, userRole]);
     return {authMethods}
 }

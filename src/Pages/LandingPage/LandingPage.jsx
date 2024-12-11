@@ -13,7 +13,7 @@ export function LandingPage()
                 <p className="text-8xl font-bold">LandingPage</p>
 
                 <p className="ml-20 text-3xl font-bold mt-5">
-                    Bienvenue sur l application
+                    Welcome to our Application
                 </p>
 
             </div>
