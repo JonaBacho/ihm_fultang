@@ -37,7 +37,7 @@ jobs:
 
     - name: Build images
       run: |
-          docker build -t $FULTANG_IMAGE .
+          docker build -t ${{ env.FULTANG_IMAGE }} .
 
     - name: Push images
       run: |
