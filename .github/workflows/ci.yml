@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  FULTANG_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/fultang
+  FULTANG_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/app
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
 
     - name: Build images
       run: |
-          docker build .
+          docker build -tFULTANG_IMAGE $ .
 
     - name: Push images
       run: |
