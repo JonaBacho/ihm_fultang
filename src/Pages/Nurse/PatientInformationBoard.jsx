@@ -1,9 +1,9 @@
 import userIcon from "../../assets/userIcon.png";
 import PropTypes from "prop-types";
 
-export default function PatientInformation({patient}) {
+export default function PatientInformationBoard({patient}) {
 
-    PatientInformation.propTypes = {
+    PatientInformationBoard.propTypes = {
         patient: PropTypes.object.isRequired,
     };
     return (

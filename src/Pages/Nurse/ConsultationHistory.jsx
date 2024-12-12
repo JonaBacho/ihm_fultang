@@ -1,6 +1,6 @@
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
-import PatientInformation from "./PatientInformation.jsx";
+import PatientInformationBoard from "./PatientInformationBoard.jsx";
 import {useLocation} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
 import flecheDeroulanteBas from "../../assets/flecheDeroulanteBas.png"
@@ -59,7 +59,7 @@ export function ConsultationHistory()
             <NurseDashboard>
                 <NurseNavBar>
                     <div className="mt-5 flex gap-4">
-                        <PatientInformation patient={patient}/>
+                        <PatientInformationBoard patient={patient}/>
                         <div className="flex-1 flex flex-col mr-2 gap-4 mb-5">
                             <div className="w-full h-[150px] border shadow-xl rounded-lg flex flex-col">
                                 <h1 className="font-bold text-secondary text-2xl mt-3 ml-4">Appointments</h1>

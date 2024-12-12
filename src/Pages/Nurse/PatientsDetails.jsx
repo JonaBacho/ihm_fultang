@@ -2,7 +2,7 @@ import {useLocation, useParams} from "react-router-dom";
 import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
 import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png";
-import PatientInformation from "./PatientInformation.jsx";
+import PatientInformationBoard from "./PatientInformationBoard.jsx";
 import {useEffect, useState} from "react";
 
 
@@ -20,7 +20,7 @@ export function PatientsDetails()
             <NurseDashboard>
                 <NurseNavBar>
                     <div className="flex mt-6">
-                       <PatientInformation patient={patient}/>
+                       <PatientInformationBoard patient={patient}/>
                         {/*Patient's medical Parameters*/}
                         <div className="flex-1 ml-4 mr-5 flex flex-col">
                             <div

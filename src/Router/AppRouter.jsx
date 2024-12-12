@@ -17,6 +17,12 @@ export function AppRoute()
     const HelpCenterPage = React.lazy(async () => ({default: (await import("../Pages/HelpCenter/HelpCenter.jsx")).HelpCenter}));
     const PatientDetailsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/PatientsDetails.jsx")).PatientsDetails}));
     const PharmacyPage = React.lazy(async () => ({default: (await import("../Pages/Pharmacy/Pharmacy.jsx")).Pharmacy}));
+    const ReceptionistPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/Receptionist.jsx")).Receptionist}));
+    const DoctorPage = React.lazy(async () => ({default: (await import("../Pages/Doctor/Doctor.jsx")).Doctor}));
+    const LaboratoryAssistantPage = React.lazy(async () => ({default: (await import("../Pages/Laboratory/LaboratoryAssistant.jsx")).LaboratoryAssistant}));
+    const SpecialistPage = React.lazy(async () => ({default: (await import("../Pages/Doctor/Specialist.jsx")).Specialist}));
+    const CashierPage = React.lazy(async () => ({default: (await import("../Pages/Cashier/Cashier.jsx")).Cashier}));
+    const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/adminHomePage.jsx")).AdminHomePage}));
 
 
 
@@ -31,7 +37,12 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.consultationHistoryPage} element={<ConsultationHistoryPage/>}/>
                 <Route path={AppRoutesPaths.helpCenterPage} element={<HelpCenterPage/>}/>
                 <Route path={AppRoutesPaths.patientDetailsPage} element={<PatientDetailsPage />} />
-
+                <Route path={AppRoutesPaths.cashierPage} element={<CashierPage />} />
+                <Route path={AppRoutesPaths.receptionistPage} element={<ReceptionistPage />} />
+                <Route path={AppRoutesPaths.doctorPage} element={<DoctorPage />} />
+                <Route path={AppRoutesPaths.laboratoryAssistantPage} element={<LaboratoryAssistantPage />} />
+                <Route path={AppRoutesPaths.specialistPage} element={<SpecialistPage />} />
+                <Route path={AppRoutesPaths.adminHomePage} element={<AdminHomePage />} />
 
 
 
