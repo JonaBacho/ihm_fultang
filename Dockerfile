@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app
 
 # Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt && \
+RUN pip install --no-cache-dir -r requirements.txt
 #    adduser \
 #        --disabled-password \
 #        --no-create-home \
