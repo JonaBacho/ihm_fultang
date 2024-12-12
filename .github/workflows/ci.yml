@@ -37,7 +37,7 @@ jobs:
 
     - name: Build images
       run: |
-          docker-compose -f docker-compose.yml build
+          docker build --cache-from "${APP_IMAGE}" .
 
     - name: Push images
       run: |
@@ -46,8 +46,37 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Deploy to Production
+    - name: Checkout master
+      uses: actions/checkout@v2
+
+    - name: Add environment variables to .env
       run: |
-        # Add your deployment script or commands here
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo FULTANG_IMAGE=${{ env.FULTANG_IMAGE }} >> .env
+          echo NAMESPACE=${{ secrets.NAMESPACE }} >> .env
+          echo PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} >> .env
+
+    - name: Add the private SSH key to the ssh-agent
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+          mkdir -p ~/.ssh
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
+
+    - name: Build and deploy images on Server
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+          scp  -o StrictHostKeyChecking=no -r ./.env ./fultang ./polyclinic ./Dockerfile ./manage.py ./requirements.txt ./docker-compose.yml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }}:/home/${{ secrets.REMOTE_USER }}/ihm
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
+            cd /home/${{ secrets.REMOTE_USER }}/ihm
+            source .env
+            docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
+            docker pull $FULTANG_IMAGE
+            docker-compose -f docker-compose.yml up -d
+          ENDSSH
