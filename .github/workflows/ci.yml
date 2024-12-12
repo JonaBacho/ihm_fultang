@@ -76,7 +76,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
             cd /home/${{ secrets.REMOTE_USER }}/ihm
             source .env
-            docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
-            docker pull $FULTANG_IMAGE
-            docker-compose -f docker-compose.yml up -d
+            sudo docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
+            sudo docker pull $FULTANG_IMAGE
+            sudo docker-compose -f docker-compose.yml up -d
           ENDSSH
