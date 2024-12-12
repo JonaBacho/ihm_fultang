@@ -36,7 +36,7 @@ schema_view = get_schema_view(
       description="Application de gestion hospitalière",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="jonathabachelard@gmail.com"),
-      license=openapi.License(name="BandSoft License"),
+      license=openapi.License(name="Free License"),
    ),
    public=True,
    permission_classes=[permissions.AllowAny],
