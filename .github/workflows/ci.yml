@@ -78,5 +78,5 @@ jobs:
             source .env
             sudo docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
             sudo docker pull $FULTANG_IMAGE
-            sudo docker-compose -f docker-compose.yml up -d
+            sudo docker compose -f docker-compose.yml up -d
           ENDSSH
