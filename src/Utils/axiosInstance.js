@@ -1,22 +1,6 @@
 import axios from "axios";
 
 
-const AuthInterceptor = (axiosInstance) => {
-    axiosInstance.interceptors.request.use(
-        (req) => {
-            const token = localStorage.getItem("token_key_fultang");
-
-            if (token) {
-                req.headers["Authorization"] = "Bearer " + token;
-            }
-            return req;
-        },
-        (err) => {
-            return Promise.reject(err);
-        }
-    );
-};
-
 
 const ErrorInterceptor = (axiosInstance) => {
 
@@ -35,10 +19,20 @@ const ErrorInterceptor = (axiosInstance) => {
 }
 
 
-const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_FULTANG_API_BASE_URL,
-});
-AuthInterceptor(axiosInstance);
-ErrorInterceptor(axiosInstance);
+const token = localStorage.getItem("token_key_fultang");
 
+
+const axiosInstance = axios.create(
+    {
+    baseURL: import.meta.env.VITE_BACKEND_FULTANG_API_BASE_URL,
+    headers:
+        {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+        }
+    }
+);
+
+
+ErrorInterceptor(axiosInstance);
 export default axiosInstance;

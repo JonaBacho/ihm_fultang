@@ -21,7 +21,7 @@ function useLogin() {
     function saveAuthParameters(token, refreshToken, role) {
         localStorage.setItem("token_key_fultang", token);
         localStorage.setItem("refresh_token_fultang", refreshToken);
-        localStorage.setItem("role", role)
+        //localStorage.setItem("role", role)
     }
 
 
@@ -29,7 +29,7 @@ function useLogin() {
     {
         localStorage.removeItem("token_key_fultang");
         localStorage.removeItem("refresh_token_fultang");
-        localStorage.removeItem("role");
+     //   localStorage.removeItem("role");
     }
 
 
@@ -58,44 +58,37 @@ function useLogin() {
     }
 
 
-    async function getUserInfos()
-    {
-        try
-        {
-            const response = await axiosInstance.get("/medical-staff/me");
-            if (response.status === 200)
-            {
-                console.log(response);
-              //  setIsLogged(true);
-               // setUserData(response.data);
-              //  setUserRole(response.data.role);
-            }
-        }
-        catch (error)
-        {
-            console.log(error);
-           // setIsLogged(false);
-        }
-    }
-
-
-
-
     useEffect(() => {
         const token = localStorage.getItem("token_key_fultang");
         if (token)
         {
-            if (isLogged)
+            setIsLogged(true);
+            async function getCurrentUserInfos  ()
             {
-                const getCurrentUser = async () => {
-                    await getUserInfos();
+                try
+                {
+                    const response = await axiosInstance.get("/medical-staff/me/");
+                    if (response.status === 200)
+                    {
+                        console.log(response);
+                        setIsLogged(true);
+                        setUserData(response.data);
+                        setUserRole(response.data.role);
+                    }
                 }
-                getCurrentUser()
+                catch (error)
+                {
+                    console.log(error);
+                    setIsLogged(false);
+                }
             }
+            getCurrentUserInfos()
         }
         else
         {
             setIsLogged(false);
+            setUserData({});
+            setUserRole("");
             clearLocalStorage();
         }
     }, [isLogged]);
@@ -111,9 +104,10 @@ function useLogin() {
         {
             return userRole === requiredRole;
         }
-
     }
 
+
+    /*
     useEffect(() => {
         const token = localStorage.getItem("token_key_fultang");
         const role = localStorage.getItem("role");
@@ -126,7 +120,7 @@ function useLogin() {
             }
         }
     }, []);
-
+*/
 
 
     function logout()
