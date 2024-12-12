@@ -37,7 +37,7 @@ jobs:
 
     - name: Build images
       run: |
-          docker build --cache-from "${APP_IMAGE}" .
+          docker build .
 
     - name: Push images
       run: |
