@@ -1,5 +1,5 @@
-import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
-import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
+import {NurseDashboard} from "./NurseDashboard.jsx";
+import {NurseNavBar} from "./NurseNavBar.jsx";
 import PatientInformationBoard from "./PatientInformationBoard.jsx";
 import {useLocation} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";

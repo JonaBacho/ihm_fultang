@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import {FaHome , FaUserMd, FaQuestionCircle } from 'react-icons/fa';
 import {Link, Navigate, useLocation} from 'react-router-dom';
-import {AppRoutesPaths as appRoutes} from "../Router/appRouterPaths.js";
-import {useAuthentication} from "../Utils/Provider.jsx";
-import {AccessDenied} from "./AccessDenied.jsx";
+import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
 
 
 
@@ -69,7 +69,7 @@ export function NurseDashboard({children}) {
                         return (
                             <Link
                                 key={index}
-                                className={isActive ? "flex p-4 ml-8 bg-white rounded-l-full" : "flex p-4 mt-2 ml-8 hover:bg-white/10 hover:rounded-l-full"}
+                                className={`transition-all duration-400 flex p-4  ml-8 ${isActive ? "mt-1.5 bg-white rounded-l-full" : " mt-2 hover:bg-white/20 hover:p-3.5 hover:rounded-l-full"}`}
                                 to={item.link}
                             >
                                 <IconComponent className={isActive ? "text-black text-xl mr-3" : "text-xl mr-3 text-white"}/>

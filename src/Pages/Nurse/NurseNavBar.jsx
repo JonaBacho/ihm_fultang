@@ -1,5 +1,5 @@
 import { FaFlag, FaBell, FaEnvelope, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import {useAuthentication} from "../Utils/Provider.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Tooltip} from "antd";
 import PropTypes from "prop-types";
 import {useEffect, useState} from "react";

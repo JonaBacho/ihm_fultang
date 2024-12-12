@@ -1,6 +1,6 @@
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Navigate} from "react-router-dom";
-import {AccessDenied} from "../../Components/AccessDenied.jsx";
+import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
 
 export function AdminHomePage()
 {

@@ -2,7 +2,7 @@ export function Receptionist()
 {
     return (
         <div>
-            Receptionnist
+            Receptionist
         </div>
     )
 }

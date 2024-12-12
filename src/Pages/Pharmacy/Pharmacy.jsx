@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { PharmacyDashboard } from '../../Components/PharmacyDashboard';
-import { PharmacyNavbar } from '../../Components/PharmacyNavBar';
-import { PharmacyFilter } from '../../Components/PharmacyFilter';
-import { PharmacyBoard } from '../../Components/PharmacyBoard';
-import { PharmacyOperations } from '../../Components/PharmacyOperations';
+import { PharmacyDashboard } from './PharmacyDashboard.jsx';
+import { PharmacyNavbar } from './PharmacyNavBar.jsx';
+import { PharmacyFilter } from './PharmacyFilter.jsx';
+import { PharmacyBoard } from './PharmacyBoard.jsx';
+import { PharmacyOperations } from './PharmacyOperations.jsx';
 
 
 export  function Pharmacy() {

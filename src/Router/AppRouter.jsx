@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom";
-import {Loading} from "../Components/Loading.jsx";
+import {Loading} from "../GlobalComponents/Loading.jsx";
 import {AppRoutesPaths} from "./appRouterPaths.js";
 
 
@@ -11,7 +11,7 @@ export function AppRoute()
     const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Login/Login.jsx")).LoginPage}));
     const LandingPage = React.lazy(async () => ({default: (await import("../Pages/LandingPage/LandingPage.jsx")).LandingPage}));
     const NursePage = React.lazy(async () => ({default: (await import("../Pages/Nurse/Nurse.jsx")).Nurse}));
-    const NotFoundPage = React.lazy(async () => ({default: (await import("../Components/NotFound.jsx")).NotFound}));
+    const NotFoundPage = React.lazy(async () => ({default: (await import("../GlobalComponents/NotFound.jsx")).NotFound}));
     const MedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/MedicalStaffs.jsx")).MedicalStaffs}));
     const ConsultationHistoryPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/ConsultationHistory.jsx")).ConsultationHistory}));
     const HelpCenterPage = React.lazy(async () => ({default: (await import("../Pages/HelpCenter/HelpCenter.jsx")).HelpCenter}));

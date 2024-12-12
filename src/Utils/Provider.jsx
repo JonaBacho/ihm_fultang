@@ -18,10 +18,10 @@ function useLogin() {
     const [userRole, setUserRole] = useState("");
 
 
-    function saveAuthParameters(token, refreshToken) {
+    function saveAuthParameters(token, refreshToken, role) {
         localStorage.setItem("token_key_fultang", token);
         localStorage.setItem("refresh_token_fultang", refreshToken);
-        localStorage.setItem("role", userRole)
+        localStorage.setItem("role", role)
     }
 
 
@@ -42,7 +42,7 @@ function useLogin() {
             {
                 setIsLoading(false);
                 console.log(response);
-                saveAuthParameters(response.data.access, response.data.refresh);
+                saveAuthParameters(response.data.access, response.data.refresh, response.data.user.role);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
                 setIsLogged(true);
@@ -83,7 +83,8 @@ function useLogin() {
 
     useEffect(() => {
         const token = localStorage.getItem("token_key_fultang");
-        if (token) {
+        if (token)
+        {
             if (isLogged)
             {
                 const getCurrentUser = async () => {

@@ -1,7 +1,7 @@
 import { FiGrid, FiPlusCircle, FiList, FiFileText } from 'react-icons/fi';
-import {useAuthentication} from "../Utils/Provider.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Navigate} from "react-router-dom";
-import {AccessDenied} from "./AccessDenied.jsx";
+import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
 import PropTypes from "prop-types";
 
 

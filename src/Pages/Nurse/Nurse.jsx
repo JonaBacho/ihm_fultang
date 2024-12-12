@@ -1,12 +1,11 @@
-import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
-import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
+import {NurseDashboard} from "./NurseDashboard.jsx";
+import {NurseNavBar} from "./NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png"
-import {FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaSearch, FaUserNurse} from "react-icons/fa";
-import {HeartCrack} from 'lucide-react';
-import {Navigate, useNavigate} from "react-router-dom";
+import {FaArrowLeft, FaArrowRight,FaSearch} from "react-icons/fa";
+import {Navigate} from "react-router-dom";
 import {useAuthentication} from "../../Utils/Provider.jsx";
-import {AccessDenied} from "../../Components/AccessDenied.jsx";
-import {useEffect, useState} from "react";
+import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
+import {PatientList} from "./PatientList.jsx";
 
 
 
@@ -15,8 +14,6 @@ export function Nurse()
 {
 
     const {isAuthenticated, hasRole} = useAuthentication();
-    const navigate = useNavigate();
-    const [isMenuOpen, setIsMenuOpen] = useState({});
 
 
 
@@ -123,26 +120,20 @@ export function Nurse()
             <NurseDashboard>
                 <NurseNavBar>
                     <div className="flex flex-col">
-                        <div
-                            className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
+                        <div className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
                             <div className="flex gap-4">
-
                                 <div className="mt-5 mb-5 ml-5 w-28 h-28 border-4 border-white rounded-full">
                                     <img src={userIcon} alt="user icon" className="h-[105px] w-[105px] mb-2"/>
                                 </div>
-
                                 <div className="flex flex-col">
                                     <p className="text-white text-4xl font-bold mt-6">Welcome Back!</p>
                                     <p className="text-2xl mt-2 text-white"> Username</p>
                                 </div>
                             </div>
-
                             <div>
                                 <p className="text-white mt-28 text-xl font-bold mr-4">12:30:25 AM</p>
                             </div>
                         </div>
-
-
                         <div className="flex justify-between mt-3">
                             <div className="flex flex-col ml-5">
                                 <p className="font-bold text-2xl">Reception</p>
@@ -161,97 +152,9 @@ export function Nurse()
                                 </button>
                             </div>
                         </div>
-
                         <div className="ml-5 mr-5 mt-2 border-2 h-[620px] rounded-lg shadow-lg  p-2">
-                            <table className="w-full border-separate border-spacing-y-2">
-                                <thead>
-                                <tr>
-                                    <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200">No</th>
-                                    <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200">First
-                                        Name
-                                    </th>
-                                    <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">Last
-                                        Name
-                                    </th>
-                                    <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">Gender</th>
-                                    <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">State</th>
-                                    <th className="text-center p-4 text-xl font-bold  flex-col">
-                                        <p>Operations</p>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {patients.map((patient, index) => (
-                                    <tr key={patient.id || index} className="bg-gray-100">
-                                        <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                                        <td className="p-4 text-md text-blue-900 text-center">{patient.name}</td>
-                                        <td className="p-4 text-md text-center">{patient.lastName}</td>
-                                        <td className="p-4 text-md text-center">{patient.gender}</td>
-                                        <td className="p-4 items-center">
-                                            <div
-                                                className="w-20 h-10 rounded-full border-2 border-red-500 flex justify-center items-center">
-                                                <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
-                                                <p className="text-red-500">{patient.state}</p>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 relative rounded-r-lg">
-                                            <div className="relative w-full">
-                                                <div
-                                                    className="flex justify-center items-center cursor-pointer"
-                                                    onClick={() => setIsMenuOpen(prevState => ({
-                                                        [patient.id]: !prevState[patient.id]
-                                                    }))}
-                                                >
-                                                    <div className="px-5 py-2 bg-secondary text-white flex rounded-xl">
-                                                        <p className="mr-3">Open</p>
-                                                        {isMenuOpen[patient.id] ? <FaChevronUp className="mt-1"/> : <FaChevronDown className="mt-1"/>}
-
-                                                    </div>
-
-                                                </div>
-
-                                                {isMenuOpen[patient.id] && (
-                                                    <div
-                                                        className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-md border border-gray-200 z-50">
-                                                        <button
-                                                            type="button"
-                                                            className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
-                                                            onClick={() => {
-                                                                navigate(`/nurse/patients/patientDetails/${patient.id}`, {state: {patient}});
-                                                                setIsMenuOpen(prevState => ({
-                                                                    ...prevState,
-                                                                    [patient.id]: false
-                                                                }));
-                                                            }}
-                                                        >
-                                                            <HeartCrack className="h-6 w-6 mr-2"/>
-                                                            Take parameters
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
-                                                            onClick={() => {
-                                                                navigate(`/nurse/patients/consultationHistory/${patient.id}`, {state: {patient}});
-                                                                setIsMenuOpen(prevState => ({
-                                                                    ...prevState,
-                                                                    [patient.id]: false
-                                                                }));
-                                                            }}
-                                                        >
-                                                            <FaUserNurse className="h-6 w-6 mr-2"/>
-                                                            View Consultation history
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <PatientList patients={patients}/>
                         </div>
-
                         <div className="flex justify-center items-center mt-4 mb-4">
                             <div className="flex gap-4">
                                 <button
@@ -259,9 +162,7 @@ export function Nurse()
                                     <FaArrowLeft
                                         className="text-xl text-secondary hover:text-2xl duration-300 transition-all"/>
                                 </button>
-
-                                <p className="text-secondary text-2xl font-bold mt-4">1/200</p>
-
+                                <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
                                 <button
                                     className="w-14 h-14 border-2 rounded-lg shadow-xl flex justify-center items-center mt-2">
                                     <FaArrowRight

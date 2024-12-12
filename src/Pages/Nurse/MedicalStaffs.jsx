@@ -1,5 +1,5 @@
-import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
-import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
+import {NurseDashboard} from "./NurseDashboard.jsx";
+import {NurseNavBar} from "./NurseNavBar.jsx";
 import {FaArrowLeft, FaArrowRight, FaSearch} from "react-icons/fa";
 
 

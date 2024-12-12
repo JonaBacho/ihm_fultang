@@ -1,6 +1,6 @@
 import {useLocation, useParams} from "react-router-dom";
-import {NurseDashboard} from "../../Components/NurseDashboard.jsx";
-import {NurseNavBar} from "../../Components/NurseNavBar.jsx";
+import {NurseDashboard} from "./NurseDashboard.jsx";
+import {NurseNavBar} from "./NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png";
 import PatientInformationBoard from "./PatientInformationBoard.jsx";
 import {useEffect, useState} from "react";
@@ -11,7 +11,6 @@ export function PatientsDetails()
     const {id} = useParams();
     const { state } = useLocation();
     const patient = state?.patient;
-
 
 
 
