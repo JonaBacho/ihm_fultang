@@ -44,11 +44,31 @@ export function LoginPage()
         }
         else if (response === "Doctor")
         {
-            window.location.href = "/doctor";
+            navigate(appRouterPaths.doctorPage);
         }
         else if (response === "Nurse")
         {
             navigate(appRouterPaths.nursePage)
+        }
+        else if (response === "LaboratoryAssistant")
+        {
+            navigate(appRouterPaths.laboratoryAssistantPage)
+        }
+        else if (response === "Admin")
+        {
+            navigate(appRouterPaths.adminHomePage)
+        }
+        else if (response === "Receptionist")
+        {
+            navigate(appRouterPaths.receptionistPage)
+        }
+        else if (response === "Cashier")
+        {
+            navigate(appRouterPaths.cashierPage)
+        }
+        else if (response === "Specialist")
+        {
+            navigate(appRouterPaths.specialistPage)
         }
         else if (response === "bad role")
         {
@@ -70,7 +90,6 @@ export function LoginPage()
             setIsLoginErrorPresent(true);
             setLoginError("An error occurred, please retry!")
         }
-
     }
 
 
@@ -100,7 +119,7 @@ export function LoginPage()
                                 as well as a pharmacy.
                             </p>
                             <p className="italic mt-4 text-blue-400 text-xl ">
-                                Note: cette page est la page de connexion du personnel de l'hopital
+                                Note: this page is the hospital staff login page
                             </p>
                             <button className="w-44 h-14  py-2 border-secondary border-2 text-secondary rounded-lg px-1 mt-4 font-bold hover:text-white hover:bg-secondary transition-all duration-300">
                                 <div className="flex justify-center items-center">
@@ -126,10 +145,8 @@ export function LoginPage()
                                     <div className="bg-gray-300 h-12 mt-2 rounded-lg mb-4">
                                         <input type="text"
                                                name="username"
-                                               onChange={(e) => {
-                                                   setUsername(e.target.value)
-                                               }}
-                                               className="w-full rounded-lg h-12 ml-2 mr-2 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
+                                               onChange={(e) => {setUsername(e.target.value)}}
+                                               className="w-full rounded-lg h-12 ml-2 mr-2 bg-gray-300 border-none outline:none focus:border-none ring-0 focus:outline-none focus:ring-0 autofill:shadow-[inset_0_0_0px_1000px_rgb(209,213,219)]"
                                                placeholder={"Enter your username here"}/>
                                     </div>
                                 </div>
@@ -140,9 +157,7 @@ export function LoginPage()
                                     <div className="bg-gray-300 h-12 mt-2 rounded-lg flex items-center relative">
                                         <input
                                             type={showPassword ? "text" : "password"}
-                                            onChange={(e) => {
-                                                setPassword(e.target.value)
-                                            }}
+                                            onChange={(e) => {setPassword(e.target.value)}}
                                             className="w-full rounded-lg h-12 ml-2 mr-10 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
                                             placeholder="Enter your password here"
                                         />

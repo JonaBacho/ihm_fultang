@@ -2,9 +2,6 @@ import {NurseDashboard} from "./NurseDashboard.jsx";
 import {NurseNavBar} from "./NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png"
 import {FaArrowLeft, FaArrowRight,FaSearch} from "react-icons/fa";
-import {Navigate} from "react-router-dom";
-import {useAuthentication} from "../../Utils/Provider.jsx";
-import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
 import {PatientList} from "./PatientList.jsx";
 
 
@@ -13,7 +10,7 @@ import {PatientList} from "./PatientList.jsx";
 export function Nurse()
 {
 
-    const {isAuthenticated, hasRole} = useAuthentication();
+
 
 
 
@@ -106,13 +103,6 @@ export function Nurse()
 
 
 
-    if (!isAuthenticated()) {
-        return <Navigate to="/login" />;
-    }
-
-    if (!hasRole('Nurse')) {
-        return <AccessDenied Role={"Nurse"}/>;
-    }
 
 
     return (
@@ -120,7 +110,8 @@ export function Nurse()
             <NurseDashboard>
                 <NurseNavBar>
                     <div className="flex flex-col">
-                        <div className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
+                        <div
+                            className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
                             <div className="flex gap-4">
                                 <div className="mt-5 mb-5 ml-5 w-28 h-28 border-4 border-white rounded-full">
                                     <img src={userIcon} alt="user icon" className="h-[105px] w-[105px] mb-2"/>
@@ -158,15 +149,15 @@ export function Nurse()
                         <div className="flex justify-center items-center mt-4 mb-4">
                             <div className="flex gap-4">
                                 <button
-                                    className="w-14 h-14 border-2 rounded-lg shadow-xl flex justify-center items-center mt-2">
-                                    <FaArrowLeft
-                                        className="text-xl text-secondary hover:text-2xl duration-300 transition-all"/>
+                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                    <FaArrowLeft/>
                                 </button>
+
                                 <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
+
                                 <button
-                                    className="w-14 h-14 border-2 rounded-lg shadow-xl flex justify-center items-center mt-2">
-                                    <FaArrowRight
-                                        className="text-xl text-secondary hover:text-2xl duration-300 transition-all"/>
+                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                    <FaArrowRight/>
                                 </button>
                             </div>
                         </div>

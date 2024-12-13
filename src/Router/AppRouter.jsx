@@ -12,7 +12,7 @@ export function AppRoute()
     const LandingPage = React.lazy(async () => ({default: (await import("../Pages/LandingPage/LandingPage.jsx")).LandingPage}));
     const NursePage = React.lazy(async () => ({default: (await import("../Pages/Nurse/Nurse.jsx")).Nurse}));
     const NotFoundPage = React.lazy(async () => ({default: (await import("../GlobalComponents/NotFound.jsx")).NotFound}));
-    const MedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/MedicalStaffs.jsx")).MedicalStaffs}));
+    const NurseMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/MedicalStaffs.jsx")).MedicalStaffs}));
     const ConsultationHistoryPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/ConsultationHistory.jsx")).ConsultationHistory}));
     const HelpCenterPage = React.lazy(async () => ({default: (await import("../Pages/HelpCenter/HelpCenter.jsx")).HelpCenter}));
     const PatientDetailsPage = React.lazy(async () => ({default: (await import("../Pages/Nurse/PatientsDetails.jsx")).PatientsDetails}));
@@ -23,6 +23,8 @@ export function AppRoute()
     const SpecialistPage = React.lazy(async () => ({default: (await import("../Pages/Doctor/Specialist.jsx")).Specialist}));
     const CashierPage = React.lazy(async () => ({default: (await import("../Pages/Cashier/Cashier.jsx")).Cashier}));
     const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/adminHomePage.jsx")).AdminHomePage}));
+    const AddNewPatientPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/AddNewPatient.jsx")).AddNewPatient}));
+    const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/MedicalStaffs.jsx")).MedicalStaffs}));
 
 
 
@@ -33,7 +35,7 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.loginPage} element={<LoginPage />}/>
                 <Route path={AppRoutesPaths.nursePage} element={<NursePage />}/>
                 <Route path={AppRoutesPaths.pharmacyPage} element={<PharmacyPage />}/>
-                <Route path={AppRoutesPaths.medicalStaffsPage} element={<MedicalStaffsPage />}/>
+                <Route path={AppRoutesPaths.nurseMedicalStaffsPage} element={<NurseMedicalStaffsPage />}/>
                 <Route path={AppRoutesPaths.consultationHistoryPage} element={<ConsultationHistoryPage/>}/>
                 <Route path={AppRoutesPaths.helpCenterPage} element={<HelpCenterPage/>}/>
                 <Route path={AppRoutesPaths.patientDetailsPage} element={<PatientDetailsPage />} />
@@ -43,6 +45,9 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.laboratoryAssistantPage} element={<LaboratoryAssistantPage />} />
                 <Route path={AppRoutesPaths.specialistPage} element={<SpecialistPage />} />
                 <Route path={AppRoutesPaths.adminHomePage} element={<AdminHomePage />} />
+                <Route path={AppRoutesPaths.addNewPatientPage} element={<AddNewPatientPage />} />
+                <Route path={AppRoutesPaths.receptionistMedicalStaffsPage} element={<ReceptionistMedicalStaffsPage />} />
+
 
 
 

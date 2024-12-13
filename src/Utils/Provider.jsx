@@ -18,10 +18,9 @@ function useLogin() {
     const [userRole, setUserRole] = useState("");
 
 
-    function saveAuthParameters(token, refreshToken, role) {
+    function saveAuthParameters(token, refreshToken) {
         localStorage.setItem("token_key_fultang", token);
         localStorage.setItem("refresh_token_fultang", refreshToken);
-        //localStorage.setItem("role", role)
     }
 
 
@@ -29,7 +28,6 @@ function useLogin() {
     {
         localStorage.removeItem("token_key_fultang");
         localStorage.removeItem("refresh_token_fultang");
-     //   localStorage.removeItem("role");
     }
 
 
@@ -91,7 +89,7 @@ function useLogin() {
             setUserRole("");
             clearLocalStorage();
         }
-    }, [isLogged]);
+    }, []);
 
 
     function isAuthenticated() {
@@ -99,7 +97,8 @@ function useLogin() {
     }
 
 
-    function hasRole(requiredRole) {
+    function hasRole(requiredRole)
+    {
         if(isLogged)
         {
             return userRole === requiredRole;
@@ -107,30 +106,14 @@ function useLogin() {
     }
 
 
-    /*
-    useEffect(() => {
-        const token = localStorage.getItem("token_key_fultang");
-        const role = localStorage.getItem("role");
-        if (token)
-        {
-            setIsLogged(true);
-            if(role)
-            {
-                setUserRole(role);
-            }
-        }
-    }, []);
-*/
-
-
     function logout()
     {
         clearLocalStorage();
         setIsLogged(false);
         setUserData({});
+        setUserRole("");
         window.location.href = "/";
     }
-
 
 
 
@@ -144,6 +127,6 @@ function useLogin() {
         hasRole,
         userRole,
         logout
-    }), [login,isLoading, userData, isLogged, isAuthenticated, hasRole, userRole]);
+    }), [isLoading, userData, isLogged, userRole, logout]);
     return {authMethods}
 }

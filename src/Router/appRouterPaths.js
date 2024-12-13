@@ -7,12 +7,14 @@ export const AppRoutesPaths = {
     pharmacyPage:"/pharmacy",
     doctorPage: "/doctor",
     laboratoryAssistantPage: "/laboratoryAssistant",
-    receptionistPage: "/receptionist",
+    receptionistPage: "/receptionist/patients",
     cashierPage: "/cashier",
     specialistPage: "/specialist",
     nursePage:"/nurse/patients",
-    medicalStaffsPage: "/nurse/medicalStaffs",
+    nurseMedicalStaffsPage: "/nurse/medicalStaffs",
     consultationHistoryPage: "/nurse/patients/consultationHistory/:id",
     helpCenterPage: "/helpCenter",
-    patientDetailsPage:"/nurse/patients/patientDetails/:id"
+    patientDetailsPage:"/nurse/patients/patientDetails/:id",
+    addNewPatientPage: "/receptionist/addNewPatient",
+    receptionistMedicalStaffsPage: "/receptionist/medicalStaffs",
 }
