@@ -1,4 +1,3 @@
-import {NurseDashboard} from "./NurseDashboard.jsx";
 import {NurseNavBar} from "./NurseNavBar.jsx";
 import PatientInformationBoard from "./PatientInformationBoard.jsx";
 import {useLocation} from "react-router-dom";
@@ -6,6 +5,8 @@ import {FaSearch} from "react-icons/fa";
 import flecheDeroulanteBas from "../../assets/flecheDeroulanteBas.png"
 import flecheDeroulanteHaut from "../../assets/flecheDeroulanteHaut.png";
 import {useState} from "react";
+import {nurseNavLink} from "./nurseNavLink.js";
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 
 export function ConsultationHistory()
 {
@@ -14,7 +15,7 @@ export function ConsultationHistory()
     const patient = state?.patient;
     const [isHospitalMenuOpen, setIsHospitalMenuOpen] = useState(false);
     const [isConsultationMenuOpen, setIsConsultationMenuOpen] = useState(false);
-    const [isPrescriptionMenuOpen, setIsPrescriptionMenuOpen] = useState(false);
+    const [isPrescriptionMenuOpen, setIsPrescriptionMenuOpen] = useState(true);
     const [isExamMenuOpen, setIsExamMenuOpen] = useState(false);
 
     const HospitalisationHistory =
@@ -56,10 +57,12 @@ export function ConsultationHistory()
 
     return (
         <>
-            <NurseDashboard>
+            <DashBoard linkList={nurseNavLink} requiredRole={"Nurse"}>
                 <NurseNavBar>
                     <div className="mt-5 flex gap-4">
                         <PatientInformationBoard patient={patient}/>
+
+                        {/* Historical content */}
                         <div className="flex-1 flex flex-col mr-2 gap-4 mb-5">
                             <div className="w-full h-[150px] border shadow-xl rounded-lg flex flex-col">
                                 <h1 className="font-bold text-secondary text-2xl mt-3 ml-4">Appointments</h1>
@@ -200,11 +203,13 @@ export function ConsultationHistory()
                                     <div className="flex flex-col border-b-2 border-b-gray-300 ml-5 mr-2">
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
                 </NurseNavBar>
-            </NurseDashboard>
+            </DashBoard>
         </>
 
     )

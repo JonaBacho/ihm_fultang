@@ -1,7 +1,12 @@
-import {ReceptionistDashboard} from "./ReceptionistDashboard.jsx";
 import {ReceptionistNavBar} from "./ReceptionistNavBar.jsx";
 import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "react-icons/fa";
 import {Tooltip} from "antd";
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
+import {receptionistNavLink} from "./receptionistNavLink.js";
+import {useState} from "react";
+import {AddNewPatientModal} from "./addNewPatientModal.jsx";
+import {SuccessModal} from "../Modals/SuccessModal.jsx";
+import Wait from "../Modals/wait.jsx";
 
 export function Receptionist()
 {
@@ -79,14 +84,22 @@ export function Receptionist()
     ];
 
 
+    const [isAddNewPatientModalOpen, setIsAddNewPatientModalOpen] = useState(false);
+    const [canOpenSuccessModal, setCanOPenSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    function closeAddNewPatientModal() {setIsAddNewPatientModalOpen(false)}
+
+
+
 
     return (
-        <ReceptionistDashboard>
+        <DashBoard linkList={receptionistNavLink} requiredRole={"Receptionist"}>
             <ReceptionistNavBar/>
             <div className="mt-5 flex flex-col">
 
                 {/*Header content with search bar*/}
-
                 <div className="flex justify-between mb-5">
                     <p className="font-bold text-xl mt-2 ml-5"> List Of Patient </p>
                     <div className="flex mr-5">
@@ -111,7 +124,8 @@ export function Receptionist()
                         <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
                             <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 rounded-l-2xl ">No</th>
                             <th className="text-center text-white p-4 text-xl font-bold border-gray-200">First Name</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Last Name</th>
+                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Last Name
+                            </th>
                             <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Gender</th>
                             <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Address</th>
                             <th className="text-center text-white p-4 text-xl font-bold  flex-col rounded-r-2xl">
@@ -130,7 +144,8 @@ export function Receptionist()
                                 <td className="p-4 relative rounded-r-lg">
                                     <div className="w-full items-center justify-center flex gap-6">
                                         <Tooltip placement={"left"} title={"view details"}>
-                                            <button className="flex items-center justify-center w-9 h-9 text-secondary text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
+                                            <button
+                                                className="flex items-center justify-center w-9 h-9 text-secondary text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
                                                 <FaEye/>
                                             </button>
                                         </Tooltip>
@@ -156,44 +171,41 @@ export function Receptionist()
 
                     {/*Pagination content */}
 
-                    <div className="flex">
-                        <div className="w-1/3">
-                        </div>
-                        <div className="w-2/3 justify-between flex">
-                            <div className="ml-24 flex mt-6 mb-4">
-                                <div className="flex gap-4">
-                                    <Tooltip placement={"left"} title={"previous slide"}>
-                                        <button
-                                            className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                            <FaArrowLeft/>
-                                        </button>
-                                    </Tooltip>
+                    <div className="justify-center flex mt-6 mb-4">
+                        <div className="flex gap-4">
+                            <Tooltip placement={"left"} title={"previous slide"}>
+                                <button
+                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                    <FaArrowLeft/>
+                                </button>
+                            </Tooltip>
 
 
-                                    <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
+                            <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
 
-                                    <Tooltip placement={"right"} title={"next slide"}>
-                                        <button
-                                            className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                            <FaArrowRight/>
-                                        </button>
+                            <Tooltip placement={"right"} title={"next slide"}>
+                                <button
+                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                    <FaArrowRight/>
+                                </button>
 
-                                    </Tooltip>
-                                </div>
-                            </div>
-
-                            <div className="mt-10 mr-10">
-                                <Tooltip placement={"top"} title={"Add new patient"}>
-                                    <button
-                                        className=" rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
-                                        +
-                                    </button>
-                                </Tooltip>
-                            </div>
+                            </Tooltip>
                         </div>
                     </div>
+
+                    {/* Add new patient button & modal */}
+                    <Tooltip placement={"top"} title={"Add new patient"}>
+                        <button
+                            onClick={()=>setIsAddNewPatientModalOpen(true)}
+                            className="fixed bottom-9 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
+                            +
+                        </button>
+                    </Tooltip>
+                    <AddNewPatientModal isOpen={isAddNewPatientModalOpen} onClose={closeAddNewPatientModal} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>
+                    <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal}/>
+                    {isLoading && <Wait/>}
                 </div>
             </div>
-        </ReceptionistDashboard>
+        </DashBoard>
     )
 }

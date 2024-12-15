@@ -15,6 +15,6 @@ export const AppRoutesPaths = {
     consultationHistoryPage: "/nurse/patients/consultationHistory/:id",
     helpCenterPage: "/helpCenter",
     patientDetailsPage:"/nurse/patients/patientDetails/:id",
-    addNewPatientPage: "/receptionist/addNewPatient",
     receptionistMedicalStaffsPage: "/receptionist/medicalStaffs",
+    appointmentsPage: "/receptionist/appointments",
 }

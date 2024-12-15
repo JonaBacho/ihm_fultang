@@ -1,8 +1,11 @@
-import {NurseDashboard} from "./NurseDashboard.jsx";
 import {NurseNavBar} from "./NurseNavBar.jsx";
 import userIcon from "../../assets/userIcon.png"
 import {FaArrowLeft, FaArrowRight,FaSearch} from "react-icons/fa";
 import {PatientList} from "./PatientList.jsx";
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
+import {nurseNavLink} from "./nurseNavLink.js";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+import {Tooltip} from "antd";
 
 
 
@@ -10,9 +13,7 @@ import {PatientList} from "./PatientList.jsx";
 export function Nurse()
 {
 
-
-
-
+    const {userData} = useAuthentication();
 
     const patients = [
         {
@@ -107,24 +108,27 @@ export function Nurse()
 
     return (
         <>
-            <NurseDashboard>
+            <DashBoard requiredRole={"Nurse"} linkList={nurseNavLink}>
                 <NurseNavBar>
                     <div className="flex flex-col">
-                        <div
-                            className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
+
+                        {/*Header with welcome text content */}
+                        <div className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
                             <div className="flex gap-4">
                                 <div className="mt-5 mb-5 ml-5 w-28 h-28 border-4 border-white rounded-full">
                                     <img src={userIcon} alt="user icon" className="h-[105px] w-[105px] mb-2"/>
                                 </div>
                                 <div className="flex flex-col">
                                     <p className="text-white text-4xl font-bold mt-6">Welcome Back!</p>
-                                    <p className="text-2xl mt-2 text-white"> Username</p>
+                                    <p className="text-2xl mt-2 text-white"> {userData.username}</p>
                                 </div>
                             </div>
                             <div>
                                 <p className="text-white mt-28 text-xl font-bold mr-4">12:30:25 AM</p>
                             </div>
                         </div>
+
+                        {/*Search bar content */}
                         <div className="flex justify-between mt-3">
                             <div className="flex flex-col ml-5">
                                 <p className="font-bold text-2xl">Reception</p>
@@ -143,27 +147,35 @@ export function Nurse()
                                 </button>
                             </div>
                         </div>
+
+                        {/*List of patients content */}
                         <div className="ml-5 mr-5 mt-2 border-2 h-[620px] rounded-lg shadow-lg  p-2">
                             <PatientList patients={patients}/>
                         </div>
-                        <div className="flex justify-center items-center mt-4 mb-4">
+
+
+                        {/* Pagination content */}
+                        <div className="justify-center ml-24 flex mt-6 mb-4">
                             <div className="flex gap-4">
-                                <button
-                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                    <FaArrowLeft/>
-                                </button>
-
+                                <Tooltip placement={"left"} title={"previous slide"}>
+                                    <button
+                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                        <FaArrowLeft/>
+                                    </button>
+                                </Tooltip>
                                 <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
-
-                                <button
-                                    className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                    <FaArrowRight/>
-                                </button>
+                                <Tooltip placement={"right"} title={"next slide"}>
+                                    <button
+                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                        <FaArrowRight/>
+                                    </button>
+                                </Tooltip>
                             </div>
                         </div>
+
                     </div>
                 </NurseNavBar>
-            </NurseDashboard>
+            </DashBoard>
         </>
     )
 }

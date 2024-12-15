@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 
-const ErrorInterceptor = (axiosInstance) => {
+/*const ErrorInterceptor = (axiosInstance) => {
 
     axiosInstance.interceptors.response.use(
         res => {
@@ -17,6 +17,7 @@ const ErrorInterceptor = (axiosInstance) => {
         }
     )
 }
+*/
 
 
 const token = localStorage.getItem("token_key_fultang");
@@ -34,5 +35,5 @@ const axiosInstance = axios.create(
 );
 
 
-ErrorInterceptor(axiosInstance);
+//ErrorInterceptor(axiosInstance);
 export default axiosInstance;

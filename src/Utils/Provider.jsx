@@ -9,6 +9,7 @@ import axiosInstance from "./axiosInstance.js";
 export const [FultangProvider, useAuthentication] = constate(useLogin, value => value.authMethods);
 
 
+
 function useLogin() {
 
 
@@ -39,7 +40,7 @@ function useLogin() {
             if (response.status === 200)
             {
                 setIsLoading(false);
-                console.log(response);
+                //console.log(response);
                 saveAuthParameters(response.data.access, response.data.refresh, response.data.user.role);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
@@ -56,6 +57,7 @@ function useLogin() {
     }
 
 
+
     useEffect(() => {
         const token = localStorage.getItem("token_key_fultang");
         if (token)
@@ -68,7 +70,7 @@ function useLogin() {
                     const response = await axiosInstance.get("/medical-staff/me/");
                     if (response.status === 200)
                     {
-                        console.log(response);
+                        //console.log(response);
                         setIsLogged(true);
                         setUserData(response.data);
                         setUserRole(response.data.role);
@@ -92,9 +94,12 @@ function useLogin() {
     }, []);
 
 
+
     function isAuthenticated() {
         return isLogged;
     }
+
+
 
 
     function hasRole(requiredRole)
@@ -103,7 +108,10 @@ function useLogin() {
         {
             return userRole === requiredRole;
         }
+        return false;
     }
+
+
 
 
     function logout()

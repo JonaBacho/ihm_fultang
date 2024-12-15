@@ -1,17 +1,18 @@
-import {NurseDashboard} from "./NurseDashboard.jsx";
 import {NurseNavBar} from "./NurseNavBar.jsx";
 import {MedicalStaffList} from "../../GlobalComponents/MedicalStaffList.jsx";
+import {nurseNavLink} from "./nurseNavLink.js";
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 
 
 export function MedicalStaffs()
 {
     return (
        <>
-           <NurseDashboard>
+           <DashBoard linkList={nurseNavLink} requiredRole={"Nurse"} >
                <NurseNavBar>
                    <MedicalStaffList/>
                </NurseNavBar>
-           </NurseDashboard>
+           </DashBoard>
        </>
     )
 }

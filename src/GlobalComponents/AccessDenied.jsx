@@ -25,10 +25,10 @@ export function AccessDenied({Role})
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
             }}
-            className="flex flex-col ml-5">
+            className="flex flex-col ml-5 ">
             <div>
                 <p className="mt-32  text-8xl mb-10 font-bold text-primary-start">Fultang</p>
-                <p className="text-5xl mb-6 font-bold text-primary-start"> 403 ERROR : Access Denied</p>
+                <p className="text-5xl mb-6 font-bold text-red-500"> 403 ERROR : Access Denied</p>
                 <h1 className="text-2xl text-black font-bold ">
                     Access denied for {Role} view, please log in as a {Role}
                 </h1>

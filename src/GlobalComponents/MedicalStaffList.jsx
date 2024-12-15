@@ -1,4 +1,5 @@
 import {FaArrowLeft, FaArrowRight, FaSearch} from "react-icons/fa";
+import {Tooltip} from "antd";
 
 const medicalStaffs = [
     {
@@ -48,10 +49,10 @@ export function MedicalStaffList()
 {
     return (
         <>
-            <div className="flex justify-between mt-10 mb-5">
-                <div className="flex flex-col ml-5">
-                    <p className="font-bold text-2xl">Reception</p>
-                    <p>List of Medical Staffs</p>
+            <div className="flex justify-between mb-5">
+                <div className="flex flex-col mt-3 ml-5">
+                    {/*  <p className="font-bold text-2xl">Reception</p>  */}
+                    <p className="font-bold text-xl">List of Medical Staffs</p>
                 </div>
                 <div className="flex mr-5 mt-2">
                     <div className="flex w-[400px] h-10 border-2 border-secondary rounded-lg">
@@ -98,21 +99,21 @@ export function MedicalStaffList()
                 </table>
             </div>
 
-            <div className="flex justify-center items-center mt-4 mb-4">
+            <div className="justify-center ml-24 flex mt-6 mb-4">
                 <div className="flex gap-4">
-                    <button
-                        className="w-14 h-14 border-2 rounded-lg shadow-xl flex justify-center items-center mt-2">
-                        <FaArrowLeft
-                            className="text-xl text-secondary hover:text-2xl duration-300 transition-all"/>
-                    </button>
-
-                    <p className="text-secondary text-2xl font-bold mt-4">1/200</p>
-
-                    <button
-                        className="w-14 h-14 border-2 rounded-lg shadow-xl flex justify-center items-center mt-2">
-                        <FaArrowRight
-                            className="text-xl text-secondary hover:text-2xl duration-300 transition-all"/>
-                    </button>
+                    <Tooltip placement={"left"} title={"previous slide"}>
+                        <button
+                            className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                            <FaArrowLeft/>
+                        </button>
+                    </Tooltip>
+                    <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
+                    <Tooltip placement={"right"} title={"next slide"}>
+                        <button
+                            className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                            <FaArrowRight/>
+                        </button>
+                    </Tooltip>
                 </div>
             </div>
         </>

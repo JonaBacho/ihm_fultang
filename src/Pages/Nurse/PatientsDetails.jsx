@@ -1,9 +1,8 @@
 import {useLocation, useParams} from "react-router-dom";
-import {NurseDashboard} from "./NurseDashboard.jsx";
 import {NurseNavBar} from "./NurseNavBar.jsx";
-import userIcon from "../../assets/userIcon.png";
 import PatientInformationBoard from "./PatientInformationBoard.jsx";
-import {useEffect, useState} from "react";
+import {nurseNavLink} from "./nurseNavLink.js";
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 
 
 export function PatientsDetails()
@@ -13,13 +12,12 @@ export function PatientsDetails()
     const patient = state?.patient;
 
 
-
     return (
         <>
-            <NurseDashboard>
+            <DashBoard requiredRole={"Nurse"} linkList={nurseNavLink}>
                 <NurseNavBar>
                     <div className="flex mt-6">
-                       <PatientInformationBoard patient={patient}/>
+                        <PatientInformationBoard patient={patient}/>
                         {/*Patient's medical Parameters*/}
                         <div className="flex-1 ml-4 mr-5 flex flex-col">
                             <div
@@ -177,7 +175,7 @@ export function PatientsDetails()
                         </div>
                     </div>
                 </NurseNavBar>
-            </NurseDashboard>
+            </DashBoard>
         </>
-    )
+    );
 }
