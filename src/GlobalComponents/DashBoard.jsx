@@ -27,7 +27,7 @@ export function DashBoard ({children,linkList, requiredRole})
 
     return (
         <div className="flex  h-screen">
-            <div className="w-1/6 fixed h-screen bg-gradient-to-t from-primary-start to-primary-end  flex flex-col">
+            <div className="w-[15%] fixed h-screen bg-gradient-to-t from-primary-start to-primary-end  flex flex-col">
                 <h1 className="text-3xl font-bold ml-6 mb-10 mt-7">
                     Fultang Clinic
                 </h1>
@@ -49,7 +49,7 @@ export function DashBoard ({children,linkList, requiredRole})
                     })}
                 </nav>
             </div>
-            <div className="flex-1 min-h-screen overflow-x-hidden ml-[16.7%]">
+            <div className="flex-1 min-h-screen overflow-x-hidden ml-[15.5%]">
                 {children}
             </div>
 
