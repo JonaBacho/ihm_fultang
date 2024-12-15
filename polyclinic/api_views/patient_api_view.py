@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Patient, PatientAccess
+from polyclinic.models import Patient, PatientAccess, MedicalFolder
 from polyclinic.permissions.patient_permissions import PatientPermission
 from polyclinic.serializers import PatientSerializer, PatientCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -7,6 +7,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework import status
 
 
 auth_header_param = openapi.Parameter(
@@ -113,4 +116,16 @@ class PatientViewSet(ModelViewSet):
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save()
+
+        gender = serializer.validated_data['gender']
+        cni_number = serializer.validated_data['cniNumber']
+
+        if gender is None or cni_number is None:
+            return Response("gender ou cni_number absent", status=status.HTTP_400_BAD_REQUEST)
+
+        # creation de dossier medical du patien
+        mfolder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
+        mfolder.save()
+        serializer.validated_data['idMedicalFolder'] = mfolder
+        patient_serializer = PatientSerializer(data=serializer.validated_data)
+        patient_serializer.save()
