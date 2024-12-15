@@ -126,6 +126,7 @@ class PatientViewSet(ModelViewSet):
         # creation de dossier medical du patien
         mfolder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
         mfolder.save()
-        serializer.validated_data['idMedicalFolder'] = mfolder
+        serializer.validated_data['idMedicalFolder'] = mfolder.pk
         patient_serializer = PatientSerializer(data=serializer.validated_data)
+        patient_serializer.is_valid(raise_exception=True)
         patient_serializer.save()
