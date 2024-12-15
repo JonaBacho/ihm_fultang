@@ -131,8 +131,8 @@ class Patient(models.Model):
     birthDate = models.DateField(blank=True, null=True, default="0000-00-00")
     address = models.CharField(max_length=25, blank=True, default=" ")
     email = models.CharField(max_length=25, blank=True, default=" ")
-    condition = models.CharField(max_length=50, choices=CONDITION, default='NoCritical', null=False)
-    service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=False)
+    condition = models.CharField(max_length=50, choices=CONDITION, default='NoCritical', null=True)
+    service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=True)
     status = models.CharField(max_length=20, default="invalid")  # The patient status
 
     idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=False)
