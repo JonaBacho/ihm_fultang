@@ -15,8 +15,7 @@ class PatientPermission(BasePermission):
             return True
         elif request.user.role == "Receptionist" and view.action != "destroy":
             return True
-        # Autoriser la mise à jour partielle si l'utilisateur est lui-même
-        elif view.action in ["list"]:
+        elif view.action in ["list", "retrieve", "update", "partial_update"]:
             return PatientAccess.objects.filter(
                     idPatient=obj,
                     idMedicalStaff=request.user,

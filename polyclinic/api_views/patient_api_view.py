@@ -106,9 +106,8 @@ class PatientViewSet(ModelViewSet):
             ).values_list("idPatient", flat=True)
         )
 
-
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.action in ["create", "update", "partial_update"]:
             return PatientCreateSerializer
         else:
             return PatientSerializer
@@ -130,3 +129,8 @@ class PatientViewSet(ModelViewSet):
         patient_serializer = PatientSerializer(data=serializer.validated_data)
         patient_serializer.is_valid(raise_exception=True)
         patient_serializer.save()
+
+    def perform_update(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
+        serializer.save()

@@ -39,7 +39,17 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         model = Patient
         exclude = ['condition', 'service', 'idMedicalFolder']
 
+class AppointmentDetailSerializer(serializers.ModelSerializer):
+
+    patient = PatientSerializer(read_only=True)
+    medical_staff = MedicalStaffSerializer(read_only=True)
+
+    class Meta:
+        model = Appointment
+        exclude = ['idPatient', 'idMedicalStaff']
+
 class AppointmentSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Appointment
         fields = '__all__'

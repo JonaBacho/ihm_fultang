@@ -106,6 +106,11 @@ class PatientAccessViewSet(ModelViewSet):
             serializer.validated_data.pop('id')
         serializer.save()
 
+    def perform_update(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
+        serializer.save()
+
     @swagger_auto_schema(
         operation_description="Permet de retirer l'access d'un staff à un patient",
         responses={

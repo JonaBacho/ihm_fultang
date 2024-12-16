@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Appointment
-from polyclinic.serializers import AppointmentSerializer
+from polyclinic.permissions.appointment_permissions import AppointmentPermissions
+from polyclinic.serializers import AppointmentSerializer, AppointmentDetailSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -87,7 +88,7 @@ auth_header_param = openapi.Parameter(
 )
 class AppointmentViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AppointmentPermissions]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -95,9 +96,17 @@ class AppointmentViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return AppointmentSerializer
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return AppointmentSerializer
+        else:
+            return AppointmentDetailSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
+        serializer.save()
+
+    def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
