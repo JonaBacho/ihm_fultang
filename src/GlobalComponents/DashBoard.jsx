@@ -16,13 +16,13 @@ export function DashBoard ({children,linkList, requiredRole})
     const {isAuthenticated, hasRole} = useAuthentication();
 
 
-    if (!isAuthenticated()) {
-        return <Navigate to="/login" />;
-    }
+    // if (!isAuthenticated()) {
+    //     return <Navigate to="/login" />;
+    // }
 
-    if (!hasRole(requiredRole)) {
-        return <AccessDenied Role={requiredRole}/>;
-    }
+    // if (!hasRole(requiredRole)) {
+    //     return <AccessDenied Role={requiredRole}/>;
+    // }
 
 
     return (
@@ -34,7 +34,8 @@ export function DashBoard ({children,linkList, requiredRole})
                 <nav className="flex flex-col">
                     {linkList.map((item, index) => {
                         const IconComponent = item.icon;
-                        const isActive = activeLink.startsWith(item.link);
+                        //const isActive = activeLink.startsWith(item.link);
+                        const isActive = activeLink === item.link; 
                         return (
                             <Link
                                 key={index}
