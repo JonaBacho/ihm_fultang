@@ -40,6 +40,24 @@ export function Receptionist()
     }
 
 
+    function updateActualPageNumber(action) {
+        if (action === "next")
+        {
+            if(actualPageNumber < calculateNumberOfSlideToRender())
+            {
+                setActualPageNumber(actualPageNumber + 1);
+            }
+        }
+        else
+        {
+            if(actualPageNumber > 1)
+            {
+                setActualPageNumber(actualPageNumber - 1);
+            }
+        }
+    }
+
+
 
 
     useEffect(() => {
@@ -49,7 +67,7 @@ export function Receptionist()
                 const response = await axiosInstance.get("/patient/");
                 if (response.status === 200)
                 {
-                    console.log(response)
+                    //console.log(response)
                     setPatients(response.data.results);
                     setNumberOfPatients(response.data.count);
                     setNexUrlForRenderPatientList(response.data.next);
@@ -65,30 +83,25 @@ export function Receptionist()
     }, []);
 
 
-    useEffect(() => {
-        console.log("next url ",nexUrlForRenderPatientList);
-        console.log("prev url ",previousUrlForRenderPatientList);
-    }, [nexUrlForRenderPatientList, previousUrlForRenderPatientList]);
-
 
 
 
     async function fetchNextOrPreviousPatientList (url) {
-        setIsLoading(true);
-        try {
-            const response = await axiosInstance.get(url);
-            if (response.status === 200)
-            {
-                setIsLoading(false);
-                console.log(response)
-                setPatients(response.data.results);
-                setNumberOfPatients(response.data.count);
-                setNexUrlForRenderPatientList(response.data.next);
-                setPreviousUrlForRenderPatientList(response.data.previous);
+        if(url)
+        {
+            try {
+                const response = await axiosInstance.get(url);
+                if (response.status === 200)
+                {
+                    //console.log(response)
+                    setPatients(response.data.results);
+                    setNumberOfPatients(response.data.count);
+                    setNexUrlForRenderPatientList(response.data.next);
+                    setPreviousUrlForRenderPatientList(response.data.previous);
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            setIsLoading(false);
-            console.log(error);
         }
     }
 
@@ -125,7 +138,7 @@ export function Receptionist()
     return (
         <DashBoard linkList={receptionistNavLink} requiredRole={"Receptionist"}>
             <ReceptionistNavBar/>
-            <div className="mt-5 flex flex-col">
+            <div className="mt-5 flex flex-col relative">
 
                 {/*Header content with search bar*/}
                 <div className="flex justify-between mb-5">
@@ -146,7 +159,7 @@ export function Receptionist()
 
                 {/*List of registered patients*/}
 
-                <div className="ml-5 mr-5 relative">
+                <div className="ml-5 mr-5 ">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
                         <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
@@ -207,15 +220,15 @@ export function Receptionist()
                         <div className="flex gap-4">
                             <Tooltip placement={"left"} title={"previous slide"}>
                                 <button
-                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), setActualPageNumber(actualPageNumber-1)}}
+                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")}}
                                     className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                     <FaArrowLeft/>
                                 </button>
                             </Tooltip>
-                            <p className="text-secondary text-2xl font-bold mt-4">1/{calculateNumberOfSlideToRender()}</p>
+                            <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlideToRender()}</p>
                             <Tooltip placement={"right"} title={"next slide"}>
                                 <button
-                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), setActualPageNumber(actualPageNumber+1)}}
+                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
                                     className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                     <FaArrowRight/>
                                 </button>
