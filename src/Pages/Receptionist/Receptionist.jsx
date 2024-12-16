@@ -3,95 +3,123 @@ import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "reac
 import {Tooltip} from "antd";
 import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import {receptionistNavLink} from "./receptionistNavLink.js";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {AddNewPatientModal} from "./addNewPatientModal.jsx";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import Wait from "../Modals/wait.jsx";
+import {ErrorModal} from "../Modals/ErrorModal.jsx";
+import {ViewPatientDetailsModal} from "./ViewPatientDetailsModal.jsx";
+import {EditPatientInfosModal} from "./EditPatientInfosModal.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 export function Receptionist()
 {
-    const patients = [
-        {
-            id: 1,
-            name: "NGOUPAYE DJIO",
-            lastName: "Thierry",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Simbock Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 2,
-            name: "NGO BASSOM ",
-            lastName: "Anne Rosalie",
-            gender: "Female",
-            birthDate: "Jan. 21, 2000",
-            address: "Odza Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 3,
-            name: "KENFACK NOUMEDEM",
-            lastName: "Franck",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Damas Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 4,
-            name: "KOGHENE LADJOU",
-            lastName: "Eric",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Ngoa-Ekele Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 5,
-            name: "BENGONO AMVELA",
-            lastName: "Nathan",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Obili Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-    ];
 
 
-    const [isAddNewPatientModalOpen, setIsAddNewPatientModalOpen] = useState(false);
+    const [canOpenAddNewPatientModal, setCanOpenAddNewPatientModal] = useState(false);
     const [canOpenSuccessModal, setCanOPenSuccessModal] = useState(false);
+    const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
+    const [canOpenViewPatientDetailModal, setCanOpenViewPatientDetailModal] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedPatientDetails, setSelectedPatientDetails] = useState({});
+    const [canOpenEditPatientDetailModal, setCanOpenEditPatientDetailModal] = useState(false);
+    const [patients, setPatients] = useState([]);
+    const [numberOfPatients, setNumberOfPatients] = useState(0);
+    const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
+    const [previousUrlForRenderPatientList, setPreviousUrlForRenderPatientList] = useState("");
+    const [actualPageNumber, setActualPageNumber] = useState(1);
 
-    function closeAddNewPatientModal() {setIsAddNewPatientModalOpen(false)}
 
 
+
+
+    function calculateNumberOfSlideToRender() {
+        return numberOfPatients % 5 === 0 ? numberOfPatients / 5 : Math.floor(numberOfPatients / 5) + 1;
+    }
+
+
+
+
+    useEffect(() => {
+        async function fetchPatients () {
+            try
+            {
+                const response = await axiosInstance.get("/patient/");
+                if (response.status === 200)
+                {
+                    console.log(response)
+                    setPatients(response.data.results);
+                    setNumberOfPatients(response.data.count);
+                    setNexUrlForRenderPatientList(response.data.next);
+                    setPreviousUrlForRenderPatientList(response.data.previous);
+                }
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+        fetchPatients();
+    }, []);
+
+
+    useEffect(() => {
+        console.log("next url ",nexUrlForRenderPatientList);
+        console.log("prev url ",previousUrlForRenderPatientList);
+    }, [nexUrlForRenderPatientList, previousUrlForRenderPatientList]);
+
+
+
+
+    async function fetchNextOrPreviousPatientList (url) {
+        setIsLoading(true);
+        try {
+            const response = await axiosInstance.get(url);
+            if (response.status === 200)
+            {
+                setIsLoading(false);
+                console.log(response)
+                setPatients(response.data.results);
+                setNumberOfPatients(response.data.count);
+                setNexUrlForRenderPatientList(response.data.next);
+                setPreviousUrlForRenderPatientList(response.data.previous);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    }
+
+
+    // const [canOpenConfirmActionModal, setCanOpenConfirmActionModal] = useState(false);
+    //  const [patientToDelete, setPatientToDelete] = useState({});
+
+
+/*
+    async function deletePatient(patientId){
+        setIsLoading(true);
+        try {
+            const response = await axiosInstance.delete(`/patient/${patientId}/`);
+            if (response.status === 204) {
+                setIsLoading(false);
+                setSuccessMessage("Patient deleted successfully !");
+                setErrorMessage("");
+                setCanOpenErrorMessageModal(false);
+                setCanOPenSuccessModal(true);
+            }
+        }
+        catch (error) {
+            setIsLoading(false);
+            setSuccessMessage("");
+            setErrorMessage(error.response.data.detail)
+            setCanOPenSuccessModal(false);
+            setCanOpenErrorMessageModal(true);
+            console.log(error);
+        }
+    }
+ */
 
 
     return (
@@ -118,7 +146,7 @@ export function Receptionist()
 
                 {/*List of registered patients*/}
 
-                <div className="ml-5 mr-5">
+                <div className="ml-5 mr-5 relative">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
                         <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
@@ -137,7 +165,7 @@ export function Receptionist()
                         {patients.map((patient, index) => (
                             <tr key={patient.id || index} className="bg-gray-100">
                                 <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                                <td className="p-4 text-md text-center font-bold">{patient.name}</td>
+                                <td className="p-4 text-md text-center font-bold">{patient.firstName}</td>
                                 <td className="p-4 text-md text-center">{patient.lastName}</td>
                                 <td className="p-4 text-md text-center">{patient.gender}</td>
                                 <td className="p-4 text-center text-md">{patient.address}</td>
@@ -145,22 +173,27 @@ export function Receptionist()
                                     <div className="w-full items-center justify-center flex gap-6">
                                         <Tooltip placement={"left"} title={"view details"}>
                                             <button
-                                                className="flex items-center justify-center w-9 h-9 text-secondary text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
+                                                onClick={()=>{setSelectedPatientDetails(patient),setCanOpenViewPatientDetailModal(true)}}
+                                                className="flex items-center justify-center w-9 h-9 text-primary-end text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
                                                 <FaEye/>
                                             </button>
                                         </Tooltip>
-                                        <Tooltip placement={"bottom"} title={"Edit"}>
+                                        <Tooltip placement={"right"} title={"Edit"}>
                                             <button
-                                                className="flex items-center justify-center w-9 h-9 text-secondary text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
+                                                onClick={()=>{setSelectedPatientDetails(patient),setCanOpenEditPatientDetailModal(true)}}
+                                                className="flex items-center justify-center w-9 h-9 text-green-500 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
                                                 <FaEdit/>
                                             </button>
                                         </Tooltip>
+                                        {/*
                                         <Tooltip placement={"right"} title={"delete"}>
                                             <button
+                                                onClick={()=>{setPatientToDelete(patient),setCanOpenConfirmActionModal(true)}}
                                                 className="flex items-center justify-center w-9 h-9 text-red-400 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
                                                 <FaTrash/>
                                             </button>
                                         </Tooltip>
+                                        */}
                                     </div>
                                 </td>
                             </tr>
@@ -170,40 +203,45 @@ export function Receptionist()
 
 
                     {/*Pagination content */}
-
                     <div className="justify-center flex mt-6 mb-4">
                         <div className="flex gap-4">
                             <Tooltip placement={"left"} title={"previous slide"}>
                                 <button
+                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), setActualPageNumber(actualPageNumber-1)}}
                                     className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                     <FaArrowLeft/>
                                 </button>
                             </Tooltip>
-
-
-                            <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
-
+                            <p className="text-secondary text-2xl font-bold mt-4">1/{calculateNumberOfSlideToRender()}</p>
                             <Tooltip placement={"right"} title={"next slide"}>
                                 <button
+                                    onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), setActualPageNumber(actualPageNumber+1)}}
                                     className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                     <FaArrowRight/>
                                 </button>
-
                             </Tooltip>
                         </div>
                     </div>
 
+
                     {/* Add new patient button & modal */}
                     <Tooltip placement={"top"} title={"Add new patient"}>
                         <button
-                            onClick={()=>setIsAddNewPatientModalOpen(true)}
-                            className="fixed bottom-9 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
+                            onClick={()=>setCanOpenAddNewPatientModal(true)}
+                            className="absolute bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
                             +
                         </button>
                     </Tooltip>
-                    <AddNewPatientModal isOpen={isAddNewPatientModalOpen} onClose={closeAddNewPatientModal} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>
+
+
+                    {/* Modals content */}
+                    <AddNewPatientModal isOpen={canOpenAddNewPatientModal} onClose={()=>{setCanOpenAddNewPatientModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>
+                    <EditPatientInfosModal isOpen={canOpenEditPatientDetailModal} onClose={()=>{setCanOpenEditPatientDetailModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading} patientData={selectedPatientDetails}/>
                     <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal}/>
+                    <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={()=>{setCanOpenErrorMessageModal(false)}} message={errorMessage}/>
+                    <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailModal} patient={selectedPatientDetails} onClose={()=>{setCanOpenViewPatientDetailModal(false)}}/>
                     {isLoading && <Wait/>}
+                    {/*<ConfirmationModal isOpen={canOpenConfirmActionModal} onClose={() => setCanOpenConfirmActionModal(false)} onConfirm={async () => await deletePatient(patientToDelete.id)} title={"Delete Patient"} message={`Are you sure you want to delete the patient ${patientToDelete.firstName + " " + patientToDelete.lastName} ?`}/>*/}
                 </div>
             </div>
         </DashBoard>

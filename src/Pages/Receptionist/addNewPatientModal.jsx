@@ -34,7 +34,8 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
 
 
 
-    function calculateAge(birthDate) {
+    function calculateAge(birthDate)
+    {
         const today = new Date();
         const birth = new Date(birthDate);
         const diffTime = Math.abs(today - birth);
