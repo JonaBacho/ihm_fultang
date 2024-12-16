@@ -148,6 +148,7 @@ export function Receptionist()
                             <FaSearch className="text-xl text-secondary m-2"/>
                             <input
                                 type="text"
+                                placeholder={"search for a specific patient"}
                                 className="border-none focus:outline-none focus:ring-0"
                             />
                         </div>

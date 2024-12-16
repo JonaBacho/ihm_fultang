@@ -120,7 +120,7 @@ function useLogin() {
         setIsLogged(false);
         setUserData({});
         setUserRole("");
-        window.location.href = "/";
+        window.location.href = "/login";
     }
 
 

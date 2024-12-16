@@ -34,8 +34,8 @@ export function DashBoard ({children,linkList, requiredRole})
                 <nav className="flex flex-col">
                     {linkList.map((item, index) => {
                         const IconComponent = item.icon;
-                        //const isActive = activeLink.startsWith(item.link);
-                        const isActive = activeLink === item.link; 
+                        const isActive = activeLink.startsWith(item.link);
+                        //const isActive = activeLink === item.link;
                         return (
                             <Link
                                 key={index}

@@ -146,6 +146,7 @@ export function EditPatientInfosModal({ isOpen, onClose, setCanOpenSuccessModal,
                 console.log(error);
             }
         }
+        setIsLoading(false);
     }
 
     function applyFormStyle() {

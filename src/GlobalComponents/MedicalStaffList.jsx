@@ -58,8 +58,9 @@ export function MedicalStaffList()
                     <div className="flex w-[400px] h-10 border-2 border-secondary rounded-lg">
                         <FaSearch className="text-xl text-secondary m-2"/>
                         <input
+                            placeholder={"search for a specific medical staff member"}
                             type="text"
-                            className="border-none focus:outline-none focus:ring-0"
+                            className="w-full mr-2 border-none focus:outline-none focus:ring-0"
                         />
                     </div>
                     <button className="ml-2 w-20 h-10 text-white bg-secondary rounded-lg">
@@ -99,7 +100,7 @@ export function MedicalStaffList()
                 </table>
             </div>
 
-            <div className="justify-center ml-24 flex mt-6 mb-4">
+            <div className="justify-center flex mt-6 mb-4">
                 <div className="flex gap-4">
                     <Tooltip placement={"left"} title={"previous slide"}>
                         <button
