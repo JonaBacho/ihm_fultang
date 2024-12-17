@@ -91,10 +91,12 @@ auth_header_param = openapi.Parameter(
 )
 class PatientViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, PatientPermission]
+    #permission_classes = [IsAuthenticated, PatientPermission]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        """
         user = self.request.user
         if user.role=="Admin" or user.role=="Receptionist":
             return Patient.objects.all()
@@ -105,6 +107,8 @@ class PatientViewSet(ModelViewSet):
                 access=True
             ).values_list("idPatient", flat=True)
         )
+        """
+        return Patient.objects.all()
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
