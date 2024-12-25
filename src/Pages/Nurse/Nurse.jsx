@@ -6,6 +6,8 @@ import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import {nurseNavLink} from "./nurseNavLink.js";
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Tooltip} from "antd";
+import {useEffect, useState} from "react";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 
@@ -103,6 +105,83 @@ export function Nurse()
     ];
 
 
+    const [patientList, setPatientList] = useState([]);
+    const [numberOfPatients, setNumberOfPatients] = useState(0);
+    const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
+    const [previousUrlForRenderPatientList,setPreviousUrlForRenderPatientList] = useState("");
+    const [actualPageNumber, setActualPageNumber] = useState(0);
+
+
+
+    async function fetchPatientList()
+    {
+        try
+        {
+            const response = await axiosInstance.get("/patient/");
+            if (response.status === 200)
+            {
+                setPatientList(response.data.results);
+                setNumberOfPatients(response.data.count);
+                setNexUrlForRenderPatientList(response.data.next);
+                setPreviousUrlForRenderPatientList(response.data.previous);
+            }
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
+
+
+    async function fetchNextOrPreviousPatientList (url) {
+        if(url)
+        {
+            try {
+                const response = await axiosInstance.get(url);
+                if (response.status === 200)
+                {
+                    //console.log(response)
+                    setPatientList(response.data.results);
+                    setNumberOfPatients(response.data.count);
+                    setNexUrlForRenderPatientList(response.data.next);
+                    setPreviousUrlForRenderPatientList(response.data.previous);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    function computeNumberOfSlideToRender() {
+        return numberOfPatients % 5 === 0 ? numberOfPatients / 5 : Math.floor(numberOfPatients / 5) + 1;
+    }
+
+
+    function updateActualPageNumber(action) {
+        if (action === "next")
+        {
+            if(actualPageNumber < computeNumberOfSlideToRender())
+            {
+                setActualPageNumber(actualPageNumber + 1);
+            }
+        }
+        else
+        {
+            if(actualPageNumber > 1)
+            {
+                setActualPageNumber(actualPageNumber - 1);
+            }
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        fetchPatientList();
+    }, []);
+
+
 
 
 
@@ -150,7 +229,7 @@ export function Nurse()
 
                         {/*List of patients content */}
                         <div className="ml-5 mr-5 mt-2 border-2 h-[620px] rounded-lg shadow-lg  p-2">
-                            <PatientList patients={patients}/>
+                            <PatientList patients={patientList}/>
                         </div>
 
 
@@ -159,13 +238,15 @@ export function Nurse()
                             <div className="flex gap-4">
                                 <Tooltip placement={"left"} title={"previous slide"}>
                                     <button
+                                        onClick={()=>{fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")}}
                                         className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                         <FaArrowLeft/>
                                     </button>
                                 </Tooltip>
-                                <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
+                                <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{numberOfPatients}</p>
                                 <Tooltip placement={"right"} title={"next slide"}>
                                     <button
+                                        onClick={()=>{fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
                                         className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                         <FaArrowRight/>
                                     </button>

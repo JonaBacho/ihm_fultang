@@ -10,12 +10,12 @@ export const receptionistNavLink = [
     },
     {
         name: 'Medical Staffs',
-        icon: Calendar,
+        icon: FaUserMd,
         link: appRoutes.receptionistMedicalStaffsPage,
     },
     {
         name: 'Appointments',
-        icon: FaUserMd,
+        icon: Calendar,
         link: appRoutes.appointmentsPage,
     },
     {

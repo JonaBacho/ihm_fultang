@@ -28,7 +28,8 @@ export function PatientList ({patients}){
                     Name
                 </th>
                 <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">Gender</th>
-                <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">State</th>
+                {/* <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">State</th>*/}
+                 <th className="text-center p-4 text-xl font-bold border-r-2 border-gray-200 ">Birth Date</th>
                 <th className="text-center p-4 text-xl font-bold  flex-col">
                     <p>Operations</p>
                 </th>
@@ -41,13 +42,14 @@ export function PatientList ({patients}){
                     <td className="p-4 text-md text-blue-900 text-center">{patient.name}</td>
                     <td className="p-4 text-md text-center">{patient.lastName}</td>
                     <td className="p-4 text-md text-center">{patient.gender}</td>
-                    <td className="p-4 items-center">
+                    <td className="p-4 text-md text-center">{patient.birthDate}</td>
+                    {/* <td className="p-4 items-center">
                         <div
                             className="w-20 h-10 rounded-full border-2 border-red-500 flex justify-center items-center">
                             <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
                             <p className="text-red-500">{patient.state}</p>
                         </div>
-                    </td>
+                    </td>  */}
                     <td className="p-4 relative rounded-r-lg">
                         <div className="relative w-full">
                             <div

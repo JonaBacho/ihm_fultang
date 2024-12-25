@@ -125,6 +125,9 @@ function useLogin() {
 
 
 
+
+
+
     const authMethods = useMemo(() => ({
         login,
         setIsLoading,
@@ -134,7 +137,7 @@ function useLogin() {
         isAuthenticated,
         hasRole,
         userRole,
-        logout
+        logout,
     }), [isLoading, userData, isLogged, userRole, logout]);
     return {authMethods}
 }

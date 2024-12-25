@@ -12,6 +12,7 @@ import {ViewPatientDetailsModal} from "./ViewPatientDetailsModal.jsx";
 import {EditPatientInfosModal} from "./EditPatientInfosModal.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
 
+
 export function Receptionist()
 {
 
@@ -32,6 +33,7 @@ export function Receptionist()
     const [actualPageNumber, setActualPageNumber] = useState(1);
 
 
+    //const {fetchPatients, patients, numberOfPatients, fetchNextOrPreviousPatientList, nexUrlForRenderPatientList, previousUrlForRenderPatientList} = useAuthentication();
 
 
 
@@ -104,6 +106,7 @@ export function Receptionist()
             }
         }
     }
+
 
 
     // const [canOpenConfirmActionModal, setCanOpenConfirmActionModal] = useState(false);
