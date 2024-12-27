@@ -46,6 +46,10 @@ export function LoginPage()
         {
             navigate(appRouterPaths.doctorPage);
         }
+        else if (response === "Labtech")
+        {
+            navigate(appRouterPaths.laboratoryAssistantPage);
+        }
         else if (response === "Nurse")
         {
             navigate(appRouterPaths.nursePage)

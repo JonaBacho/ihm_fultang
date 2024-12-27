@@ -27,8 +27,7 @@ export function AppRoute()
     const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/adminHomePage.jsx")).AdminHomePage}));
     const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/ReceptionistMedicalStaffs.jsx")).ReceptionistMedicalStaffs}));
     const ReceptionistAppointmentsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/Appointments.jsx")).Appointments}));
-
-
+    
 
     return (
         <React.Suspense fallback={<Loading />}>
@@ -46,7 +45,9 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.financialReport} element={<FinancialReport/>} />
                 <Route path={AppRoutesPaths.receptionistPage} element={<ReceptionistPage />} />
                 <Route path={AppRoutesPaths.doctorPage} element={<DoctorPage />} />
+              
                 <Route path={AppRoutesPaths.laboratoryAssistantPage} element={<LaboratoryAssistantPage />} />
+               
                 <Route path={AppRoutesPaths.specialistPage} element={<SpecialistPage />} />
                 <Route path={AppRoutesPaths.adminHomePage} element={<AdminHomePage />} />
                 <Route path={AppRoutesPaths.receptionistMedicalStaffsPage} element={<ReceptionistMedicalStaffsPage />} />
