@@ -20,4 +20,7 @@ export const AppRoutesPaths = {
     patientDetailsPage:"/nurse/patients/patientDetails/:id",
     receptionistMedicalStaffsPage: "/receptionist/medicalStaffs",
     appointmentsPage: "/receptionist/appointments",
+    adminPatientListPage: "/admin/patientList",
+    addMedicalStaff: "/admin/addMedicalStaff",
+    adminMedicalStaffListPage: "/admin/medicalStaffList",
 }

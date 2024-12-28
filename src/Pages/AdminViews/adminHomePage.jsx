@@ -1,14 +1,15 @@
-import {AdminDashboard} from "./AdminDashboard.jsx";
 import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
+import {AdminNavBar} from "./AdminNavBar.jsx";
+import {AdminDashBoard} from "./AdminDashboard.jsx";
 
 export function AdminHomePage()
 {
 
 
     return (
-        <DashBoard requiredRole={"Admin"} linkList={adminNavLink}>
-            Admin Home
-        </DashBoard>
+        <AdminDashBoard requiredRole={"Admin"} linkList={adminNavLink}>
+            <AdminNavBar><h1>Admin Home</h1></AdminNavBar>
+        </AdminDashBoard>
     )
 }

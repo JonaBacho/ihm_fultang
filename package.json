@@ -14,6 +14,7 @@
     "antd": "^5.21.6",
     "axios": "^1.7.7",
     "constate": "^3.3.2",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.460.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

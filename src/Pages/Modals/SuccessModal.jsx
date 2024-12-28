@@ -2,15 +2,21 @@ import { CheckCircle } from 'lucide-react';
 import PropTypes from "prop-types";
 
 
-export function SuccessModal ({ isOpen, canOpenSuccessModal, message }) {
+export function SuccessModal ({ isOpen, canOpenSuccessModal, message, makeAction }) {
 
     SuccessModal.propTypes = {
         isOpen: PropTypes.bool.isRequired,
         canOpenSuccessModal: PropTypes.func.isRequired,
-        message: PropTypes.string.isRequired
+        message: PropTypes.string.isRequired,
+        makeAction: PropTypes.func,
     }
 
 
+    function onCloseModal()
+    {
+        canOpenSuccessModal(false);
+        makeAction();
+    }
 
 
     if (!isOpen) return null;
@@ -27,7 +33,7 @@ export function SuccessModal ({ isOpen, canOpenSuccessModal, message }) {
                 <p className="mb-6 mt-3 text-md">{message}</p>
                 <div className="flex justify-center">
                     <button
-                        onClick={() => canOpenSuccessModal(false)}
+                        onClick={() => onCloseModal()}
                         className="px-4 py-1 bg-primary-end font-bold text-md text-white  rounded-md  transition-colors duration-300"
                     >
                         Continue

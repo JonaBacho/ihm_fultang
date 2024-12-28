@@ -104,10 +104,7 @@ function useLogin() {
 
     function hasRole(requiredRole)
     {
-        if(isLogged)
-        {
-            return userRole === requiredRole;
-        }
+        if(isLogged) return userRole === requiredRole;
         return false;
     }
 

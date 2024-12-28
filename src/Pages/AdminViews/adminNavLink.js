@@ -1,19 +1,36 @@
-import {FaFileInvoiceDollar, FaHome, FaNotesMedical, FaUser, FaUserMd, FaUsers} from "react-icons/fa";
+import {FaFileInvoiceDollar, FaHome, FaNotesMedical, FaPlus, FaUser, FaUserMd, FaUsers} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 import {Calendar} from "lucide-react";
 import {FiList} from "react-icons/fi";
 import {GiMedicines} from "react-icons/gi";
 
+
 export const adminNavLink = [
     {
-        name: 'Home',
-        icon: FaHome,
+        name: "Home",
         link: appRoutes.adminHomePage,
+        icon: FaHome,
     },
     {
-        name: 'Patients',
-        icon: FaUser,
-        link: appRoutes.nursePage,
+        name: 'Patient List',
+        icon: FaUsers,
+        link: appRoutes.adminPatientListPage,
+    },
+    {
+        name: "Medical Staffs",
+        icon: FaUserMd,
+        subLinks: [
+            {
+                icon: FaUsers,
+                name: "Medical Staff List",
+                link: appRoutes.adminMedicalStaffListPage
+            },
+            {
+                icon: FaPlus,
+                name: "Add A Medical Staff",
+                link: appRoutes.addMedicalStaff
+            }
+        ]
     },
     {
         name: 'Consultation List',
@@ -23,11 +40,6 @@ export const adminNavLink = [
     {
         name: 'Appointments',
         icon: Calendar,
-        link: appRoutes.nursePage,
-    },
-    {
-        name: 'Medical Staff',
-        icon: FaUserMd,
         link: appRoutes.nursePage,
     },
     {
@@ -45,4 +57,5 @@ export const adminNavLink = [
         icon: FaFileInvoiceDollar,
         link: appRoutes.nursePage,
     }
-]
+
+];

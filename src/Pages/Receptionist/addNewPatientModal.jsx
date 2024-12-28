@@ -128,6 +128,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
                 setIsLoading(false);
                 setSuccessMessage("");
                 setCanOpenSuccessModal(false);
+               // setError(error.response.data.email);
                 setError("something went wrong, try later please !");
                 console.log(error);
             }

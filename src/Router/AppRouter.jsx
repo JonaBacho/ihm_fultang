@@ -27,6 +27,10 @@ export function AppRoute()
     const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/adminHomePage.jsx")).AdminHomePage}));
     const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/ReceptionistMedicalStaffs.jsx")).ReceptionistMedicalStaffs}));
     const ReceptionistAppointmentsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/Appointments.jsx")).Appointments}));
+    const AdminPatientListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminPatientList.jsx")).AdminPatientList}));
+    const AddMedicalStaffPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AddMedicalStaff.jsx")).AddMedicalStaff}));
+    const AdminMedicalStaffListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminMedicalStaffList.jsx")).AdminMedicalStaffList}));
+
 
 
 
@@ -51,6 +55,9 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.adminHomePage} element={<AdminHomePage />} />
                 <Route path={AppRoutesPaths.receptionistMedicalStaffsPage} element={<ReceptionistMedicalStaffsPage />} />
                 <Route path={AppRoutesPaths.appointmentsPage} element={<ReceptionistAppointmentsPage />} />
+                <Route path={AppRoutesPaths.adminPatientListPage} element={<AdminPatientListPage />} />
+                <Route path={AppRoutesPaths.addMedicalStaff} element={<AddMedicalStaffPage />} />
+                <Route path={AppRoutesPaths.adminMedicalStaffListPage} element={<AdminMedicalStaffListPage />} />
 
 
 

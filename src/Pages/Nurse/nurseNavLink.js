@@ -1,6 +1,7 @@
 import {FaHome, FaQuestionCircle, FaUserMd} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 
+
 export const nurseNavLink =
 [
     {
@@ -19,7 +20,7 @@ export const nurseNavLink =
         icon: FaUserNurse,
         link: appRoutes.consultationHistoryPage,
     },
-     */
+    */
     {
         name: 'Help Center',
         icon: FaQuestionCircle,

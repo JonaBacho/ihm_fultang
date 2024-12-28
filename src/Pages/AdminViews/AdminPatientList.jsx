@@ -1,45 +1,42 @@
-import {ReceptionistNavBar} from "./ReceptionistNavBar.jsx";
 import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "react-icons/fa";
 import {Tooltip} from "antd";
-import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
-import {receptionistNavLink} from "./receptionistNavLink.js";
 import {useEffect, useState} from "react";
-import {AddNewPatientModal} from "./addNewPatientModal.jsx";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import Wait from "../Modals/wait.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
-import {ViewPatientDetailsModal} from "./ViewPatientDetailsModal.jsx";
-import {EditPatientInfosModal} from "./EditPatientInfosModal.jsx";
+import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
+import {EditPatientInfosModal} from "../Receptionist/EditPatientInfosModal.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
-import {useAuthentication} from "../../Utils/Provider.jsx";
+import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {AdminNavBar} from "./AdminNavBar.jsx";
+import {adminNavLink} from "./adminNavLink.js";
+import {ConfirmationModal} from "../Modals/ConfirmAction.Modal.jsx";
+//import {AddNewPatientModal} from "../Receptionist/addNewPatientModal.jsx";
 
-
-export function Receptionist()
+export function AdminPatientList()
 {
 
 
-    const [canOpenAddNewPatientModal, setCanOpenAddNewPatientModal] = useState(false);
-    const [canOpenSuccessModal, setCanOPenSuccessModal] = useState(false);
-    const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
-    const [canOpenViewPatientDetailModal, setCanOpenViewPatientDetailModal] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
+   // const [canOpenAddNewPatientModal, setCanOpenAddNewPatientModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [selectedPatientDetails, setSelectedPatientDetails] = useState({});
+    const [canOpenSuccessModal, setCanOPenSuccessModal] = useState(false);
+    const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
+    const [canOpenViewPatientDetailModal, setCanOpenViewPatientDetailModal] = useState(false);
+    const [canOpenConfirmActionModal, setCanOpenConfirmActionModal] = useState(false);
+    const [patientToDelete, setPatientToDelete] = useState({});
     const [canOpenEditPatientDetailModal, setCanOpenEditPatientDetailModal] = useState(false);
     const [patients, setPatients] = useState([]);
     const [numberOfPatients, setNumberOfPatients] = useState(0);
     const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
     const [previousUrlForRenderPatientList, setPreviousUrlForRenderPatientList] = useState("");
     const [actualPageNumber, setActualPageNumber] = useState(1);
+    const [successMessage, setSuccessMessage] = useState("");
 
 
-    //const {fetchPatients, patients, numberOfPatients, fetchNextOrPreviousPatientList, nexUrlForRenderPatientList, previousUrlForRenderPatientList} = useAuthentication();
 
-    const {isAuthenticated} = useAuthentication();
-
-
-    function calculateNumberOfSlideToRender() {
+    function calculateNumberOfSlide() {
         return numberOfPatients % 5 === 0 ? numberOfPatients / 5 : Math.floor(numberOfPatients / 5) + 1;
     }
 
@@ -47,7 +44,7 @@ export function Receptionist()
     function updateActualPageNumber(action) {
         if (action === "next")
         {
-            if(actualPageNumber < calculateNumberOfSlideToRender())
+            if(actualPageNumber < calculateNumberOfSlide())
             {
                 setActualPageNumber(actualPageNumber + 1);
             }
@@ -62,51 +59,55 @@ export function Receptionist()
     }
 
 
-
-
-    useEffect(() => {
-        async function fetchPatients () {
-            if (isAuthenticated)
+    async function fetchPatients () {
+        try
+        {
+            const response = await axiosInstance.get("/patient/");
+            if (response.status === 200)
             {
-                try
-                {
-                    const response = await axiosInstance.get("/patient/");
-                    if (response.status === 200)
-                    {
-                        //console.log(response)
-                        setPatients(response.data.results);
-                        setNumberOfPatients(response.data.count);
-                        setNexUrlForRenderPatientList(response.data.next);
-                        setPreviousUrlForRenderPatientList(response.data.previous);
-                    }
-                }
-                catch (error)
-                {
-                    console.log(error);
-                }
+                setPatients(response.data.results);
+                setNumberOfPatients(response.data.count);
+                setNexUrlForRenderPatientList(response.data.next);
+                setPreviousUrlForRenderPatientList(response.data.previous);
             }
         }
+        catch (error)
+        {
+            setPatients([]);
+            setNumberOfPatients(0);
+            setNexUrlForRenderPatientList("");
+            setPreviousUrlForRenderPatientList("");
+            console.log(error);
+        }
+
+    }
+
+    useEffect(() => {
         fetchPatients();
-    }, [isAuthenticated]);
+    }, []);
 
 
 
 
 
-    async function fetchNextOrPreviousPatientList (url) {
+    async function fetchNextOrPreviousPatientList(url)
+    {
         if(url)
         {
             try {
                 const response = await axiosInstance.get(url);
                 if (response.status === 200)
                 {
-                    //console.log(response)
                     setPatients(response.data.results);
                     setNumberOfPatients(response.data.count);
                     setNexUrlForRenderPatientList(response.data.next);
                     setPreviousUrlForRenderPatientList(response.data.previous);
                 }
             } catch (error) {
+                setPatients([]);
+                setNumberOfPatients(0);
+                setPreviousUrlForRenderPatientList("");
+                setNexUrlForRenderPatientList("");
                 console.log(error);
             }
         }
@@ -114,11 +115,8 @@ export function Receptionist()
 
 
 
-    // const [canOpenConfirmActionModal, setCanOpenConfirmActionModal] = useState(false);
-    //  const [patientToDelete, setPatientToDelete] = useState({});
 
 
-/*
     async function deletePatient(patientId){
         setIsLoading(true);
         try {
@@ -127,6 +125,7 @@ export function Receptionist()
                 setIsLoading(false);
                 setSuccessMessage("Patient deleted successfully !");
                 setErrorMessage("");
+                await fetchPatients();
                 setCanOpenErrorMessageModal(false);
                 setCanOPenSuccessModal(true);
             }
@@ -140,12 +139,12 @@ export function Receptionist()
             console.log(error);
         }
     }
- */
+
 
 
     return (
-        <DashBoard linkList={receptionistNavLink} requiredRole={"Receptionist"}>
-            <ReceptionistNavBar/>
+        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+            <AdminNavBar/>
             <div className="mt-5 flex flex-col relative">
 
                 {/*Header content with search bar*/}
@@ -207,7 +206,6 @@ export function Receptionist()
                                                 <FaEdit/>
                                             </button>
                                         </Tooltip>
-                                        {/*
                                         <Tooltip placement={"right"} title={"delete"}>
                                             <button
                                                 onClick={()=>{setPatientToDelete(patient),setCanOpenConfirmActionModal(true)}}
@@ -215,7 +213,6 @@ export function Receptionist()
                                                 <FaTrash/>
                                             </button>
                                         </Tooltip>
-                                        */}
                                     </div>
                                 </td>
                             </tr>
@@ -234,7 +231,7 @@ export function Receptionist()
                                     <FaArrowLeft/>
                                 </button>
                             </Tooltip>
-                            <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlideToRender()}</p>
+                            <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlide()}</p>
                             <Tooltip placement={"right"} title={"next slide"}>
                                 <button
                                     onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
@@ -246,26 +243,26 @@ export function Receptionist()
                     </div>
 
 
-                    {/* Add new patient button & modal */}
+                    {/* Add new patient button & modal
                     <Tooltip placement={"top"} title={"Add new patient"}>
                         <button
                             onClick={()=>setCanOpenAddNewPatientModal(true)}
                             className="fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
                             +
                         </button>
-                    </Tooltip>
+                    </Tooltip> */}
 
 
                     {/* Modals content */}
-                    <AddNewPatientModal isOpen={canOpenAddNewPatientModal} onClose={()=>{setCanOpenAddNewPatientModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>
+                    {/* <AddNewPatientModal isOpen={canOpenAddNewPatientModal} onClose={()=>{setCanOpenAddNewPatientModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>*/}
                     <EditPatientInfosModal isOpen={canOpenEditPatientDetailModal} onClose={()=>{setCanOpenEditPatientDetailModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading} patientData={selectedPatientDetails}/>
-                    <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal}/>
+                    <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal} makeAction={async ()=> {await fetchPatients(), calculateNumberOfSlide()}}/>
                     <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={()=>{setCanOpenErrorMessageModal(false)}} message={errorMessage}/>
                     <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailModal} patient={selectedPatientDetails} onClose={()=>{setCanOpenViewPatientDetailModal(false)}}/>
                     {isLoading && <Wait/>}
-                    {/*<ConfirmationModal isOpen={canOpenConfirmActionModal} onClose={() => setCanOpenConfirmActionModal(false)} onConfirm={async () => await deletePatient(patientToDelete.id)} title={"Delete Patient"} message={`Are you sure you want to delete the patient ${patientToDelete.firstName + " " + patientToDelete.lastName} ?`}/>*/}
+                    <ConfirmationModal isOpen={canOpenConfirmActionModal} onClose={() => setCanOpenConfirmActionModal(false)} onConfirm={async () => await deletePatient(patientToDelete.id)} title={"Delete Patient"} message={`Are you sure you want to delete the patient ${patientToDelete.firstName + " " + patientToDelete.lastName} ?`}/>
                 </div>
             </div>
-        </DashBoard>
+        </AdminDashBoard>
     )
 }

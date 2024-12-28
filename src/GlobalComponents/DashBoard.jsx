@@ -13,7 +13,7 @@ export function DashBoard ({children,linkList, requiredRole})
 
     const location = useLocation();
     const activeLink = location.pathname;
-    const {isAuthenticated, hasRole} = useAuthentication();
+    const {isAuthenticated, hasRole, userRole} = useAuthentication();
 
 
      if (!isAuthenticated()) {
