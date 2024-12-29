@@ -2,16 +2,10 @@ from datetime import timezone
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
-from django.db.models.base import Model
 from django.db.models.deletion import CASCADE
-from django.db.models.manager import EmptyManager
-from django.forms.widgets import Select
-from django.utils import tree, timezone
-from django import forms
-from django.shortcuts import reverse
 from datetime import timedelta
 from django.utils.timezone import now
+from django.core.exceptions import ObjectDoesNotExist
 
 from polyclinic.managers import MedicalStaffManager
 
@@ -71,8 +65,11 @@ SERVICE = [
 # cette classe définie notre classe d'utilsateur par défaut
 class MedicalStaff(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES, default='NoRole')
-    cniNumber = models.CharField(max_length=20, blank=True, default="")  # The patient CNI
+    cniNumber = models.CharField(max_length=255, blank=True, default="")
     gender = models.CharField(max_length=50, choices=SEXE, default='Male', blank=True)
+    phoneNumber = models.CharField(max_length=255, blank=True, default=" ")
+    birthDate = models.DateField(blank=True, null=True, default="1982-01-01")
+    address = models.CharField(max_length=255, blank=True, default="Yaounde - damas")
 
     objects = MedicalStaffManager()
 
@@ -120,29 +117,49 @@ class PatientAccess(models.Model):
 
 
 # classe qui definie le patient
+def get_default_medical_staff():
+    """
+    Retourne l'id du premier MedicalStaff avec le rôle 'receptionniste',
+    ou l'id du premier MedicalStaff dans la base de données,
+    ou None si aucun MedicalStaff n'existe.
+    """
+    try:
+        receptionnist = MedicalStaff.objects.filter(role="receptionniste").first()
+        if receptionnist:
+            return receptionnist.id
+        first_medical_staff = MedicalStaff.objects.first()
+        return first_medical_staff.id if first_medical_staff else None
+    except ObjectDoesNotExist:
+        return None
+
 class Patient(models.Model):
-    addDate = models.DateField(auto_now=True, blank=True)
-    addTime = models.TimeField(auto_now=True, blank=True)
-    cniNumber = models.CharField(max_length=20, blank=True, default=" ")  # The patient CNI
-    firstName = models.CharField(max_length=50, blank=True)
-    lastName = models.CharField(max_length=50, blank=True, default=" ")
-    gender = models.CharField(max_length=50, choices=SEXE, default='Male', blank=True)  # The patient gender (M, F)
-    phoneNumber = models.CharField(max_length=100, blank=True, default=" ")
+    addDate = models.DateTimeField(auto_now=True, blank=True)
+    cniNumber = models.CharField(max_length=255, blank=True, default=" ")  # The patient CNI
+    firstName = models.CharField(max_length=255, blank=True)
+    lastName = models.CharField(max_length=255, blank=True, default=" ")
+    gender = models.CharField(max_length=255, choices=SEXE, default='Male', blank=True)  # The patient gender (M, F)
+    phoneNumber = models.CharField(max_length=255, blank=True, default=" ")
     birthDate = models.DateField(blank=True, null=True, default="0000-00-00")
-    address = models.CharField(max_length=25, blank=True, default=" ")
-    email = models.CharField(max_length=25, blank=True, default=" ")
-    condition = models.CharField(max_length=50, choices=CONDITION, default='NoCritical', null=True)
+    address = models.CharField(max_length=255, blank=True, default=" ")
+    email = models.CharField(max_length=255, blank=True, default=" ")
+    condition = models.CharField(max_length=255, choices=CONDITION, default='NoCritical', null=True)
     service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=True)
     status = models.CharField(max_length=20, default="invalid")  # The patient status
 
-    idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey(
+        "MedicalStaff",
+        on_delete=models.DO_NOTHING,
+        null=False,
+        default=get_default_medical_staff()
+    )
+    idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.firstName.__str__()
 
 
 class Appointment(models.Model):
-    atDate = models.DateField(auto_now=False)
+    atDate = models.DateTimeField(auto_now=False)
     reason = models.CharField(max_length=300)
     requirements = models.CharField(max_length=500)
 
@@ -160,16 +177,14 @@ class Parameters(models.Model):
     temperature = models.FloatField(blank=True, null=True)
     arterialPressure = models.FloatField(blank=True, null=True)
     skinAppearance = models.CharField(max_length=100, blank=True, null=True)
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
 
-    idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.DO_NOTHING, null=True)
+    idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.DO_NOTHING, null=True)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
 class Consultation(models.Model):
-    consultationDate = models.DateField(auto_now=True)
-    consultationTime = models.TimeField(auto_now=True)
+    consultationDate = models.DateTimeField(auto_now=True)
     consultationCost = models.FloatField(blank=True, null=True)
     consultationReason = models.CharField(max_length=100, blank=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
@@ -194,20 +209,15 @@ class ConsultationType(models.Model):
 
 
 class MedicalFolder(models.Model):
-    createTime = models.TimeField(auto_now=True)
-    createDate = models.DateField(auto_now=True)
-    lastModificationTime = models.TimeField(auto_now=True)
-    lastModificationDate = models.DateField(auto_now=True)
+    createDate = models.DateTimeField(auto_now=True)
+    lastModificationDate = models.DateTimeField(auto_now=True)
     folderCode = models.CharField(max_length=300)
     isClosed = models.BooleanField()
-
-    idActualParam = models.ForeignKey("Parameters", on_delete=models.CASCADE, null=True)
 
 
 class MedicalFolderPage(models.Model):
     pageNumber = models.IntegerField()
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
     remark = models.TextField(max_length=10000, blank=True, null=True)
 
     idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=True)
@@ -227,8 +237,7 @@ class Exam(models.Model):
 
 
 class ExamRequest(models.Model):
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
     examDetails = models.CharField(max_length=50, null=True)
     examStatus = models.CharField(max_length=20, default="invalid")
     patientStatus = models.CharField(max_length=20, default="invalid")
@@ -244,8 +253,7 @@ class ExamRequest(models.Model):
 
 
 class ExamResult(models.Model):
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
     idExamRequest = models.ForeignKey("ExamRequest", on_delete=models.CASCADE, null=False)
@@ -263,8 +271,7 @@ class ExamResult(models.Model):
 
 
 class Medicament(models.Model):
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
     quantity = models.IntegerField()
     medicamentName = models.CharField(max_length=50, null=False, default="")
     status = models.CharField(max_length=20, default="invalid")
@@ -277,8 +284,7 @@ class Medicament(models.Model):
 
 
 class Prescription(models.Model):
-    addTime = models.TimeField(auto_now=True)
-    addDate = models.DateField(auto_now=True)
+    addDate = models.DateTimeField(auto_now=True)
     dose = models.TextField()
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
@@ -296,8 +302,7 @@ class Room(models.Model):
 
 
 class Hospitalisation(models.Model):
-    atDate = models.DateField(auto_now=True)
-    atTime = models.TimeField(auto_now=True)
+    atDate = models.DateTimeField(auto_now=True)
     bedLabel = models.CharField(max_length=100)
     note = models.TextField()
     isActive = models.BooleanField(default=True)

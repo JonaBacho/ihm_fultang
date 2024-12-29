@@ -13,7 +13,7 @@ class MedicalStaffPermission(BasePermission):
             return request.user.is_authenticated and request.user.role == "Admin"
         elif view.action in ["retrieve", "update", "partial_update"]:
             return request.user.is_authenticated
-        elif request.method == "GET":
+        elif request.method in ["GET", "POST", "PUT", "PATCH"]:
             return request.user.is_authenticated
         return False
 

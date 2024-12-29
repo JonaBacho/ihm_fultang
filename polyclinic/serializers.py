@@ -4,6 +4,7 @@ from polyclinic.models import MedicalStaff, Department, Patient, Appointment, Pa
     Bill, BillItem, Message, PatientAccess, Hospitalisation
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import AuthenticationFailed
 
 
 class MedicalStaffSerializer(serializers.ModelSerializer):
@@ -18,6 +19,30 @@ class MedicalStaffSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("L'ID ne peut pas être défini manuellement.")
         return attrs
     """
+
+class MedicalStaffCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)  # Ne pas inclure le mot de passe dans la réponse
+
+    class Meta:
+        model = MedicalStaff
+        fields = ['username', 'email', 'password', 'role', 'cniNumber', 'gender', 'phoneNumber', 'birthDate', 'address', 'is_active']
+
+    def create(self, validated_data):
+        # Extraire les champs nécessaires
+        password = validated_data.pop('password', None)
+        is_staff = validated_data.pop('is_staff', False)
+        is_superuser = validated_data.pop('is_superuser', False)
+        is_active = validated_data.pop('is_active', True)
+
+        # Créer l'utilisateur avec le manager
+        user = MedicalStaff.objects.create_user(
+            password=password,
+            is_staff=is_staff,
+            is_superuser=is_superuser,
+            is_active=is_active,
+            **validated_data
+        )
+        return user
 
 class DepartementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,6 +63,24 @@ class PatientCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         exclude = ['condition', 'service', 'idMedicalFolder']
+
+    def create(self, validated_data):
+        cni_number = validated_data.pop('cniNumber', None)
+        gender = validated_data.pop('gender', None)
+
+        # on sauvegarde d'abord le dossier medical
+        medical_folder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
+        medical_folder.save()
+
+        patient = Patient.objects.create(
+            idMedicalFolder=medical_folder,
+            cniNumber=cni_number,
+            gender=gender,
+            **validated_data
+        )
+
+        return patient
+
 
 class AppointmentDetailSerializer(serializers.ModelSerializer):
 
@@ -134,6 +177,10 @@ class MessageSerializer(serializers.ModelSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
+
+        # Vérification de l'état de l'utilisateur
+        if not self.user.is_active:
+            raise AuthenticationFailed("Cet utilisateur est inactif. Veuillez contacter l'administrateur.")
 
         # Ajoutez des informations supplémentaires sur l'utilisateur
         data['user'] = dict()

@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import MedicalStaff
 from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
-from polyclinic.serializers import MedicalStaffSerializer
+from polyclinic.serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -11,6 +11,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
+active_param = openapi.Parameter(
+    'active',
+    openapi.IN_QUERY,
+    description="Filtrer les MedicalStaff par leur état actif. Valeurs possibles : true, false.",
+    type=openapi.TYPE_STRING,
+    enum=["true", "false"],  # Limite les valeurs possibles
+)
 
 auth_header_param = openapi.Parameter(
     name="Authorization",
@@ -28,7 +35,7 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param, active_param]
     )
 )
 @method_decorator(
@@ -95,11 +102,27 @@ class MedicalStaffViewSet(ModelViewSet):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        # Récupérer le paramètre `active` depuis l'URL
+        active_param = self.request.query_params.get('active')
+
+        # Base queryset
         queryset = MedicalStaff.objects.all()
+
+        # Filtrer si `active` est présent dans les paramètres
+        if active_param is not None:
+            if active_param.lower() == 'true':  # Afficher seulement les MedicalStaff actifs
+                queryset = queryset.filter(is_active=True)
+            elif active_param.lower() == 'false':  # Afficher seulement les MedicalStaff inactifs
+                queryset = queryset.filter(is_active=False)
+
         return queryset
 
+
     def get_serializer_class(self):
-        return MedicalStaffSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return MedicalStaffSerializer
+        else:
+            return MedicalStaffCreateSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:

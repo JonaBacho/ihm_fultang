@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import MedicalFolder
+from polyclinic.permissions.medical_folder_permissions import MedicalFolderPermission
 from polyclinic.serializers import MedicalFolderSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -86,7 +87,7 @@ auth_header_param = openapi.Parameter(
 )
 class MedicalFolderViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MedicalFolderPermission]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -105,3 +106,4 @@ class MedicalFolderViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
+
