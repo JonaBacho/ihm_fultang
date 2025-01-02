@@ -120,9 +120,9 @@ class MedicalStaffViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
-            return MedicalStaffSerializer
-        else:
             return MedicalStaffCreateSerializer
+        else:
+            return MedicalStaffSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:

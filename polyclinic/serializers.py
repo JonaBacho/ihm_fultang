@@ -25,12 +25,12 @@ class MedicalStaffCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MedicalStaff
-        fields = ['username', 'email', 'password', 'role', 'cniNumber', 'gender', 'phoneNumber', 'birthDate', 'address', 'is_active']
+        exclude = ['id', 'is_superuser', 'groups', 'user_permissions', 'date_joined', 'last_login']
 
     def create(self, validated_data):
         # Extraire les champs nécessaires
         password = validated_data.pop('password', None)
-        is_staff = validated_data.pop('is_staff', False)
+        is_staff = validated_data.pop('is_staff',True)
         is_superuser = validated_data.pop('is_superuser', False)
         is_active = validated_data.pop('is_active', True)
 
