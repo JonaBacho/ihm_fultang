@@ -117,21 +117,6 @@ class PatientAccess(models.Model):
 
 
 # classe qui definie le patient
-def get_default_medical_staff():
-    """
-    Retourne l'id du premier MedicalStaff avec le rôle 'receptionniste',
-    ou l'id du premier MedicalStaff dans la base de données,
-    ou None si aucun MedicalStaff n'existe.
-    """
-    try:
-        receptionnist = MedicalStaff.objects.filter(role="receptionniste").first()
-        if receptionnist:
-            return receptionnist.id
-        first_medical_staff = MedicalStaff.objects.first()
-        return first_medical_staff.id if first_medical_staff else None
-    except ObjectDoesNotExist:
-        return None
-
 class Patient(models.Model):
     addDate = models.DateTimeField(auto_now=True, blank=True)
     cniNumber = models.CharField(max_length=255, blank=True, default=" ")  # The patient CNI
@@ -150,7 +135,7 @@ class Patient(models.Model):
         "MedicalStaff",
         on_delete=models.DO_NOTHING,
         null=False,
-        default=get_default_medical_staff()
+        default=1
     )
     idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 
