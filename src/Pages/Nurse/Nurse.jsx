@@ -17,93 +17,6 @@ export function Nurse()
 
     const {userData} = useAuthentication();
 
-    const patients = [
-        {
-            id: 1,
-            name: "NGOUPAYE DJIO",
-            lastName: "Thierry",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Simbock Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 2,
-            name: "NGO BASSOM ",
-            lastName: "Anne Rosalie",
-            gender: "Female",
-            birthDate: "Jan. 21, 2000",
-            address: "Odza Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 3,
-            name: "KENFACK NOUMEDEM",
-            lastName: "Franck",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Damas Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 4,
-            name: "KOGHENE LADJOU",
-            lastName: "Eric",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Ngoa-Ekele Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 5,
-            name: "BENGONO AMVELA",
-            lastName: "Nathan",
-            gender: "Male",
-            birthDate: "Jan. 21, 2000",
-            address: "Obili Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923456,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 689876756,
-            urgenceContact: 678987898,
-            state: "critical"
-        },
-        {
-            id: 6,
-            name: "DONCHI",
-            lastName: "Tresor",
-            gender: "Male",
-            birthDate: "Fev. 14, 2001",
-            address: "Melen Yaounde",
-            email: "monemail@gmail.com",
-            CNI: 100923426,
-            createdAt: "10:40 a.m, Fev. 14 2024",
-            userContact: 629876756,
-            urgenceContact: 658987898,
-            state: "critical"
-        },
-    ];
-
 
     const [patientList, setPatientList] = useState([]);
     const [numberOfPatients, setNumberOfPatients] = useState(0);
@@ -173,8 +86,6 @@ export function Nurse()
             }
         }
     }
-
-
 
 
     useEffect(() => {

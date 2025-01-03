@@ -50,7 +50,7 @@ export function LoginPage()
         {
             navigate(appRouterPaths.nursePage)
         }
-        else if (response === "LaboratoryAssistant")
+        else if (response === "Labtech")
         {
             navigate(appRouterPaths.laboratoryAssistantPage)
         }
@@ -74,6 +74,11 @@ export function LoginPage()
         {
             setIsLoginErrorPresent(true);
             setLoginError("bad role")
+        }
+        else if (response === "No role")
+        {
+            setIsLoginErrorPresent(true);
+            setLoginError("You do not have a specialization, contact an administrator to complete your registration for the application")
         }
         if (response === 401)
         {
@@ -173,7 +178,7 @@ export function LoginPage()
                                             )}
                                         </button>
                                     </div>
-                                    <Link to={"/login"}>
+                                    <Link to={appRouterPaths.forgottenPasswordPage}>
                                         <p className="text-end mt-1 text-sm text-blue-700 hover:text-secondary hover:font-bold transition-all duration-300 hover:underline">
                                             Forgotten password?
                                         </p>

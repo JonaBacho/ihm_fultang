@@ -1,5 +1,7 @@
 import {FaArrowLeft, FaArrowRight, FaSearch} from "react-icons/fa";
 import {Tooltip} from "antd";
+import {useEffect, useState} from "react";
+import axiosInstance from "../Utils/axiosInstance.js";
 
 const medicalStaffs = [
     {
@@ -45,8 +47,101 @@ const medicalStaffs = [
 ];
 
 
+
+
 export function MedicalStaffList()
 {
+
+
+
+    const [medicalStaffList, setMedicalStaffList] = useState([]);
+    const [numberOfMedicalStaff, setNumberOfMedicalStaff] = useState(0);
+    const [nexUrlForRenderMedicalStaffList, setNexUrlForRenderMedicalStaffList] = useState("");
+    const [previousUrlForRenderMedicalStaffList, setPreviousUrlForRenderMedicalStaffList] = useState("");
+    const [actualPageNumber, setActualPageNumber] = useState(numberOfMedicalStaff ===! 0 ? 1 : 0);
+
+
+
+
+    async function fetchMedicalStaffList () {
+        try
+        {
+            const response = await axiosInstance.get("/medical-staff/");
+            if (response.status === 200)
+            {
+                console.log(response.data);
+                setMedicalStaffList(response.data.results);
+                setNumberOfMedicalStaff(response.data.count);
+                setNexUrlForRenderMedicalStaffList(response.data.next);
+                setPreviousUrlForRenderMedicalStaffList(response.data.previous);
+            }
+        }
+        catch (error)
+        {
+            setMedicalStaffList([]);
+            setNumberOfMedicalStaff(0);
+            setNexUrlForRenderMedicalStaffList("");
+            setPreviousUrlForRenderMedicalStaffList("");
+            console.log(error);
+        }
+
+    }
+
+
+    async function fetchNextOrPreviousPatientList(url)
+    {
+        if(url)
+        {
+            try {
+                const response = await axiosInstance.get(url);
+                if (response.status === 200)
+                {
+                    setMedicalStaffList(response.data.results);
+                    setNumberOfMedicalStaff(response.data.count);
+                    setNexUrlForRenderMedicalStaffList(response.data.next);
+                    setPreviousUrlForRenderMedicalStaffList(response.data.previous);
+                }
+            } catch (error) {
+                setMedicalStaffList([]);
+                setNumberOfMedicalStaff(0);
+                setPreviousUrlForRenderMedicalStaffList("");
+                setNexUrlForRenderMedicalStaffList("");
+                console.log(error);
+            }
+        }
+    }
+
+
+    function calculateNumberOfSlide() {
+        return numberOfMedicalStaff % 5 === 0 ? numberOfMedicalStaff / 5 : Math.floor(numberOfMedicalStaff / 5) + 1;
+    }
+
+
+    function updateActualPageNumber(action) {
+        if (action === "next")
+        {
+            if(actualPageNumber < calculateNumberOfSlide())
+            {
+                setActualPageNumber(actualPageNumber + 1);
+            }
+        }
+        else
+        {
+            if(actualPageNumber > 1)
+            {
+                setActualPageNumber(actualPageNumber - 1);
+            }
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        fetchMedicalStaffList();
+    }, []);
+
+
     return (
         <>
             <div className="flex justify-between mb-5">
@@ -85,7 +180,7 @@ export function MedicalStaffList()
                     </tr>
                     </thead>
                     <tbody className="mt-5">
-                    {medicalStaffs.map((person, index) => (
+                    {medicalStaffList.map((person, index) => (
                         <tr key={index} className="bg-gray-100">
                             <td className="p-6 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
                             <td className="p-6 text-md text-blue-900  text-center">{person.name}</td>
@@ -100,17 +195,24 @@ export function MedicalStaffList()
                 </table>
             </div>
 
-            <div className="justify-center flex mt-6 mb-4">
+
+            <div className="fixed w-full justify-center -right-16 bottom-0 flex mt-6 mb-4">
                 <div className="flex gap-4">
                     <Tooltip placement={"left"} title={"previous slide"}>
                         <button
+                            onClick={async () => {
+                                await fetchNextOrPreviousPatientList(previousUrlForRenderMedicalStaffList), updateActualPageNumber("prev")
+                            }}
                             className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                             <FaArrowLeft/>
                         </button>
                     </Tooltip>
-                    <p className="text-secondary text-2xl font-bold mt-4">1/10</p>
+                    <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlide()}</p>
                     <Tooltip placement={"right"} title={"next slide"}>
                         <button
+                            onClick={async () => {
+                                await fetchNextOrPreviousPatientList(nexUrlForRenderMedicalStaffList), updateActualPageNumber("next")
+                            }}
                             className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                             <FaArrowRight/>
                         </button>

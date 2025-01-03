@@ -24,9 +24,8 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
         username:'',
         isActive:'',
         role: '',
+        password: '',
     });
-
-
     const [error, setError] = useState("");
     const [checkedFields, setCheckedFields] = useState({
         first_name: false,
@@ -38,6 +37,7 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
         isActive: false,
         email: false,
         role: false,
+        password: false,
     });
 
 
@@ -45,7 +45,6 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
     useEffect(() => {
         if (medicalStaffData) {
             setFormData(medicalStaffData);
-            console.log(medicalStaffData)
         }
     }, [medicalStaffData]);
 
@@ -188,7 +187,7 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
 
 
                         <div className="flex space-x-2">
-                            <div className="w-2/3 flex items-center space-x-2">
+                            <div className="w-1/3 flex items-center space-x-2">
                                 <input
                                     type="checkbox"
                                     id="checkLastName"
@@ -210,6 +209,32 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
                                         className={applyFormStyle()}
                                         required={checkedFields.username}
                                         disabled={!checkedFields.username}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="w-1/3 flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="checkLastName"
+                                    name="password"
+                                    checked={checkedFields.password}
+                                    onChange={handleCheckboxChange}
+                                    className={applyCheckboxStyle()}
+                                />
+                                <div className="flex-1">
+                                    <label htmlFor="lastName"
+                                           className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        name="password"
+                                        placeholder="Enter medical staff's password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className={applyFormStyle()}
+                                        required={checkedFields.password}
+                                        disabled={!checkedFields.password}
                                     />
                                 </div>
                             </div>
@@ -254,7 +279,8 @@ export function EditMedicalStaffInfosModal({ isOpen, onClose, setCanOpenSuccessM
                                 />
                                 <div className="flex-1">
                                     <label htmlFor="address"
-                                           className="block text-sm font-medium text-gray-700 mb-1">Registered at</label>
+                                           className="block text-sm font-medium text-gray-700 mb-1">Registered
+                                        at</label>
                                     <input
                                         type="datetime-local"
                                         id="date_joined"

@@ -12,7 +12,7 @@ export default function PatientInformationBoard({patient}) {
                 <div className="mt-5 mb-5 ml-5 w-36 h-36 border-4 border-gray-300 rounded-full">
                     <img src={userIcon} alt="user icon" className="h-[136px] w-[136px] mb-2"/>
                 </div>
-                <p className="font-bold text-3xl mt-2 mb-1">{patient.name}</p>
+                <p className="font-bold text-3xl mt-2 mb-1">{patient.firstName}</p>
                 <p className="font-bold text-3xl mt-1 mb-4">{patient.lastName}</p>
             </div>
 
@@ -23,7 +23,7 @@ export default function PatientInformationBoard({patient}) {
 
             <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
                 <p className="mr-10 w-1/4">CNI</p>
-                <p className="w-3/4 text-center">{patient.CNI}</p>
+                <p className="w-3/4 text-center">{patient.cniNumber}</p>
             </div>
 
             <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
@@ -42,18 +42,18 @@ export default function PatientInformationBoard({patient}) {
 
             <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
                 <p className="mr-10 w-1/4">Contact</p>
-                <p className="w-3/4 text-center">{patient?.userContact}</p>
+                <p className="w-3/4 text-center">{patient?.phoneNumber}</p>
             </div>
 
             <div className="flex border-t-2 border-t-gray-200   p-6 ml-2 mr-2">
                 <p className="mr-10 w-1/4">Emergency contact</p>
-                <p className="w-3/4 text-center">{patient?.urgenceContact}</p>
+                <p className="w-3/4 text-center">{patient?.phoneNumber}</p>
             </div>
 
             <div
                 className="flex border-t-2 border-t-gray-200 border-b-2 border-b-gray-200 p-6 ml-2 mr-2">
                 <p className="mr-10 w-1/4">Added At</p>
-                <p className="w-3/4 text-center">{patient.createdAt}</p>
+                <p className="w-3/4 text-center">{patient.addDate}</p>
             </div>
         </div>
     )

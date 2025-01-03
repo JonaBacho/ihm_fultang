@@ -18,7 +18,7 @@ export function AddMedicalStaff() {
         email: '',
         gender: 'Male',
         password:'',
-        is_staff:'',
+        is_staff:false,
         is_active: true,
         is_superuser: false,
         birthDate:'',
@@ -54,17 +54,12 @@ export function AddMedicalStaff() {
         setIsLoading(true);
         try
         {
-            let dataToSend = {
-                ...medicalStaffData,
-                date_joined: new Date().toISOString()
-            }
-            console.log(dataToSend);
-            const response = await axiosInstance.post("/medical-staff/", dataToSend);
+            const response = await axiosInstance.post("/medical-staff/", medicalStaffData);
             if (response.status === 201)
             {
-                setIsLoading(true);
+                setIsLoading(false);
                 setErrorMessage("");
-                setSuccessMessage(`${medicalStaffData.role + " " + medicalStaffData.username + " "} created successfully`);
+                setSuccessMessage(`The ${medicalStaffData.role === "Labtech" ? "Laboratory Assistant" : medicalStaffData.role + "" + " " + medicalStaffData.username + " "} created successfully`);
                 setCanOpenSuccessModal(true);
                 setCanOpenErrorModal(false);
             }
@@ -98,8 +93,12 @@ export function AddMedicalStaff() {
         <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="flex m-5">
-                <div className="flex flex-col items-center justify-center">
+                <div className="w-1/2 mr-6 flex flex-col items-center justify-center">
                     <h1 className="text-4xl font-bold text-secondary mb-8">Add a new medical staff member</h1>
+                        <p className="text-justify italic text-red-500 font-semibold text-md mb-5">Please complete all
+                            fields below to add a new medical staff member to Fultang Clinic. Make sure the information
+                            entered is accurate as it will be used to create the staff member's official profile.</p>
+
                     <img src={joinOurStaffImage} alt={"image"} className={"w-[600px] h-[400px] rounded-2xl"}/>
                 </div>
                 <div className="w-1/2 p-8 flex items-center justify-center">
@@ -279,7 +278,7 @@ export function AddMedicalStaff() {
                                     <option value="Pharmacist">Pharmacist</option>
                                     <option value="Nurse">Nurse</option>
                                     <option value="Receptionist">Receptionist</option>
-                                    <option value="Laboratory Assistant">Laboratory Assistant</option>
+                                    <option value="Labtech">Laboratory Assistant</option>
                                     <option value="Ophthalmologist">Ophthalmologist</option>
                                     <option value="Cashier">Cashier</option>
                                     <option value="Admin">Administrator</option>

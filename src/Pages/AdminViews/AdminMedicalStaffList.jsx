@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import Wait from "../Modals/wait.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
-import {EditPatientInfosModal} from "../Receptionist/EditPatientInfosModal.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
 import {AdminDashBoard} from "./AdminDashboard.jsx";
 import {AdminNavBar} from "./AdminNavBar.jsx";
@@ -68,7 +67,7 @@ export function AdminMedicalStaffList()
             const response = await axiosInstance.get("/medical-staff/");
             if (response.status === 200)
             {
-                console.log(response.data);
+                //console.log(response.data);
                 setMedicalStaffList(response.data.results);
                 setNumberOfMedicalStaff(response.data.count);
                 setNexUrlForRenderMedicalStaffList(response.data.next);
@@ -194,7 +193,7 @@ export function AdminMedicalStaffList()
                                 <td className="p-4 text-md text-center">{medicalStaff.last_name}</td>
                                 <td className="p-4 text-md text-center">{medicalStaff.gender}</td>
                                 <td className="p-4 text-center text-md">{medicalStaff.email}</td>
-                                <td className="p-4 text-center text-md">{medicalStaff.role}</td>
+                                <td className="p-4 text-center text-md">{medicalStaff.role === "Labtech" ? "Laboratory Assistant" : medicalStaff.role}</td>
                                 <td className="p-4 relative rounded-r-lg">
                                     <div className="w-full items-center justify-center flex gap-6">
                                         <Tooltip placement={"left"} title={"view details"}>

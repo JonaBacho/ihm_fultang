@@ -7,8 +7,8 @@ import {AppRoutesPaths} from "./appRouterPaths.js";
 
 export function AppRoute()
 {
-
-    const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Login/Login.jsx")).LoginPage}));
+    const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Authentication/Login.jsx")).LoginPage}));
+    const ForgottenPage = React.lazy(async () => ({default: (await import("../Pages/Authentication/ForgottenPassword.jsx")).ForgottenPassword}));
     const LandingPage = React.lazy(async () => ({default: (await import("../Pages/LandingPage/LandingPage.jsx")).LandingPage}));
     const NursePage = React.lazy(async () => ({default: (await import("../Pages/Nurse/Nurse.jsx")).Nurse}));
     const NotFoundPage = React.lazy(async () => ({default: (await import("../GlobalComponents/NotFound.jsx")).NotFound}));
@@ -24,13 +24,17 @@ export function AppRoute()
     const CashierPage = React.lazy(async () => ({default: (await import("../Pages/Cashier/Cashier.jsx")).Cashier}));
     const ExamsList = React.lazy(async () => ({default: (await import("../Pages/Cashier/ExamsList.jsx")).ExamsList}));
     const FinancialReport = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialReport.jsx")).FinancialReport}));
-    const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/adminHomePage.jsx")).AdminHomePage}));
+    const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminHomePage.jsx")).AdminHomePage}));
     const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/ReceptionistMedicalStaffs.jsx")).ReceptionistMedicalStaffs}));
     const ReceptionistAppointmentsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/Appointments.jsx")).Appointments}));
     const AdminPatientListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminPatientList.jsx")).AdminPatientList}));
     const AddMedicalStaffPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AddMedicalStaff.jsx")).AddMedicalStaff}));
     const AdminMedicalStaffListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminMedicalStaffList.jsx")).AdminMedicalStaffList}));
-
+    const AdminConsultationListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminConsultationList.jsx")).AdminConsultationList}));
+    const AdminAppointmentsListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminAppointmentsList.jsx")).AdminAppointmentsList}));
+    const AdminExamsListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminExamsList.jsx")).AdminExamsList}));
+    const AdminHospitalRoomPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminHospitalRooms.jsx")).AdminHospitalRooms}));
+    const AddHospitalRoomPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AddHospitalRoom.jsx")).AddHospitalRoom}));
 
 
 
@@ -39,6 +43,7 @@ export function AppRoute()
             <Routes>
                 <Route path={AppRoutesPaths.welcomePage} element={<LandingPage />}/>
                 <Route path={AppRoutesPaths.loginPage} element={<LoginPage />}/>
+                <Route path={AppRoutesPaths.forgottenPasswordPage} element={<ForgottenPage />}/>
                 <Route path={AppRoutesPaths.nursePage} element={<NursePage />}/>
                 <Route path={AppRoutesPaths.pharmacyPage} element={<PharmacyPage />}/>
                 <Route path={AppRoutesPaths.nurseMedicalStaffsPage} element={<NurseMedicalStaffsPage />}/>
@@ -58,10 +63,11 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.adminPatientListPage} element={<AdminPatientListPage />} />
                 <Route path={AppRoutesPaths.addMedicalStaff} element={<AddMedicalStaffPage />} />
                 <Route path={AppRoutesPaths.adminMedicalStaffListPage} element={<AdminMedicalStaffListPage />} />
-
-
-
-
+                <Route path={AppRoutesPaths.adminConsultationListPage} element={<AdminConsultationListPage />} />
+                <Route path={AppRoutesPaths.adminAppointmentsListPage} element={<AdminAppointmentsListPage />} />
+                <Route path={AppRoutesPaths.adminExamsListPage} element={<AdminExamsListPage />} />
+                <Route path={AppRoutesPaths.adminHospitalRoomPage} element={<AdminHospitalRoomPage />} />
+                <Route path={AppRoutesPaths.addRoomPage} element={<AddHospitalRoomPage />} />
                 <Route path={AppRoutesPaths.notFound} element={<NotFoundPage />} />
             </Routes>
         </React.Suspense>

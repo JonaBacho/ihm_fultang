@@ -4,6 +4,7 @@ export const AppRoutesPaths = {
     adminHomePage: "/admin/home",
     welcomePage: "/",
     loginPage: "/login",
+    forgottenPasswordPage: "/forgottenPassword",
     pharmacyPage:"/pharmacy",
     doctorPage: "/doctor",
     laboratoryAssistantPage: "/laboratoryAssistant",
@@ -23,4 +24,9 @@ export const AppRoutesPaths = {
     adminPatientListPage: "/admin/patientList",
     addMedicalStaff: "/admin/addMedicalStaff",
     adminMedicalStaffListPage: "/admin/medicalStaffList",
+    adminConsultationListPage: "/admin/consultationList",
+    adminAppointmentsListPage: "/admin/appointmentsList",
+    adminExamsListPage: "/admin/examsList",
+    adminHospitalRoomPage: "/admin/roomList",
+    addRoomPage: "/admin/addRoom"
 }

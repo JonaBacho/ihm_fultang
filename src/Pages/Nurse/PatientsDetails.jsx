@@ -12,6 +12,8 @@ export function PatientsDetails()
     const patient = state?.patient;
 
 
+
+
     return (
         <>
             <DashBoard requiredRole={"Nurse"} linkList={nurseNavLink}>
@@ -22,7 +24,7 @@ export function PatientsDetails()
                         <div className="flex-1 ml-4 mr-5 flex flex-col">
                             <div
                                 className="h-[140px]  bg-gradient-to-r from-primary-start to-primary-end rounded-lg flex justify-center items-center">
-                                <p className="text-4xl text-white font-bold">Patient's medical parameters</p>
+                                <p className="text-4xl text-white font-bold">{"Patient's medical parameters"}</p>
                             </div>
 
                             <form className="mt-6 mb-5">
@@ -93,7 +95,7 @@ export function PatientsDetails()
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-md mb-2">Pulse </p>
+                                                <p className="text-md mb-2">heart rate </p>
                                                 <div
                                                     className="border-2 border-secondary rounded-lg  flex justify-center items-center">
                                                     <input

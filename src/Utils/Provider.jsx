@@ -12,7 +12,6 @@ export const [FultangProvider, useAuthentication] = constate(useLogin, value => 
 
 function useLogin() {
 
-
     const [isLogged, setIsLogged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [userData, setUserData] = useState({});
@@ -51,7 +50,7 @@ function useLogin() {
         catch (error)
         {
             setIsLoading(false);
-            console.error("Login error:", error);
+            console.error("Authentication error:", error);
             return error.status;
         }
     }
@@ -70,7 +69,6 @@ function useLogin() {
                     const response = await axiosInstance.get("/medical-staff/me/");
                     if (response.status === 200)
                     {
-                        //console.log(response);
                         setIsLogged(true);
                         setUserData(response.data);
                         setUserRole(response.data.role);
