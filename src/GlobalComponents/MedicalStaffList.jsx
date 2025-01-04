@@ -3,51 +3,6 @@ import {Tooltip} from "antd";
 import {useEffect, useState} from "react";
 import axiosInstance from "../Utils/axiosInstance.js";
 
-const medicalStaffs = [
-    {
-        name: "Patients",
-        lastName: "Nurse",
-        gender: "Male",
-        email: "email@gmail.com",
-        role: "doctor",
-        ID: 102457689
-    },
-    {
-        name: "Patients",
-        lastName: "Nurse",
-        gender: "Male",
-        email: "email@gmail.com",
-        role: "doctor",
-        ID: 102457689
-    },
-    {
-        name: "Patients",
-        lastName: "Nurse",
-        gender: "Male",
-        email: "email@gmail.com",
-        role: "doctor",
-        ID: 102457689
-    },
-    {
-        name: "Patients",
-        lastName: "Nurse",
-        gender: "Male",
-        email: "email@gmail.com",
-        role: "doctor",
-        ID: 102457689
-    },
-    {
-        name: "Patients",
-        lastName: "Nurse",
-        gender: "Male",
-        email: "email@gmail.com",
-        role: "doctor",
-        ID: 102457689
-    },
-];
-
-
-
 
 export function MedicalStaffList()
 {
@@ -58,7 +13,7 @@ export function MedicalStaffList()
     const [numberOfMedicalStaff, setNumberOfMedicalStaff] = useState(0);
     const [nexUrlForRenderMedicalStaffList, setNexUrlForRenderMedicalStaffList] = useState("");
     const [previousUrlForRenderMedicalStaffList, setPreviousUrlForRenderMedicalStaffList] = useState("");
-    const [actualPageNumber, setActualPageNumber] = useState(numberOfMedicalStaff ===! 0 ? 1 : 0);
+    const [actualPageNumber, setActualPageNumber] = useState(1);
 
 
 
@@ -183,12 +138,12 @@ export function MedicalStaffList()
                     {medicalStaffList.map((person, index) => (
                         <tr key={index} className="bg-gray-100">
                             <td className="p-6 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                            <td className="p-6 text-md text-blue-900  text-center">{person.name}</td>
-                            <td className="p-6 text-md text-center ">{person.lastName}</td>
+                            <td className="p-6 text-md text-blue-900  text-center">{person.first_name}</td>
+                            <td className="p-6 text-md text-center ">{person.last_name}</td>
                             <td className="p-6 text-md text-center ">{person.gender}</td>
                             <td className="p-6 text-md text-center ">{person.email}</td>
                             <td className="p-6 text-md text-center ">{person.role}</td>
-                            <td className="p-6 flex justify-center rounded-r-xl">{person.ID}</td>
+                            <td className="p-6 flex justify-center rounded-r-xl">{person.cniNumber}</td>
                         </tr>
                     ))}
                     </tbody>

@@ -24,7 +24,9 @@ const consultationData = {
         temperature: 37.2,
         bloodPressure: "120/80",
         heartRate: 72,
-        respiratoryRate: 16
+        respiratoryRate: 16,
+        weight: 70,
+        height: 1.89,
     },
     diagnosis: "Grippe saisonnière",
     prescriptions: [
@@ -121,7 +123,7 @@ export function ConsultationDetails() {
                                                 <Weight className="w-7 h-7 text-primary-end mr-2"/>
                                                 <div>
                                                     <p className="text-sm text-gray-600 font-semibold">Weight</p>
-                                                    <p className="text-xl font-semibold">{consultationData.parameters.temperature}°C</p>
+                                                    <p className="text-xl font-semibold">{consultationData.parameters.weight} Kg</p>
                                                 </div>
                                             </div>
 
@@ -129,7 +131,7 @@ export function ConsultationDetails() {
                                                 <RulerIcon className="w-7 h-7 text-primary-end mr-2"/>
                                                 <div>
                                                     <p className="text-sm text-gray-600 font-semibold">Height</p>
-                                                    <p className="text-xl font-semibold">{consultationData.parameters.temperature}°C</p>
+                                                    <p className="text-xl font-semibold">{consultationData.parameters.height} m^2</p>
                                                 </div>
                                             </div>
 
@@ -188,7 +190,7 @@ export function ConsultationDetails() {
                                         <p className="text-md font-bold mt-1">Diagnostic</p>
 
                                     </div>
-                                    <div className="text-md text-gray-900 bg-blue-50 p-3 rounded-lg">
+                                    <div className="text-md text-gray-900 bg-gray-100 p-3 rounded-lg">
                                         {consultationData.diagnosis}
                                     </div>
                                 </div>
@@ -198,7 +200,7 @@ export function ConsultationDetails() {
                                         <FileText className="w-7 h-7 mb-1"/>
                                         <p className="text-md font-bold ">Doctor Notes</p>
                                     </div>
-                                    <div className="text-md text-gray-900 bg-blue-50 p-4 rounded-lg">
+                                    <div className="text-md text-gray-900 bg-gray-100 p-4 rounded-lg">
                                         {consultationData.notes}
                                     </div>
                                 </div>

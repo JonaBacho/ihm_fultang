@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Calendar, Filter, ChevronDown, ChevronUp,  Clock,  Stethoscope} from 'lucide-react';
 import {AdminDashBoard} from "./AdminDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
@@ -63,9 +63,8 @@ export function AdminConsultationList() {
                             </p>
                         </div>
 
-                        {/* Barre de recherche et filtres */}
                         <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                            <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex flex-row gap-4">
                                 <div className="relative flex-grow">
                                     <input
                                         type="text"

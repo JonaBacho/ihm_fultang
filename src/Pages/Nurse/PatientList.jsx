@@ -62,7 +62,7 @@ export function PatientList ({patients}){
                                         type="button"
                                         className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
                                         onClick={() => {
-                                            navigate(`/nurse/patients/patientDetails/${patient.id}`, {state: {patient}});
+                                            navigate(`/nurse/patients/patient-details/${patient.id}`, {state: {patient}});
                                             setIsMenuOpen(prevState => ({
                                                 ...prevState,
                                                 [patient.id]: false
@@ -76,7 +76,7 @@ export function PatientList ({patients}){
                                         type="button"
                                         className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
                                         onClick={() => {
-                                            navigate(`/nurse/patients/consultationHistory/${patient.id}`, {state: {patient}});
+                                            navigate(`/nurse/patients/consultation-history/${patient.id}`, {state: {patient}});
                                             setIsMenuOpen(prevState => ({
                                                 ...prevState,
                                                 [patient.id]: false
