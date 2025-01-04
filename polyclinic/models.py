@@ -148,7 +148,7 @@ class Patient(models.Model):
         null=False,
         default=1
     )
-    idMedicnalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
+    idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.firstName.__str__()

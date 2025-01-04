@@ -9,9 +9,9 @@ class MedicalStaffPermission(BasePermission):
 
     def has_permission(self, request, view):
         # Autoriser uniquement l'utilisateur avec le rôle 'Admin' pour les actions de liste, de création, de mise à jour et de suppression.
-        if view.action in ["list", "create", "destroy"]:
+        if view.action in ["create", "destroy"]:
             return request.user.is_authenticated and request.user.role == "Admin"
-        elif view.action in ["retrieve", "update", "partial_update"]:
+        elif view.action in ["list", "retrieve", "update", "partial_update"]:
             return request.user.is_authenticated
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
             return request.user.is_authenticated
