@@ -1,7 +1,9 @@
 'use client'
 
 import  { useState } from 'react';
-import { CalendarPlus, FileText, Search } from 'lucide-react';
+import {Calendar, CalendarPlus, ClipboardList, FileText, Pill, Search, Stethoscope, Users} from 'lucide-react';
+import {DashBoard} from "../../../GlobalComponents/DashBoard.jsx";
+import {links} from "../Doctor.jsx";
 
 // Mock data for patients
 const patients = [
@@ -11,7 +13,8 @@ const patients = [
   { id: 4, name: "Sophie Lefebvre", age: 27, gender: "Femme", status: "Suivi actif" },
 ];
 
-export default function PatientList() {
+
+export const PatientList2 = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredPatients = patients.filter(patient =>
@@ -90,3 +93,11 @@ export default function PatientList() {
   );
 }
 
+export function PatientList()
+{
+  return(
+      <DashBoard linkList={links} requiredRole="doctor">
+        <PatientList2></PatientList2>
+      </DashBoard>
+  )
+}
