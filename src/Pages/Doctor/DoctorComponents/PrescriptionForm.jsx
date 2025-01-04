@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Plus, Trash2, FileText } from 'lucide-react';
 import PatientSearch from './PatientSearch';
+import {DashBoard} from "../../../GlobalComponents/DashBoard.jsx";
+import {links} from "../Doctor.jsx";
 
-export default function PrescriptionForm() {
+export const PrescriptionForm2 = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [medications, setMedications] = useState([{ name: '', dosage: '', duration: '' }]);
   const [specialInstructions, setSpecialInstructions] = useState('');
@@ -141,4 +143,14 @@ export default function PrescriptionForm() {
         )}
       </div>
   );
+};
+
+
+export default function PrescriptionForm()
+{
+  return(
+      <DashBoard linkList={links} requiredRole="doctor">
+        <PrescriptionForm2></PrescriptionForm2>
+      </DashBoard>
+  )
 }

@@ -1,8 +1,20 @@
 'use client'
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
+import  { useState } from 'react';
+import {
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  Calendar,
+  FileText,
+  Pill,
+  Stethoscope,
+  ClipboardList,
+  Users
+} from 'lucide-react';
 import PatientSearch from './PatientSearch';
+import {DashBoard} from "../../../GlobalComponents/DashBoard.jsx";
+import {links} from "../Doctor.jsx";
 
 const mockMedicalRecords = {
   1: [
@@ -60,7 +72,7 @@ const mockMedicalRecords = {
   ]
 };
 
-export default function ViewMedicalRecord() {
+const  ViewMedicalRecord2 = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [expandedConsultation, setExpandedConsultation] = useState(null);
 
@@ -130,4 +142,13 @@ export default function ViewMedicalRecord() {
         </button>
       </div>
   );
+}
+
+export default function ViewMedicalRecord()
+{
+  return(
+      <DashBoard linkList={links} requiredRole="doctor">
+        <ViewMedicalRecord2></ViewMedicalRecord2>
+      </DashBoard>
+  )
 }
