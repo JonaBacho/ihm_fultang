@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Appointment
 from polyclinic.permissions.appointment_permissions import AppointmentPermissions
-from polyclinic.serializers import AppointmentSerializer, AppointmentDetailSerializer
+from polyclinic.serializers.appointment_serializers import AppointmentSerializer, AppointmentDetailSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

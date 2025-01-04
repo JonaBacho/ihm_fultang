@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Parameters
-from polyclinic.serializers import ParametersSerializer
+from polyclinic.serializers.parameters_serializers import ParametersSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

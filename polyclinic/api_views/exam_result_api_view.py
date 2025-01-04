@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import ExamResult
-from polyclinic.serializers import ExamResultSerializer
+from polyclinic.serializers.exam_result_serializers import ExamResultSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

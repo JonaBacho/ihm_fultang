@@ -73,6 +73,16 @@ class MedicalStaff(AbstractUser):
 
     objects = MedicalStaffManager()
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original_password = MedicalStaff.objects.get(pk=self.pk).password
+            if self.password != original_password:  # Check if password has been updated
+                self.set_password(self.password)
+        else:
+            # New instance
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.username
 
@@ -160,8 +170,14 @@ class Parameters(models.Model):
     weight = models.FloatField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True)
     temperature = models.FloatField(blank=True, null=True)
-    arterialPressure = models.FloatField(blank=True, null=True)
-    skinAppearance = models.CharField(max_length=100, blank=True, null=True)
+    bloodPressure = models.FloatField(blank=True, null=True)
+    heartRate = models.FloatField(blank=True, null=True)
+    chronicalDiseases = models.TextField(blank=True, null=True)
+    allergies = models.TextField(blank=True, null=True)
+    surgeries = models.TextField(blank=True, null=True)
+    currentMedication = models.TextField(blank=True, null=True)
+    familyMedicalHistory = models.TextField(blank=True, null=True)
+    skinAppearance = models.CharField(max_length=255, blank=True, null=True)
     addDate = models.DateTimeField(auto_now=True)
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.DO_NOTHING, null=True)
@@ -173,12 +189,8 @@ class Consultation(models.Model):
     consultationCost = models.FloatField(blank=True, null=True)
     consultationReason = models.CharField(max_length=100, blank=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
-
-    allergy = models.CharField(max_length=1000, null=True, blank=True)
-    previousHistory = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(max_length=20, default="invalid")
 
-    idParameters = models.ForeignKey("Parameters", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False, blank=True)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)

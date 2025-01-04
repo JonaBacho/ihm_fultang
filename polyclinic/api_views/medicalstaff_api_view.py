@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import MedicalStaff
 from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
-from polyclinic.serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
+from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

@@ -47,7 +47,8 @@ class MedicalStaffManager(BaseUserManager):
             **extra_fields
         )
 
-        user.password = make_password(password)
+        #user.password = make_password(password)
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
