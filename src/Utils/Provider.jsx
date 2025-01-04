@@ -40,7 +40,7 @@ function useLogin() {
             {
                 setIsLoading(false);
                 //console.log(response);
-                saveAuthParameters(response.data.access, response.data.refresh, response.data.user.role);
+                saveAuthParameters(response.data.access, response.data.refresh);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
                 setIsLogged(true);
@@ -93,7 +93,8 @@ function useLogin() {
 
 
 
-    function isAuthenticated() {
+    function isAuthenticated()
+    {
         return isLogged;
     }
 

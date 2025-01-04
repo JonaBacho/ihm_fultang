@@ -55,23 +55,11 @@ export const adminNavLink = [
     {
         name: 'Financial Report',
         icon: FaFileInvoiceDollar,
-        link: appRoutes.nursePage,
+        link: appRoutes.adminFinancialReportsPage,
     },
     {
-        name: "Hospital Rooms",
-        icon: Bed,
-        subLinks: [
-            {
-                icon: BedDouble,
-                name: "Rooms List",
-                link: appRoutes.adminHospitalRoomPage
-            },
-            {
-                icon: FaPlus,
-                name: "Add A Room",
-                link: appRoutes.addRoomPage
-            }
-        ]
+        name: 'Hospital Rooms',
+        icon: BedDouble,
+        link: appRoutes.adminHospitalRoomPage
     },
-
 ];

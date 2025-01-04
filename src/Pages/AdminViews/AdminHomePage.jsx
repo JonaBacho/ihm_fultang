@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
 import PropTypes from "prop-types";
 
+
 export function AdminHomePage() {
 
 
@@ -125,6 +126,7 @@ export function AdminHomePage() {
 
 
                 <div className="bg-white rounded-lg shadow-lg p-6">
+                  
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Access</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <QuickActionButton
@@ -149,13 +151,18 @@ export function AdminHomePage() {
                         />
                         <QuickActionButton
                             icon={FileSpreadsheet}
+                            label="View Consultations List"
+                            onClick={() => navigate(AppRouterPaths.adminConsultationListPage)}
+                        />
+                        <QuickActionButton
+                            icon={FileSpreadsheet}
                             label="Manage Medicine"
                             onClick={() => alert("Manage Medicine")}
                         />
                         <QuickActionButton
                             icon={FileSpreadsheet}
                             label="Financial Reports"
-                            onClick={() => alert("Financial Reports")}
+                            onClick={() => navigate(AppRouterPaths.adminFinancialReportsPage)}
                         />
                     </div>
                 </div>
@@ -200,10 +207,10 @@ function QuickActionButton({icon: Icon, label, onClick}) {
     return (
         <button
             onClick={onClick}
-            className="flex flex-col items-center gap-2 p-4 rounded-lg border border-gray-200 hover:border-[#4DB6AC] hover:bg-gray-50 transition-all"
+            className="flex flex-col items-center gap-2 p-4  rounded-lg border border-gray-200 hover:border-2 hover:border-primary-end hover:bg-gray-100 transition-all duration-300"
         >
-            <Icon className="w-6 h-6 text-[#4DB6AC]"/>
-            <span className="text-sm text-gray-700 text-center">{label}</span>
+            <Icon className="w-6 h-6 text-primary-end"/>
+            <span className="text-md text-gray-600 font-bold text-center">{label}</span>
         </button>
     );
 }
