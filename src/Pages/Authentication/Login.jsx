@@ -70,6 +70,10 @@ export function LoginPage()
         {
             navigate(appRouterPaths.specialistPage)
         }
+        else if (response === "Accountant")
+        {
+            navigate(appRouterPaths.accountantPage)
+        }
         else if (response === "bad role")
         {
             setIsLoginErrorPresent(true);
@@ -78,7 +82,7 @@ export function LoginPage()
         else if (response === "No role")
         {
             setIsLoginErrorPresent(true);
-            setLoginError("You do not have a specialization, contact an administrator to complete your registration for the application")
+            setLoginError("You do not have a specialization, contact an administrator to complete your registration for the application.")
         }
         if (response === 401)
         {
@@ -93,7 +97,7 @@ export function LoginPage()
         else
         {
             setIsLoginErrorPresent(true);
-            setLoginError("An error occurred, please retry!")
+            setLoginError("An error occurred, please retry later!")
         }
     }
 

@@ -34,7 +34,9 @@ export function AppRoute()
     const AdminAppointmentsListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminAppointmentsList.jsx")).AdminAppointmentsList}));
     const AdminExamsListPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminExamsList.jsx")).AdminExamsList}));
     const AdminHospitalRoomPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminHospitalRooms.jsx")).AdminHospitalRooms}));
-    const AddHospitalRoomPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AddHospitalRoom.jsx")).AddHospitalRoom}));
+    const AdminFinancialReportsPage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminFinancialReports.jsx")).AdminFinancialReports}));
+    const AccountantPage = React.lazy(async () => ({default: (await import("../Pages/Accountant/Accountant.jsx")).Accountant}));
+    const AdminConsultationDetails = React.lazy(async () => ({default: (await import("../Pages/AdminViews/ConsultationDetails.jsx")).ConsultationDetails}));
 
 
 
@@ -67,7 +69,11 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.adminAppointmentsListPage} element={<AdminAppointmentsListPage />} />
                 <Route path={AppRoutesPaths.adminExamsListPage} element={<AdminExamsListPage />} />
                 <Route path={AppRoutesPaths.adminHospitalRoomPage} element={<AdminHospitalRoomPage />} />
-                <Route path={AppRoutesPaths.addRoomPage} element={<AddHospitalRoomPage />} />
+                <Route path={AppRoutesPaths.adminFinancialReportsPage} element={<AdminFinancialReportsPage />} />
+                <Route path={AppRoutesPaths.accountantPage} element={<AccountantPage />} />
+                <Route path={AppRoutesPaths.adminConsultationDetailsPage} element={<AdminConsultationDetails />} />
+
+
                 <Route path={AppRoutesPaths.notFound} element={<NotFoundPage />} />
             </Routes>
         </React.Suspense>

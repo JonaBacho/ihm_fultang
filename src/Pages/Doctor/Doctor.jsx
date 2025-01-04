@@ -13,8 +13,8 @@ const links = [
 export function Doctor()
 {
     return(
-        <DashBoard linkList={links} requiredRole="doctor">
-            <h2>Bienvenue dans le tableau de bord du médecin !</h2>
+        <DashBoard linkList={links} requiredRole="Doctor">
+            <h2>Bienvenue dans le tableau de bord du médecin!</h2>
         </DashBoard>
     )
 }
