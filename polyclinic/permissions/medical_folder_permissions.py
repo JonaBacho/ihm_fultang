@@ -16,12 +16,15 @@ class MedicalFolderPermission(BasePermission):
         if request.user.role == "Admin":
             return True
         elif view.action in ["list", "retrieve"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
-            patient = Patient.objects.get(idMedicalFolder=obj)
-            return PatientAccess.objects.filter(
-                    idPatient=patient,
-                    idMedicalStaff=request.user,
-                    access=True
-                ).exists()
+            if request.user.role in ["Receptionist", "Nurse"]:
+                return True
+            else:
+                patient = Patient.objects.get(idMedicalFolder=obj)
+                return PatientAccess.objects.filter(
+                        idPatient=patient,
+                        idMedicalStaff=request.user,
+                        access=True
+                    ).exists()
         elif (request.user.role in ["Receptionist", "Nurse", "Doctor"]) and view.action not in ["destroy", "create", "update", "partial_update"]:
             return True
         return False
