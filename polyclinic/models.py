@@ -141,13 +141,14 @@ class Patient(models.Model):
     service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=True)
     status = models.CharField(max_length=20, default="invalid")  # The patient status
 
+    # l'id du medical staff qui a créé le patient
     idMedicalStaff = models.ForeignKey(
         "MedicalStaff",
         on_delete=models.DO_NOTHING,
         null=False,
         default=1
     )
-    idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
+    idMedicnalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.firstName.__str__()
@@ -215,7 +216,10 @@ class MedicalFolder(models.Model):
 class MedicalFolderPage(models.Model):
     pageNumber = models.IntegerField()
     addDate = models.DateTimeField(auto_now=True)
-    remark = models.TextField(max_length=10000, blank=True, null=True)
+    nurseNote = models.TextField(max_length=10000, blank=True, null=True)
+    doctorNote = models.TextField(max_length=10000, blank=True, null=True)
+    diagnostic = models.TextField(max_length=10000, blank=True, null=True)
+
 
     idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=True)
 

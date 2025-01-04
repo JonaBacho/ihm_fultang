@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from polyclinic.models import PatientAccess
+from polyclinic.models import PatientAccess, Patient
 
 class MedicalFolderPermission(BasePermission):
     def has_permission(self, request, view):
@@ -16,8 +16,9 @@ class MedicalFolderPermission(BasePermission):
         if request.user.role == "Admin":
             return True
         elif view.action in ["list", "retrieve"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
+            patient = Patient.objects.get(idMedicalFolder=obj)
             return PatientAccess.objects.filter(
-                    idPatient=obj,
+                    idPatient=patient,
                     idMedicalStaff=request.user,
                     access=True
                 ).exists()

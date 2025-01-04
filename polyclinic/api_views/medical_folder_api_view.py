@@ -2,7 +2,7 @@ from django.db.models.query import Prefetch
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import MedicalFolder, MedicalFolderPage, Parameters
 from polyclinic.permissions.medical_folder_permissions import MedicalFolderPermission
-from polyclinic.serializers.medical_folder_serializers import MedicalFolderSerializer
+from polyclinic.serializers.medical_folder_serializers import MedicalFolderSerializer, MedicalFolderDetailsSerializer
 from polyclinic.serializers.medical_folder_page_serializers import MedicalFolderPageCreateSerializer, MedicalFolderPageSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -107,7 +107,10 @@ class MedicalFolderViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return MedicalFolderSerializer
+        if self.action in ["list", "retrieve"]:
+            return MedicalFolderDetailsSerializer
+        else:
+            return MedicalFolderSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
@@ -138,11 +141,12 @@ class MedicalFolderViewSet(ModelViewSet):
         ]
     )
     @action(methods=['post'], detail=True, url_path='add-page')
-    def add_page(self, request, pk=None, *args, **kwargs):
+    def add_page(self, request, *args, **kwargs):
         medical_folder = self.get_object()
+        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         serializer = MedicalFolderPageCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(idMedicalFolder=medical_folder)
+            serializer.save(idMedicalFolder=medical_folder, pageNumber=number+1)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -154,16 +158,23 @@ class MedicalFolderViewSet(ModelViewSet):
             400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
             404: openapi.Response(description="Page inexistante"),
             403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        manual_parameters=[
+            openapi.Parameter(
+                'pk',
+                openapi.IN_PATH,
+                description="ID de la page.",
+                type=openapi.TYPE_INTEGER
+            )
+        ]
     )
     @action(methods=['put'], detail=True, url_path='update-page')
-    def update_page(self, request, pk=None, *args, **kwargs):
+    def update_page(self, request, pk, *args, **kwargs):
         try:
-            page_id = request.data.get('id')
-            if not page_id:
+            if pk is None:
                 return Response({'error': 'L\'ID de la page est requis.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            page = MedicalFolderPage.objects.get(id=page_id)
+            page = MedicalFolderPage.objects.get(id=pk)
 
             # Vérification que la page appartient bien au carnet médical (MedicalFolder)
             medical_folder = self.get_object()
@@ -174,7 +185,7 @@ class MedicalFolderViewSet(ModelViewSet):
                 )
 
             # Validation et mise à jour des données
-            serializer = MedicalFolderPageSerializer(page, data=request.data)
+            serializer = MedicalFolderPageCreateSerializer(page, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -193,9 +204,10 @@ class MedicalFolderViewSet(ModelViewSet):
         }
     )
     @action(methods=['post'], detail=True, url_path='new-params')
-    def new_params(self, request, pk=None, *args, **kwargs):
+    def new_params(self, request, *args, **kwargs):
         medical_folder = self.get_object()
-        page_data = {'idMedicalFolder': medical_folder.id}
+        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
+        page_data = {'idMedicalFolder': medical_folder.id, 'pageNumber': number+1}
         page_serializer = MedicalFolderPageSerializer(data=page_data)
         if page_serializer.is_valid():
             page = page_serializer.save()
@@ -215,9 +227,11 @@ class MedicalFolderViewSet(ModelViewSet):
         }
     )
     @action(methods=['put'], detail=False, url_path='update-params')
-    def update_params(self, request, *args, **kwargs):
+    def update_params(self, request, pk, *args, **kwargs):
         try:
-            params = Parameters.objects.get(id=request.data['id'])
+            if pk is None:
+                return Response({'error', "id du paramètre requis"}, status=status.HTTP_400_BAD_REQUEST)
+            params = Parameters.objects.get(pk)
             serializer = ParametersCreateSerializer(params, data=request.data)
             if serializer.is_valid():
                 serializer.save()

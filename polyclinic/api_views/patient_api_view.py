@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Patient, PatientAccess, MedicalFolder
+from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
 from polyclinic.permissions.patient_permissions import PatientPermission
 from polyclinic.serializers.patient_serializers import PatientSerializer, PatientCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -143,27 +143,68 @@ class PatientViewSet(ModelViewSet):
     @swagger_auto_schema(
         operation_description="Permet de retirer l'access d'un staff à un patient",
         responses={
-            204: openapi.Response(description="Acess au patient mis retiré"),
+            204: openapi.Response(description="Acess au patient retiré"),
             403: openapi.Response(description="Token invalide ou expiré"),
             404: openapi.Response(description="Access non existent"),
             400: openapi.Response(description="Bad request"),
         },
         manual_parameters=[
-            openapi.Parameter('id', openapi.IN_QUERY, description="ID de l'utilisateur", type=openapi.TYPE_INTEGER)
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné", type=openapi.TYPE_INTEGER)
         ]
     )
-    @action(methods=['get'], detail=False, url_path='remove-access')
-    def remove_access(self, request, *args, **kwargs):
-        access_id = request.GET.get('id')
-        if not access_id:
-            return Response({'details': "id de l'objet est requis"},
+    @action(methods=['get'], detail=True, url_path='remove-access')
+    def remove_access(self, request, id, *args, **kwargs):
+        if id is None:
+            return Response({'details': "l'id du médical staff est requis"},
                             status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
-        p = PatientAccess.objects.get(id=access_id)
-        if p:
-            p.access = False
-            p.lostAt = now()
-            p.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'details': "id d'objet n'existe pas"}, status=status.HTTP_404_NOT_FOUND,
-                            content_type='application/json')
+        try:
+            patient = self.get_object()
+            medical_staff = MedicalStaff.objects.get(id=id)
+            patient_access = PatientAccess.objects.filter(idPatient=patient)
+            patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
+            if patient_access:
+                patient_access.access = False
+                patient_access.lostAt = now()
+                patient_access.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'details': "ce medical staff n'a pas d'accès"}, status=status.HTTP_404_NOT_FOUND,
+                                content_type='application/json')
+        except MedicalStaff.DoesNotExit:
+            return Response({'details': 'MedicalStaff not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Patient.DoesNotEXit:
+            return Response({'details': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        operation_description="Permet de retirer l'access d'un staff à un patient",
+        responses={
+            201: openapi.Response(description="Acess au patient cree"),
+            204: openapi.Response(description="Accces déjà existant"),
+            403: openapi.Response(description="Token invalide ou expiré"),
+            404: openapi.Response(description="Access non existent"),
+            400: openapi.Response(description="Bad request"),
+        },
+        manual_parameters=[
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
+                              type=openapi.TYPE_INTEGER)
+        ]
+    )
+    @action(methods=['get'], detail=True, url_path='add-access')
+    def add_access(self, request, id, *args, **kwargs):
+        if id is None:
+            return Response({'details': "id du medical staff est requis"},
+                            status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+        try:
+            patient = self.get_object()
+            medical_staff = MedicalStaff.objects.get(id=id)
+            patient_access = PatientAccess.objects.filter(idPatient=patient)
+            patient_access = patient_access.filter(idMedicalStaff=medical_staff).exists()
+            if patient_access:
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                patient_access = PatientAccess.objects.create(idPatient=patient, idMedicalStaff=medical_staff, access=True)
+                return Response(patient_access, status=status.HTTP_201_CREATED)
+        except MedicalStaff.DoesNotExit:
+            return Response({'details': 'MedicalStaff not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Patient.DoesNotEXit:
+            return Response({'details': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)

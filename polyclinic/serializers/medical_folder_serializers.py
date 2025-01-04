@@ -11,4 +11,4 @@ class MedicalFolderDetailsSerializer(serializers.ModelSerializer):
     pages = MedicalFolderPageSerializer(source='medicalfolderpage_set', many=True)
     class Meta:
         model = MedicalFolder
-        fields = '__all__'
+        fields = ['id', 'createDate', 'lastModificationDate', 'folderCode', 'isClosed', 'pages']
