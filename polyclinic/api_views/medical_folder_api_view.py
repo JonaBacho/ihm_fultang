@@ -209,6 +209,8 @@ class MedicalFolderViewSet(ModelViewSet):
             if params_serializer.is_valid():
                 params_serializer.save(idMedicalFolderPage=page)
                 return Response(params_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(params_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(page_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
