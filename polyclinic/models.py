@@ -14,18 +14,19 @@ User = settings.AUTH_USER_MODEL
 ROLES = [
     ('NoRole', 'NoRole'),
     ('Doctor', 'Doctor'),
-    ('Patient', 'Patient'),
     ('Receptionist', 'Receptionist'),
     ('Admin', 'Admin'),
     ('Accountant', 'Accountant'),
     ('Nurse', 'Nurse'),
     ('Labtech', 'Labtech'),
     ('HRM', 'HRM'),
+    ('Pharmacist', 'Pharmacist'),
+    ('Cashier', 'Cashier')
+]
+TYPEDOCTOR = [
     ('Specialist', 'Specialist'),
     ('Ophtalmologist', 'Ophtalmologist'),
-    ('Pharmacist', 'Pharmacist'),
     ('Dentist', 'Dentist'),
-    ('Cashier', 'Cashier')
 ]
 
 MessageType = [
@@ -54,6 +55,12 @@ SERVICE = [
     ('Specialist', 'Specialist'),
     ('All', 'All'),
 
+]
+
+STATECONSULTATION = [
+    ('InProgress', 'InProgress'),
+    ('Completed', 'Completed'),
+    ('Pending', 'Pending'),
 ]
 
 
@@ -152,7 +159,7 @@ class Parameters(models.Model):
     weight = models.FloatField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True)
     temperature = models.FloatField(blank=True, null=True)
-    bloodPressure = models.FloatField(blank=True, null=True)
+    bloodPressure = models.CharField(blank=True, null=True, max_length=255)
     heartRate = models.FloatField(blank=True, null=True)
     chronicalDiseases = models.TextField(blank=True, null=True)
     allergies = models.TextField(blank=True, null=True)
@@ -166,25 +173,35 @@ class Parameters(models.Model):
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
+class ConsultationType(models.Model):
+    typeDoctor = models.CharField(max_length=100, choices=TYPEDOCTOR, default='Specialist')
+    price = models.FloatField(default=0.0)
+
+
 class Consultation(models.Model):
     consultationDate = models.DateTimeField(auto_now=True)
-    consultationCost = models.FloatField(blank=True, null=True)
-    consultationReason = models.CharField(max_length=100, blank=True)
+    consultationPrice = models.FloatField(default=5000)
+    consultationReason = models.CharField(max_length=100, blank=True, null=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
-    status = models.CharField(max_length=20, default="invalid")
+    paymentStatus = models.CharField(max_length=100, default="invalid")
+    state = models.CharField(max_length=100, choices=STATECONSULTATION, default="Pending")
 
-    idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
+    idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False, blank=True)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaffSender = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send", default=1)  # celui qui envoi vers celui qui va faire la consultation
+    idMedicalStaffGiver = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give", default=1)   # celui qui va effectuer la consultation
     idConsultationType = models.ForeignKey("ConsultationType", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.idPatient.__str__()
+        return f"{self.idPatient.__str__()} par {self.idMedicalStaffGiver.__str__()}"
 
-
-class ConsultationType(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.FloatField(default=0.0)
+    def save(self, *args, **kwargs):
+        giverRole = self.idMedicalStaffGiver.role
+        consultation_type = ConsultationType.objects.filter(typeDoctor=giverRole).first()
+        if consultation_type:
+            self.idConsultationType = consultation_type
+            self.consultationPrice = consultation_type.price
+        super().save(*args, **kwargs)
 
 
 class MedicalFolder(models.Model):
@@ -255,15 +272,15 @@ class ExamResult(models.Model):
 
 class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    quantity = models.IntegerField()
-    medicamentName = models.CharField(max_length=50, null=False, default="")
+    quantity = models.IntegerField(default=1)
+    name = models.CharField(max_length=50, null=False, default="")
     status = models.CharField(max_length=20, default="invalid")
-    medicamentCost = models.FloatField(max_length=20, null=False, default="0.0")
-    expiryDate = models.DateField(auto_now=False)
+    price = models.FloatField(default=5000)
+    expiryDate = models.DateTimeField(auto_now=False)
     description = models.TextField(max_length=200, null=False, default="important")
 
     def __str__(self):
-        return self.medicamentName.__str__()
+        return self.name.__str__()
 
 
 class Prescription(models.Model):
@@ -273,9 +290,10 @@ class Prescription(models.Model):
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicament = models.ForeignKey("Medicament", on_delete=models.CASCADE, null=False, default=1)
 
     def __str__(self):
-        return self.dose.__str__() + " " + self.idPatient.__str__()
+        return self.dose.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
 
 
 class Room(models.Model):

@@ -1,3 +1,4 @@
+from .api_views.consultation_type_api_view import ConsultationTypeViewSet
 from .api_views.medicalstaff_api_view import MedicalStaffViewSet
 from .api_views.appointment_api_view import AppointmentViewSet
 from .api_views.bill_api_view import BillViewSet
@@ -24,6 +25,7 @@ router = DefaultRouter()
 router.register(r'appointment', AppointmentViewSet, basename='appointment')
 router.register(r'bill', BillViewSet, basename='bill')
 router.register(r'consultation', ConsultationViewSet, basename='consultation')
+router.register(r'consultation-type', ConsultationTypeViewSet, basename='consultation-type')
 router.register(r'department', DepartmentViewSet, basename='department')
 router.register(r'exam', ExamViewSet, basename='exam')
 router.register(r'exam-result', ExamResultViewSet, basename='exam-result')

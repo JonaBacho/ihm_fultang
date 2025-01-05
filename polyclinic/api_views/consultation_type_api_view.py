@@ -1,14 +1,12 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Consultation, MedicalStaff
-from polyclinic.permissions.consultation_permissions import ConsultationPermissions
-from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
+from polyclinic.models import ConsultationType
+from polyclinic.permissions.consultation_type_permissions import ConsultationTypePermissions
+from polyclinic.serializers.consultation_type_serializers import ConsultationTypeSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
 
 auth_header_param = openapi.Parameter(
     name="Authorization",
@@ -26,8 +24,7 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param,
-        openapi.Parameter('doctor', openapi.IN_QUERY, description="ID du docteur", type=openapi.TYPE_INTEGER, required=False),]
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
@@ -88,34 +85,24 @@ auth_header_param = openapi.Parameter(
         manual_parameters=[auth_header_param]
     )
 )
-class ConsultationViewSet(ModelViewSet):
+class ConsultationTypeViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, ConsultationPermissions]
+    permission_classes = [IsAuthenticated, ConsultationTypePermissions]
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        try:
-            queryset = Consultation.objects.all()
-            if "doctor" in self.request.query_params:
-                idDoctor = self.request.query_params["doctor"]
-                doctor = MedicalStaff.objects.get(id=idDoctor)
-                queryset = queryset.filter(idMedicalStaffGiver=doctor)
-            return queryset
-        except MedicalStaff.DoesNotExist:
-            return Response({'details': "l'id du medecin passé ne correspond à aucun docteur existant"}, status.HTTP_404_NOT_FOUND)
+        queryset = ConsultationType.objects.all()
+        return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
-            return ConsultationCreateSerializer
-        else:
-            return ConsultationSerializer
+        return ConsultationTypeSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save()
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save()
