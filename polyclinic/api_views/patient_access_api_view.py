@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import PatientAccess
 from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
-from polyclinic.serializers.patient_access_serializers import PatientAcessSerializer
+from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -99,7 +99,7 @@ class PatientAccessViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return PatientAcessSerializer
+        return PatientAccessSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:

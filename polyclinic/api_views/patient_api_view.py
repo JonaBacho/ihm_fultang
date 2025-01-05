@@ -1,6 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
+from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
 from polyclinic.permissions.patient_permissions import PatientPermission
+from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 from polyclinic.serializers.patient_serializers import PatientSerializer, PatientCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -144,16 +146,18 @@ class PatientViewSet(ModelViewSet):
         operation_description="Permet de retirer l'access d'un staff à un patient",
         responses={
             204: openapi.Response(description="Acess au patient retiré"),
+            208: openapi.Response(description="Accès au patient déjà retiré"),
             403: openapi.Response(description="Token invalide ou expiré"),
             404: openapi.Response(description="Access non existent"),
             400: openapi.Response(description="Bad request"),
         },
         manual_parameters=[
-            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné", type=openapi.TYPE_INTEGER)
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné", type=openapi.TYPE_INTEGER, required=True),
+            auth_header_param
         ]
     )
-    @action(methods=['get'], detail=True, url_path='remove-access')
-    def remove_access(self, request, id, *args, **kwargs):
+    @action(methods=['post'], detail=True, url_path='remove-access/(?P<id>[^/.]+)', permission_classes=[PatientAccessPermission])
+    def remove_access(self, request, id=None, *args, **kwargs):
         if id is None:
             return Response({'details': "l'id du médical staff est requis"},
                             status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
@@ -162,21 +166,22 @@ class PatientViewSet(ModelViewSet):
             medical_staff = MedicalStaff.objects.get(id=id)
             patient_access = PatientAccess.objects.filter(idPatient=patient)
             patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
-            if patient_access:
+            if patient_access.access:
                 patient_access.access = False
                 patient_access.lostAt = now()
                 patient_access.save()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+                serializer = PatientAccessSerializer(patient_access)
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             else:
-                return Response({'details': "ce medical staff n'a pas d'accès"}, status=status.HTTP_404_NOT_FOUND,
+                return Response({'details': "ce medical staff n'a déjà pas d'accès"}, status=status.HTTP_208_ALREADY_REPORTED,
                                 content_type='application/json')
-        except MedicalStaff.DoesNotExit:
+        except MedicalStaff.DoesNotExist:
             return Response({'details': 'MedicalStaff not found'}, status=status.HTTP_404_NOT_FOUND)
-        except Patient.DoesNotEXit:
+        except Patient.DoesNotExist:
             return Response({'details': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
-        operation_description="Permet de retirer l'access d'un staff à un patient",
+        operation_description="Permet de donner l'access d'un staff à un patient",
         responses={
             201: openapi.Response(description="Acess au patient cree"),
             204: openapi.Response(description="Accces déjà existant"),
@@ -186,11 +191,12 @@ class PatientViewSet(ModelViewSet):
         },
         manual_parameters=[
             openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
-                              type=openapi.TYPE_INTEGER)
+                              type=openapi.TYPE_INTEGER, required=True),
+            auth_header_param
         ]
     )
-    @action(methods=['get'], detail=True, url_path='add-access')
-    def add_access(self, request, id, *args, **kwargs):
+    @action(methods=['post'], detail=True, url_path='add-access/(?P<id>[^/.]+)', permission_classes=[PatientAccessPermission])
+    def add_access(self, request, id=None, *args, **kwargs):
         if id is None:
             return Response({'details': "id du medical staff est requis"},
                             status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
@@ -198,13 +204,17 @@ class PatientViewSet(ModelViewSet):
             patient = self.get_object()
             medical_staff = MedicalStaff.objects.get(id=id)
             patient_access = PatientAccess.objects.filter(idPatient=patient)
-            patient_access = patient_access.filter(idMedicalStaff=medical_staff).exists()
+            patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
             if patient_access:
-                return Response(status=status.HTTP_204_NO_CONTENT)
+                patient_access.access = True
+                patient_access.save()
+                serializer = PatientAccessSerializer(patient_access)
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             else:
                 patient_access = PatientAccess.objects.create(idPatient=patient, idMedicalStaff=medical_staff, access=True)
-                return Response(patient_access, status=status.HTTP_201_CREATED)
-        except MedicalStaff.DoesNotExit:
+                serializer = PatientAccessSerializer(patient_access)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except MedicalStaff.DoesNotExist:
             return Response({'details': 'MedicalStaff not found'}, status=status.HTTP_404_NOT_FOUND)
-        except Patient.DoesNotEXit:
+        except Patient.DoesNotExist:
             return Response({'details': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)

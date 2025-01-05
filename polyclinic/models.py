@@ -106,25 +106,6 @@ class PatientAccess(models.Model):
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
 
-    def save(self, *args, **kwargs):
-        # Vérifie si une entrée existe déjà pour le couple (idPatient, idMedicalStaff)
-        existing_access = PatientAccess.objects.filter(
-            idPatient=self.idPatient,
-            idMedicalStaff=self.idMedicalStaff
-        ).first()
-
-        if existing_access:
-            # Mettre à jour l'accès existant
-            existing_access.access = True
-            existing_access.givenAt = now()
-            existing_access.lostAt = existing_access.givenAt + timedelta(weeks=2)
-            existing_access.save()
-        else:
-            # Créer une nouvelle entrée si aucune n'existe
-            if not self.lostAt:
-                self.lostAt = (self.givenAt or now()) + timedelta(weeks=2)
-            super().save(*args, **kwargs)
-
 
 # classe qui definie le patient
 class Patient(models.Model):
@@ -222,6 +203,7 @@ class MedicalFolderPage(models.Model):
 
 
     idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=True)
+    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, default=1)
 
 
 # ======================================

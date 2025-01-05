@@ -15,4 +15,4 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MedicalFolderPage
-        exclude = ['id', 'pageNumber']
+        exclude = ['id', 'pageNumber', 'idMedicalStaff']
