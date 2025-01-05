@@ -1,19 +1,23 @@
-import {FaChevronDown, FaChevronUp, FaUserNurse} from "react-icons/fa";
-import {HeartCrack} from "lucide-react";
+import {  Stethoscope, History, Eye } from 'lucide-react';
 import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {Tooltip} from "antd";
 
 
 
-export function PatientList ({patients}){
+
+
+export function PatientList ({patients, setCanOpenViewPatientDetailModal, setSelectedPatient}){
 
     PatientList.propTypes = {
-        patients: PropTypes.array.isRequired
+        patients: PropTypes.array.isRequired,
+        setCanOpenViewPatientDetailModal: PropTypes.func.isRequired,
+        setSelectedPatient: PropTypes.func.isRequired
     }
 
     const navigate = useNavigate();
-    const [isMenuOpen, setIsMenuOpen] = useState({});
+
+
 
 
     return (
@@ -36,64 +40,46 @@ export function PatientList ({patients}){
             {patients.map((patient, index) => (
                 <tr key={patient.id || index} className="bg-gray-100">
                     <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                    <td className="p-4 text-md text-blue-900 text-center">{patient.firstName}</td>
-                    <td className="p-4 text-md text-center">{patient.lastName}</td>
+                    <td className="p-4 text-md text-blue-900 font-bold text-center">{patient.firstName}</td>
+                    <td className="p-4 text-md text-center font-semibold">{patient.lastName}</td>
                     <td className="p-4 text-md text-center">{patient.gender}</td>
                     <td className="p-4 text-md text-center">{patient.birthDate}</td>
                     <td className="p-4 relative rounded-r-lg">
-                        <div className="relative w-full">
-                            <div
-                                className="flex justify-center items-center cursor-pointer"
-                                onClick={() => setIsMenuOpen(prevState => ({
-                                    [patient.id]: !prevState[patient.id]
-                                }))}
-                            >
-                                <div className="px-5 py-2 bg-secondary text-white flex rounded-xl">
-                                    <p className="mr-3">Open</p>
-                                    {isMenuOpen[patient.id] ? <FaChevronUp className="mt-1"/> :
-                                        <FaChevronDown className="mt-1"/>}
+                        <div className="flex items-center justify-center gap-3">
 
-                                </div>
-                            </div>
-                            {isMenuOpen[patient.id] && (
-                                <div
-                                    className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-md border border-gray-200 z-50">
-                                    <button
-                                        type="button"
-                                        className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
-                                        onClick={() => {
-                                            navigate(`/nurse/patients/patient-details/${patient.id}`, {state: {patient}});
-                                            setIsMenuOpen(prevState => ({
-                                                ...prevState,
-                                                [patient.id]: false
-                                            }));
-                                        }}
-                                    >
-                                        <HeartCrack className="h-6 w-6 mr-2"/>
-                                        Take parameters
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-100 transition-colors duration-200"
-                                        onClick={() => {
-                                            navigate(`/nurse/patients/consultation-history/${patient.id}`, {state: {patient}});
-                                            setIsMenuOpen(prevState => ({
-                                                ...prevState,
-                                                [patient.id]: false
-                                            }));
-                                        }}
-                                    >
-                                        <FaUserNurse className="h-6 w-6 mr-2"/>
-                                        View Consultation history
-                                    </button>
-                                </div>
-                            )}
+
+                            <Tooltip placement={"left"} title={"view patient information"}>
+                                <button
+                                    className="p-2 hover:bg-gray-300 rounded-full transition-all duration-300"
+                                    onClick={() => {setSelectedPatient(patient), setCanOpenViewPatientDetailModal(true)}}
+                                >
+                                    <Eye className="h-6 w-6 text-primary-end"/>
+                                </button>
+                            </Tooltip>
+
+
+                            <Tooltip placement={"top"} title={"Take medical parameters"}>
+                                <button className="p-2 hover:bg-gray-300 rounded-full transition-all duration-300"
+                                    onClick={() => navigate(`/nurse/patients/take-parameters/${patient.id}`, {state: {patient: patient}})}
+                                >
+                                    <Stethoscope className="h-6 w-6 text-primary-end"/>
+                                </button>
+                            </Tooltip>
+
+
+                            <Tooltip placement={"right"} title={"View history"}>
+                                <button className="p-2 hover:bg-gray-300 rounded-full transition-all duration-300"
+                                        onClick={() => console.log('View history for:', patient.id)}
+                                >
+                                    <History className="h-6 w-6 text-primary-end"/>
+                                </button>
+                            </Tooltip>
                         </div>
                     </td>
                 </tr>
-            ))}
+                ))}
             </tbody>
         </table>
 
-    )
+)
 }

@@ -8,6 +8,8 @@ import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Tooltip} from "antd";
 import {useEffect, useState} from "react";
 import axiosInstance from "../../Utils/axiosInstance.js";
+import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
+import {ErrorModal} from "../Modals/ErrorModal.jsx";
 
 
 
@@ -22,7 +24,13 @@ export function Nurse()
     const [numberOfPatients, setNumberOfPatients] = useState(0);
     const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
     const [previousUrlForRenderPatientList,setPreviousUrlForRenderPatientList] = useState("");
-    const [actualPageNumber, setActualPageNumber] = useState(0);
+    const [actualPageNumber, setActualPageNumber] = useState(1);
+
+
+    const [canOpenViewPatientDetailsModal, setCanOpenViewPatientDetailsModal] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState({});
+    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
 
@@ -37,11 +45,15 @@ export function Nurse()
                 setNumberOfPatients(response.data.count);
                 setNexUrlForRenderPatientList(response.data.next);
                 setPreviousUrlForRenderPatientList(response.data.previous);
+                setErrorMessage("");
+                setCanOpenErrorModal(false);
             }
         }
         catch (error)
         {
             console.log(error);
+            setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
+            setCanOpenErrorModal(true);
         }
     }
 
@@ -58,9 +70,13 @@ export function Nurse()
                     setNumberOfPatients(response.data.count);
                     setNexUrlForRenderPatientList(response.data.next);
                     setPreviousUrlForRenderPatientList(response.data.previous);
+                    setErrorMessage("");
+                    setCanOpenErrorModal(false);
                 }
             } catch (error) {
                 console.log(error);
+                setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
+                setCanOpenErrorModal(true);
             }
         }
     }
@@ -139,25 +155,25 @@ export function Nurse()
                         </div>
 
                         {/*List of patients content */}
-                        <div className="ml-5 mr-5 mt-2 border-2 h-[620px] rounded-lg shadow-lg  p-2">
-                            <PatientList patients={patientList}/>
+                        <div className="ml-5 mr-5 mt-2 border-2  rounded-lg shadow-lg  p-2">
+                            <PatientList patients={patientList} setCanOpenViewPatientDetailModal={setCanOpenViewPatientDetailsModal} setSelectedPatient={setSelectedPatient}/>
                         </div>
 
 
                         {/* Pagination content */}
-                        <div className="justify-center ml-24 flex mt-6 mb-4">
+                        <div className="justify-center  flex mt-6 mb-4">
                             <div className="flex gap-4">
                                 <Tooltip placement={"left"} title={"previous slide"}>
                                     <button
-                                        onClick={()=>{fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")}}
+                                        onClick={async ()=>{ await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")}}
                                         className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                         <FaArrowLeft/>
                                     </button>
                                 </Tooltip>
-                                <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{numberOfPatients}</p>
+                                <p className="text-secondary text-xl font-bold mt-6">{`Page ${actualPageNumber} of ${computeNumberOfSlideToRender()}` }</p>
                                 <Tooltip placement={"right"} title={"next slide"}>
-                                    <button
-                                        onClick={()=>{fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
+                                <button
+                                        onClick={async ()=>{ await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
                                         className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                                         <FaArrowRight/>
                                     </button>
@@ -167,6 +183,11 @@ export function Nurse()
 
                     </div>
                 </NurseNavBar>
+
+
+                {/*Modal Content*/}
+                <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient} onClose={()=>{setCanOpenViewPatientDetailsModal(false)}}/>
+                <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
             </DashBoard>
         </>
     )

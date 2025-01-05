@@ -18,7 +18,7 @@ export const AppRoutesPaths = {
     nurseMedicalStaffsPage: "/nurse/medical-staff",
     consultationHistoryPage: "/nurse/patients/consultation-history/:id",
     helpCenterPage: "/help-center",
-    patientDetailsPage:"/nurse/patients/patient-details/:id",
+    patientDetailsPage:"/nurse/patients/take-parameters/:id",
     receptionistMedicalStaffsPage: "/receptionist/medical-staffs",
     appointmentsPage: "/receptionist/appointments",
     adminPatientListPage: "/admin/patient-list",
