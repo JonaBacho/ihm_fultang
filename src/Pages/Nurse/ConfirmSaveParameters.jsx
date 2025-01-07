@@ -1,4 +1,18 @@
-import {Activity, AlertCircle, FileText, Heart, Pill, Ruler, Save, Scissors, Thermometer, UserPlus, Users, Weight} from "lucide-react";
+import {
+    Activity,
+    AlertCircle,
+    FileText,
+    Heart,
+    Pill,
+    Ruler,
+    Save,
+    Scissors,
+    Thermometer,
+    UserPlus,
+    Users,
+    Weight,
+    X
+} from "lucide-react";
 import PropTypes from "prop-types";
 
 
@@ -24,7 +38,7 @@ export function ConfirmSaveParameters({isOpen, onClose, parameters, bmi, action,
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl  text-primary-start font-bold">Saved Medical Parameters of {patientInfos.firstName + ' ' + patientInfos.lastName}</h2>
                     <button onClick={() => onClose()}>
-                        <p className="text-secondary font-bold text-2xl hover:text-3xl hover:text-primary-end transition-all duration-300">X</p>
+                        <X className="text-secondary font-bold w-8 h-8 hover:w-10 hover:h-10 hover:text-primary-end transition-all duration-300"/>
                     </button>
                 </div>
 
@@ -50,7 +64,10 @@ export function ConfirmSaveParameters({isOpen, onClose, parameters, bmi, action,
                             <div className="bg-gray-200 p-4 rounded-lg flex items-center gap-3">
                                 <Activity className="h-5 w-5 text-primary-start"/>
                                 <div>
-                                    <span className="text-sm text-gray-600">BMI</span>
+                                    <div className="flex gap-1">
+                                        <span className="text-sm text-gray-600">BMI</span>
+                                        <span className="text-xs mt-0.5  text-gray-600">(Body Mass Index)</span>
+                                    </div>
                                     <p className="text-lg font-medium text-gray-900">{bmi} kg/m²</p>
                                 </div>
                             </div>

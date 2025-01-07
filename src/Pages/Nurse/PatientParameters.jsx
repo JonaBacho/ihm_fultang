@@ -36,7 +36,7 @@ export  function PatientParameters() {
         idMedicalStaff: userData.id,
     });
     const [errors, setErrors] = useState({});
-    const [isSubmitted, setIsSubmitted] = useState(false);
+   // const [isSubmitted, setIsSubmitted] = useState(false);
     const [canOpenConfirmSaveParameters, setCanOpenConfirmSaveParameters] = useState(false);
     const [bmi, setBmi] = useState('-');
     const [isLoading, setIsLoading] = useState(false);
@@ -45,17 +45,20 @@ export  function PatientParameters() {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [idCurrentMedicalFolderPage, setIdCurrentMedicalFolderPage] = useState("");
+    const [canActivateTakeParametersBtn, setCanActivateTakeParametersBtn] = useState(true);
+
+    const localStorageItem = localStorage.getItem(`${patientInfo.firstName}hasSubmittedParameters`);
 
 
 
 
     useEffect(() => {
-        if(parameters.weight && parameters.height)
-        {
-            calculateBMI();
-        }
-        console.log(idCurrentMedicalFolderPage)
-    }, [parameters.weight, parameters.height, userData])
+        if(parameters.weight && parameters.height) calculateBMI();
+        if (localStorageItem) setCanActivateTakeParametersBtn(false);
+        else setCanActivateTakeParametersBtn(true);
+
+        console.log("active",canActivateTakeParametersBtn);
+    }, [parameters.weight, parameters.height, userData, patientInfo.firstName,  localStorageItem, canActivateTakeParametersBtn])
 
 
 
@@ -105,19 +108,35 @@ export  function PatientParameters() {
 
      function handleSubmit (e) {
         e.preventDefault()
-        const formErrors = {}
-        Object.entries(parameters).forEach(([key, value]) => {
-            validateField(key, value)
-            if (errors[key]) formErrors[key] = errors[key]
-        })
-        if (Object.keys(formErrors).length === 0)
-        {
-            setCanOpenConfirmSaveParameters(true)
-        } else
-        {
-            setErrors(formErrors)
-        }
+         if (canActivateTakeParametersBtn)
+         {
+             const formErrors = {}
+             Object.entries(parameters).forEach(([key, value]) => {
+                 validateField(key, value)
+                 if (errors[key]) formErrors[key] = errors[key]
+             })
+             if (Object.keys(formErrors).length === 0)
+             {
+                 setCanOpenConfirmSaveParameters(true)
+             } else
+             {
+                 setErrors(formErrors)
+             }
+         }
+         else
+         {
+             setErrorMessage("Vous avez deja soumis les parametres de ce patient");
+             setCanOpenErrorMessageModal(true);
+         }
     }
+
+
+
+    function deactivateSaveParametersBtn()
+    {
+        localStorage.setItem(`${patientInfo.firstName}hasSubmittedParameters`, "true");
+    }
+
 
 
     async function saveParameters ()
@@ -130,7 +149,8 @@ export  function PatientParameters() {
                 console.log(response);
                 setIdCurrentMedicalFolderPage(response.data.idMedicalFolderPage);
                 setIsLoading(false);
-                setIsSubmitted(true);
+               // setIsSubmitted(true);
+                deactivateSaveParametersBtn();
                 setCanOpenConfirmSaveParameters(false);
                 setSuccessMessage(`${patientInfo.firstName + patientInfo.lastName}'s medical parameters saved successfully!`);
                 setErrorMessage("");
@@ -224,7 +244,7 @@ export  function PatientParameters() {
                                                         value={parameters.weight}
                                                         onChange={handleChange}
                                                         required
-                                                        className={`w-full pl-10 pr-12 py-2 border-2 ${errors.weight ? 'border-red-500' : 'border-gray-400'} rounded-md focus:outline-none focus:border-2 focus:border-primary-end transition-all duration-300 `}
+                                                        className={`${applyInputStyle()} ${errors.weight ? 'border-red-500' : 'border-gray-400'}`}
                                                         placeholder="Weight"
                                                     />
                                                     <Weight className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -241,7 +261,7 @@ export  function PatientParameters() {
                                                         name="height"
                                                         value={parameters.height}
                                                         onChange={handleChange}
-                                                        className={`${applyInputStyle()} ${errors.height ? 'border-red-500' : 'border-gray-300'}`}
+                                                        className={`${applyInputStyle()} ${errors.height ? 'border-red-500' : 'border-gray-400'}`}
                                                         placeholder="Height"
                                                         required
                                                     />
@@ -262,7 +282,7 @@ export  function PatientParameters() {
                                                     required
                                                     value={parameters.temperature}
                                                     onChange={handleChange}
-                                                    className={`${applyInputStyle()} ${errors.temperature ? 'border-red-500' : 'border-gray-300'}`}
+                                                    className={`${applyInputStyle()} ${errors.temperature ? 'border-red-500' : 'border-gray-400'}`}
                                                     placeholder="Temperature"
                                                 />
                                                 <Thermometer className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -271,13 +291,13 @@ export  function PatientParameters() {
                                             {errors.temperature && <p className="mt-1 text-sm font-bold text-red-500">{errors.temperature}</p>}
                                         </div>
                                         <div>
-                                            <label className="text-md font-medium mb-2">BMI</label>
+                                            <label className="text-md font-medium mb-2">BMI (Body Mass Index)</label>
                                             <div className="relative">
                                                 <input
                                                     type="text"
                                                     value={bmi}
                                                     readOnly
-                                                    className={`${applyInputStyle()} bg-gray-100`}
+                                                    className={`${applyInputStyle()} bg-gray-100  border-gray-400`}
                                                 />
                                                 <Activity className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
                                                 <span className="absolute right-3 top-2 text-gray-500">kg/m²</span>
@@ -298,7 +318,7 @@ export  function PatientParameters() {
                                                     required
                                                     value={parameters.bloodPressure}
                                                     onChange={handleChange}
-                                                    className={`${applyInputStyle()} ${errors.bloodPressure ? 'border-red-500' : 'border-gray-300'}`}
+                                                    className={`${applyInputStyle()} ${errors.bloodPressure ? 'border-red-500' : 'border-gray-400'}`}
                                                     placeholder="e.g. 120/80"
                                                 />
                                                 <Heart className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -314,7 +334,7 @@ export  function PatientParameters() {
                                                     name="heartRate"
                                                     value={parameters.heartRate}
                                                     onChange={handleChange}
-                                                    className={`${applyInputStyle()} ${errors.heartRate ? 'border-red-500' : 'border-gray-300'}`}
+                                                    className={`${applyInputStyle()} ${errors.heartRate ? 'border-red-500' : 'border-gray-400'}`}
                                                     placeholder="Heart Rate"
                                                 />
                                                 <Activity className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -338,7 +358,7 @@ export  function PatientParameters() {
                                                     value={parameters.chronicalDiseases}
                                                     onChange={handleChange}
                                                     rows={2}
-                                                    className={applyInputStyle()}
+                                                    className={`${applyInputStyle()} border-gray-400`}
                                                     placeholder="List chronic diseases"
                                                 />
                                                 <FileText className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -352,7 +372,7 @@ export  function PatientParameters() {
                                                     value={parameters.allergies}
                                                     onChange={handleChange}
                                                     rows={2}
-                                                    className={applyInputStyle()}
+                                                    className={`${applyInputStyle()} border-gray-400`}
                                                     placeholder="List allergies"
                                                 />
                                                 <AlertCircle className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -366,7 +386,7 @@ export  function PatientParameters() {
                                                     value={parameters.surgeries}
                                                     onChange={handleChange}
                                                     rows={2}
-                                                    className={applyInputStyle()}
+                                                    className={`${applyInputStyle()} border-gray-400`}
                                                     placeholder="List surgeries"
                                                 />
                                                 <Scissors className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -380,7 +400,7 @@ export  function PatientParameters() {
                                                     value={parameters.currentMedication}
                                                     onChange={handleChange}
                                                     rows={2}
-                                                    className={applyInputStyle()}
+                                                    className={`${applyInputStyle()} border-gray-400`}
                                                     placeholder="List current medications"
                                                 />
                                                 <Pill className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -401,7 +421,7 @@ export  function PatientParameters() {
                                                   value={parameters.familyMedicalHistory}
                                                   onChange={handleChange}
                                                   rows={2}
-                                                  className={applyInputStyle()}
+                                                  className={`${applyInputStyle()} border-gray-400`}
                                                   placeholder="Describe family medical history"
                                               />
                                             <Users className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
@@ -418,8 +438,9 @@ export  function PatientParameters() {
                                     </button>
                                     <button
                                         type="button"
-                                        disabled={!isSubmitted}
-                                        className={` py-4 px-6 rounded-md flex items-center justify-center gap-2 ${isSubmitted ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                                        disabled={canActivateTakeParametersBtn}
+                                        onClick={()=>{alert("bjr")}}
+                                        className={` py-4 px-6 rounded-md flex items-center justify-center gap-2 ${!canActivateTakeParametersBtn ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                                     >
                                         <UserPlus className="w-5 h-5"/>
                                         Prescribe a Doctor

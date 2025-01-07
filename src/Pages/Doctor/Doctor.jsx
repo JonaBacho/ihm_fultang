@@ -20,9 +20,7 @@ export function Doctor()
 {
     return(
         <DashBoard linkList={links} requiredRole="Doctor">
-
             <PrescriptionForm2/>
-
         </DashBoard>
     )
 }
