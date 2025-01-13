@@ -13,7 +13,6 @@ export function CurrentExams({ searchQuery }) {
     );
     
     return (
-        <DashBoard linkList={laboratoryNavLink} requiredRole={"Labtech"}>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <table className="min-w-full">
                     <thead className="bg-gray-50">
@@ -49,6 +48,5 @@ export function CurrentExams({ searchQuery }) {
                     </tbody>
                 </table>
             </div>
-        </DashBoard>
     );
 }
