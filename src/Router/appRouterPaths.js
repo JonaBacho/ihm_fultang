@@ -31,4 +31,6 @@ export const AppRoutesPaths = {
     adminFinancialReportsPage: "/admin/financial-report",
     accountantPage: "/accountant",
     adminConsultationDetailsPage: "/admin/consultation-list/details",
+    laboratoryHistory:"/laboratory/exams-history",
+    laboratoryCurrent:"/laboratory/current-exams",
 }
