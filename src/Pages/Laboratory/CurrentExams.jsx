@@ -1,7 +1,11 @@
 import React from 'react';
 import { currentExams } from './mockData';
+import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
+import {laboratoryNavLink} from "./LaboratoryNavLink.js";
 
 export function CurrentExams({ searchQuery }) {
+
+
     const filteredExams = currentExams.filter(exam => 
         exam.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         exam.examDetails.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -9,18 +13,22 @@ export function CurrentExams({ searchQuery }) {
     );
     
     return (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <table className="min-w-full">
-                <thead className="bg-gray-50">
+        <DashBoard linkList={laboratoryNavLink} requiredRole={"Labtech"}>
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <table className="min-w-full">
+                    <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details of exam</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details of
+                            exam
+                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Validation</th>
                     </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
                     {filteredExams.map((exam) => (
                         <tr key={exam.id}>
                             <td className="px-6 py-4 whitespace-nowrap">{exam.patientName}</td>
@@ -38,8 +46,9 @@ export function CurrentExams({ searchQuery }) {
                             </td>
                         </tr>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        </DashBoard>
     );
 }
