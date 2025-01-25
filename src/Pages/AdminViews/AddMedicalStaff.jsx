@@ -281,6 +281,7 @@ export function AddMedicalStaff() {
                                     <option value="Labtech">Laboratory Assistant</option>
                                     <option value="Ophthalmologist">Ophthalmologist</option>
                                     <option value="Cashier">Cashier</option>
+                                    <option value="Accountant">Accountant</option>
                                     <option value="Admin">Administrator</option>
                                 </select>
                             </div>
