@@ -18,8 +18,7 @@ from .api_views.prescription_api_view import PrescriptionViewSet
 from .api_views.room_api_view import RoomViewSet
 from rest_framework.routers import DefaultRouter
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
-from polyclinic.api_views.token_obtain_pair_view import CustomTokenObtainPairView
+
 
 router = DefaultRouter()
 router.register(r'appointment', AppointmentViewSet, basename='appointment')
@@ -41,9 +40,5 @@ router.register(r'patient', PatientViewSet, basename='patient')
 router.register(r'prescription', PrescriptionViewSet, basename='prescription')
 router.register(r'room', RoomViewSet, basename='room')
 
-urlpatterns = [
-    path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-]
-
+urlpatterns = []
 urlpatterns += router.urls

@@ -25,7 +25,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"],
     )
 )
 @method_decorator(
@@ -36,7 +37,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"]
     )
 )
 @method_decorator(
@@ -48,7 +50,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"]
     )
 )
 @method_decorator(
@@ -60,7 +63,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"]
     )
 )
 @method_decorator(
@@ -72,7 +76,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"]
     )
 )
 @method_decorator(
@@ -83,7 +88,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["appointment"]
     )
 )
 class AppointmentViewSet(ModelViewSet):

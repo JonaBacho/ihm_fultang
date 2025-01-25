@@ -27,7 +27,8 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param,
-        openapi.Parameter('doctor', openapi.IN_QUERY, description="ID du docteur", type=openapi.TYPE_INTEGER, required=False),]
+        openapi.Parameter('doctor', openapi.IN_QUERY, description="ID du docteur", type=openapi.TYPE_INTEGER, required=False),],
+        tags=["Consultation"],
     )
 )
 @method_decorator(
@@ -38,7 +39,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["Consultation"],
     )
 )
 @method_decorator(
@@ -50,7 +52,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["Consultation"],
     )
 )
 @method_decorator(
@@ -62,7 +65,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["Consultation"],
     )
 )
 @method_decorator(
@@ -74,7 +78,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["Consultation"],
     )
 )
 @method_decorator(
@@ -85,7 +90,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=["Consultation"],
     )
 )
 class ConsultationViewSet(ModelViewSet):

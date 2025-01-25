@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'polyclinic',
+    'authentication',
+    'accounting'
 ]
 
 MIDDLEWARE = [

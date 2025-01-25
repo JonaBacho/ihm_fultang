@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from polyclinic.models import MedicalFolderPage
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
+from django.utils.timezone import now
+from datetime import timedelta
+from rest_framework.exceptions import ValidationError
 
 
 class MedicalFolderPageSerializer(serializers.ModelSerializer):
@@ -16,3 +19,34 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicalFolderPage
         exclude = ['id', 'pageNumber', 'idMedicalStaff']
+
+    def save(self, **kwargs):
+        # Vérifiez si l'instance existe (mise à jour) ou non (création)
+        instance = self.instance
+
+        if instance:
+            # Mise à jour : aucune validation spécifique liée à la création
+            return super().save(**kwargs)
+
+        medical_folder = self.validated_data.get('idMedicalFolder')
+
+        if not medical_folder:
+            raise ValidationError({"details": "Le dossier médical (idMedicalFolder) est requis."})
+
+        # 2 semaines en arrière
+        two_weeks_ago = now() - timedelta(weeks=2)
+
+        # Compter le nombre de pages créées pour ce dossier médical dans les 2 dernières semaines
+        recent_pages_count = MedicalFolderPage.objects.filter(
+            idMedicalFolder=medical_folder,
+            addDate__gte=two_weeks_ago
+        ).count()
+
+        if recent_pages_count >= 2:
+            raise ValidationError(
+                {"details": "Vous ne pouvez créer que 2 pages médicales pour ce dossier médical toutes les 2 semaines."}
+            )
+
+        # Appeler la méthode save parente avec les kwargs
+        return super().save(**kwargs)
+

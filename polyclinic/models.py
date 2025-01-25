@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
 
-from polyclinic.managers import MedicalStaffManager
+from authentication.managers import CustomManager
 
 User = settings.AUTH_USER_MODEL
 # Create your models here.
@@ -78,7 +78,18 @@ class MedicalStaff(AbstractUser):
     birthDate = models.DateField(blank=True, null=True, default="1982-01-01")
     address = models.CharField(max_length=255, blank=True, default="Yaounde - damas")
 
-    objects = MedicalStaffManager()
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='medicalstaff_set',  # Nom unique pour la relation
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='medicalstaff_permissions_set',  # Nom unique pour la relation
+        blank=True
+    )
+
+    objects = CustomManager()
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -187,7 +198,7 @@ class Consultation(models.Model):
     state = models.CharField(max_length=100, choices=STATECONSULTATION, default="Pending")
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)
-    idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False, blank=True)
+    idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaffSender = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send", default=1)  # celui qui envoi vers celui qui va faire la consultation
     idMedicalStaffGiver = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give", default=1)   # celui qui va effectuer la consultation
     idConsultationType = models.ForeignKey("ConsultationType", on_delete=models.CASCADE, null=True)

@@ -25,6 +25,8 @@ from polyclinic.sites.laboratory_urls import laboratory_urls
 from polyclinic.sites.nurse_urls import   nurse_urls
 from polyclinic.sites.cashier_urls import cashier_urls
 from polyclinic import api_urls
+from accounting import urls as accounting_urls
+from authentication import urls as authentication_urls
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -46,8 +48,10 @@ urlpatterns = [
 
     path('', welcome_urls()),
     #path('api/', api_urls()),
-    path('api/v1/', include(api_urls)),
-    path('api/doc/v1/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('api/v1/medical/', include(api_urls)),
+    path('api/v1/accounting/', include(accounting_urls)),
+    path('api/v1/auth/', include(authentication_urls)),
+    path('api/v1/doc', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/v1/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
 

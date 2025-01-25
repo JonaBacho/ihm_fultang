@@ -1,12 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import ConsultationType
-from polyclinic.permissions.consultation_type_permissions import ConsultationTypePermissions
-from polyclinic.serializers.consultation_type_serializers import ConsultationTypeSerializer
-from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from accounting.serializers import ClassCompteSerializer
+from accounting.models import ClassCompte
+from rest_framework.viewsets import ModelViewSet
+
 
 auth_header_param = openapi.Parameter(
     name="Authorization",
@@ -19,25 +18,17 @@ auth_header_param = openapi.Parameter(
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(
-        operation_summary="Lister les objets",
-        operation_description=(
-            "Cette route retourne une liste paginée de tous les objets du modèle. "
-            "L'authentification est requise pour accéder à cette ressource."
-        ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        operation_summary="Lister les classes de compte",
+        operation_description="Retourne une liste paginée des classes de compte.",
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
     name="retrieve",
     decorator=swagger_auto_schema(
-        operation_summary="Récupérer un objet",
-        operation_description=(
-            "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
-            "L'authentification est requise pour accéder à cette ressource."
-        ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        operation_summary="Récupérer une classe de compte",
+        operation_description="Retourne les détails d'une classe de compte.",
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
@@ -49,8 +40,7 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
@@ -62,8 +52,7 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
@@ -75,8 +64,7 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        manual_parameters=[auth_header_param]
     )
 )
 @method_decorator(
@@ -87,21 +75,15 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        manual_parameters=[auth_header_param]
     )
 )
-class ConsultationTypeViewSet(ModelViewSet):
-
-    permission_classes = [IsAuthenticated, ConsultationTypePermissions]
-    pagination_class = CustomPagination
+class ClassCompteViewSet(ModelViewSet):
+    serializer_class = ClassCompteSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = ConsultationType.objects.all()
-        return queryset
-
-    def get_serializer_class(self):
-        return ConsultationTypeSerializer
+        return ClassCompte.objects.all()
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
@@ -112,3 +94,4 @@ class ConsultationTypeViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
+
