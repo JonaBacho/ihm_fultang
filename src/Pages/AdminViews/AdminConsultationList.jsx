@@ -63,13 +63,13 @@ export function AdminConsultationList() {
                             </p>
                         </div>
 
-                        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+                        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
                             <div className="flex flex-row gap-4">
                                 <div className="relative flex-grow">
                                     <input
                                         type="text"
                                         placeholder="Search by a patient or a medical staff"
-                                        className="w-full pl-10 pr-4 py-2 border-2 outline-none border-secondary transition-all duration-300 rounded-md focus:outline-none focus:border-2 focus:border-primary-end"
+                                        className="w-full bg-gray-100 pl-10 pr-4 py-2 border-2 outline-none border-secondary transition-all duration-300 rounded-md focus:outline-none focus:border-2 focus:border-primary-end"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
@@ -125,7 +125,7 @@ export function AdminConsultationList() {
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {filteredConsultations.map((consultation) => (
                                 <div key={consultation.id}
-                                     className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                     className="bg-gray-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                                     <div className="p-4">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>

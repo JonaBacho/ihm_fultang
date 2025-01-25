@@ -86,19 +86,19 @@ export  function PatientParameters() {
         let error = ''
         switch (name) {
             case 'weight':
-                if (isNaN(Number(value)) || Number(value) <= 2.0 || Number(value) > 200.0) error = 'Invalid weight'
+                if (isNaN(Number(value)) || Number(value) <= 2.0 || Number(value) > 200.0) error = 'Invalid weight, weight must be between 2 and 200'
                 break
             case 'height':
-                if (isNaN(Number(value)) || Number(value) <= 0.50 || Number(value) > 2.50) error = 'Invalid height'
+                if (isNaN(Number(value)) || Number(value) <= 0.50 || Number(value) > 2.50) error = 'Invalid height, height must be between 0.5 and 2.5'
                 break
             case 'temperature':
-                if (isNaN(Number(value)) || Number(value) < 35 || Number(value) > 42) error = 'Invalid temperature'
+                if (isNaN(Number(value)) || Number(value) < 35 || Number(value) > 42) error = 'Invalid temperature, temperature must be between 35 and 42'
                 break
             case 'bloodPressure':
-                if (!/^\d{2,3}\/\d{2,3}$/.test(value)) error = 'Invalid blood pressure format'
+                if (!/^\d{2,3}\/\d{2,3}$/.test(value)) error = 'Invalid blood pressure format. Eg: 120/80'
                 break
             case 'heartRate':
-                if (isNaN(Number(value)) || Number(value) < 40 || Number(value) > 220) error = 'Invalid heart rate'
+                if (isNaN(Number(value)) || Number(value) < 40 || Number(value) > 220) error = 'Invalid heart rate, heart rate must be between 40 and 220'
                 break
         }
         setErrors(prev => ({ ...prev, [name]: error }))

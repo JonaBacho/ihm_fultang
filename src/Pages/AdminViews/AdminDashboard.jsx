@@ -7,6 +7,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export function AdminDashBoard({ children, linkList, requiredRole}) {
 
+
     AdminDashBoard.propTypes = {
         children: PropTypes.node.isRequired,
         linkList: PropTypes.array.isRequired,
