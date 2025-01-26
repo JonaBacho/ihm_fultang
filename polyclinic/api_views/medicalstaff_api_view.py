@@ -137,22 +137,6 @@ class MedicalStaffViewSet(ModelViewSet):
         serializer.save()
 
     @swagger_auto_schema(
-        operation_description="Renvoie les informations de la personne connecté",
-        responses={
-            200: MedicalStaffSerializer,
-            403: openapi.Response(description="Token invalide ou expiré"),
-        }
-        #manual_parameters=[
-        #    openapi.Parameter('user_id', openapi.IN_QUERY, description="ID de l'utilisateur", type=openapi.TYPE_INTEGER)
-        #]
-    )
-    @action(methods=['get'], detail=False, url_path='me')
-    def me(self, request, *args, **kwargs):
-        serializer = MedicalStaffSerializer(request.user)
-        return Response(data=serializer.data, status=status.HTTP_200_OK, content_type='application/json')
-
-
-    @swagger_auto_schema(
         operation_description="Renvoie la liste de tous les médécins",
         responses={
             200: openapi.Response(description="Liste de tous les m2édécins", schema=openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={

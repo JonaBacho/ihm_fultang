@@ -1,5 +1,7 @@
 from django.db.models.query import Prefetch
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import MedicalFolder, MedicalFolderPage, Parameters
 from polyclinic.permissions.medical_folder_permissions import MedicalFolderPermission
 from polyclinic.serializers.medical_folder_serializers import MedicalFolderSerializer, MedicalFolderDetailsSerializer
@@ -136,11 +138,12 @@ class MedicalFolderViewSet(ModelViewSet):
     )
     @action(methods=['post'], detail=True, url_path='add-page')
     def add_page(self, request, *args, **kwargs):
+        user, _ = fultang_user(self.request)
         medical_folder = self.get_object()
         number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         serializer = MedicalFolderPageCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(idMedicalFolder=medical_folder, pageNumber=number+1, idMedicalStaff=request.user)
+            serializer.save(idMedicalFolder=medical_folder, pageNumber=number+1, idMedicalStaff=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -199,12 +202,13 @@ class MedicalFolderViewSet(ModelViewSet):
     )
     @action(methods=['post'], detail=True, url_path='new-params')
     def new_params(self, request, *args, **kwargs):
+        user, _ = fultang_user(self.request)
         medical_folder = self.get_object()
         number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         page_data = {'idMedicalFolder': medical_folder.id}
         page_serializer = MedicalFolderPageCreateSerializer(data=page_data)
         if page_serializer.is_valid():
-            page = page_serializer.save(idMedicalStaff=request.user, pageNumber=number+1)
+            page = page_serializer.save(idMedicalStaff=user, pageNumber=number+1)
             params_serializer = ParametersCreateSerializer(data=request.data)
             if params_serializer.is_valid():
                 params_serializer.save(idMedicalFolderPage=page)

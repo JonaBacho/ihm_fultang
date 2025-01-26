@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import Consultation, MedicalStaff
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
@@ -117,11 +119,13 @@ class ConsultationViewSet(ModelViewSet):
             return ConsultationSerializer
 
     def perform_create(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save(idMedicalStaffSender=user)
 
     def perform_update(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save(idMedicalStaffSender=user)

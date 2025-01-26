@@ -1,6 +1,8 @@
 from rest_framework.permissions import BasePermission
 from rest_framework import permissions
 
+from authentication.user_helper import fultang_user
+
 
 # sera l'equivalent de notre customuserpermission
 class MedicalStaffPermission(BasePermission):
@@ -8,22 +10,24 @@ class MedicalStaffPermission(BasePermission):
     #edit_methods = ("POST", "PUT", "PATCH")
 
     def has_permission(self, request, view):
+        user, _ = fultang_user(request)
         # Autoriser uniquement l'utilisateur avec le rôle 'Admin' pour les actions de liste, de création, de mise à jour et de suppression.
         if view.action in ["create", "destroy"]:
-            return request.user.is_authenticated and request.user.role == "Admin"
+            return user.is_authenticated and user.role == "Admin"
         elif view.action in ["list", "retrieve", "update", "partial_update"]:
-            return request.user.is_authenticated
+            return user.is_authenticated
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
-            return request.user.is_authenticated
+            return user.is_authenticated
         return False
 
     def has_object_permission(self, request, view, obj):
+        user, _ = fultang_user(request)
         # Autoriser un utilisateur avec le rôle 'Admin' pour toutes les actions
-        if request.user.role == "Admin":
+        if user.role == "Admin":
             return True
         # Autoriser un utilisateur à accéder uniquement à ses propres informations
         elif view.action in ["update", "partial_update", "retrieve"]:
-            return obj == request.user
+            return obj == user
         return False
 
     """

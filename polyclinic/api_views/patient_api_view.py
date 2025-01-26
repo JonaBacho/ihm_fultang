@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
 from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
 from polyclinic.permissions.patient_permissions import PatientPermission
@@ -94,8 +96,8 @@ auth_header_param = openapi.Parameter(
 )
 class PatientViewSet(ModelViewSet):
 
-    #permission_classes = [IsAuthenticated, PatientPermission]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, PatientPermission]
+    #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -120,6 +122,7 @@ class PatientViewSet(ModelViewSet):
             return PatientSerializer
 
     def perform_create(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
 
@@ -133,7 +136,8 @@ class PatientViewSet(ModelViewSet):
         mfolder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
         mfolder.save()
         serializer.validated_data['idMedicalFolder'] = mfolder.pk
-        patient_serializer = PatientSerializer(data=serializer.validated_data)
+        serializer.validated_data['idMedicalStaff'] = user
+        patient_serializer = PatientCreateSerializer(data=serializer.validated_data)
         patient_serializer.is_valid(raise_exception=True)
         patient_serializer.save()
 
