@@ -16,9 +16,8 @@ services:
       image: "${FULTANG_IMAGE}"
       restart: always
       #command: gunicorn did_django_schedule_jobs_v2.wsgi:application --bind 0.0.0.0:8000
-      #volumes:
-      #    - static_volume:/home/app/web/staticfiles
-      #    - media_volume:/home/app/web/mediafiles
+      volumes:
+        - ./db.sqlite3:/app/db.sqlite3:rw
       ports:
           - "8009:8009"
       env_file:
@@ -28,7 +27,6 @@ services:
       networks:
           - fultang
       container_name: fultang
-
 
 networks:
     fultang:
