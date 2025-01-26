@@ -325,6 +325,7 @@ class Bill(models.Model):
     date = models.DateTimeField(auto_now=True)
     amount = models.FloatField(default=0.0)
     totalItems = models.IntegerField(default=0)
+    operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
 
 
 class BillItem(models.Model):

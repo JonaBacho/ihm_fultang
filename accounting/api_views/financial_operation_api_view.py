@@ -28,4 +28,4 @@ class FinancialOperationViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return FinancialOperation.objects.select_related('classCompte').all()
+        return FinancialOperation.objects.select_related('account').all()

@@ -49,7 +49,7 @@ class BudgetExercise(models.Model):
     end = models.DateTimeField()
 
 
-class ClassCompte(models.Model):
+class Account(models.Model):
     number = models.IntegerField(default=0)
     libelle = models.CharField(max_length=255)
 
@@ -59,13 +59,13 @@ class AccountState(models.Model):
     soldePrevu = models.FloatField(default=0)
 
     budgetExercise = models.ForeignKey('BudgetExercise', on_delete=models.CASCADE)
-    classCompte = models.ForeignKey('ClassCompte', on_delete=models.CASCADE)
+    account = models.ForeignKey('Account', on_delete=models.CASCADE)
 
 
 class FinancialOperation(models.Model):
     name = models.CharField(max_length=255)
 
-    classCompte = models.ForeignKey('ClassCompte', on_delete=models.CASCADE)
+    account = models.ForeignKey('Account', on_delete=models.CASCADE)
 
 class Facture(models.Model):
     montant = models.FloatField(default=0)

@@ -7,9 +7,9 @@ class BudgetExerciseSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class ClassCompteSerializer(ModelSerializer):
+class AccountSerializer(ModelSerializer):
     class Meta:
-        model = ClassCompte
+        model = Account
         fields = '__all__'
 
 class AccountStateSerializer(ModelSerializer):

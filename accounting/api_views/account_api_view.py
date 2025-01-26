@@ -2,9 +2,10 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
-from accounting.serializers import ClassCompteSerializer
-from accounting.models import ClassCompte
+from accounting.serializers import AccountSerializer
+from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
+from datetime import date
 
 
 auth_header_param = openapi.Parameter(
@@ -78,17 +79,31 @@ auth_header_param = openapi.Parameter(
         manual_parameters=[auth_header_param]
     )
 )
-class ClassCompteViewSet(ModelViewSet):
-    serializer_class = ClassCompteSerializer
+class AccountViewSet(ModelViewSet):
+    serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ClassCompte.objects.all()
+        return Account.objects.all()
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save()
+        account = serializer.save()
+        # Find the active exercise
+        today = date.today()
+        budget_exercise = BudgetExercise.objects.filter(
+            start__lte=today,
+            end__gte=today
+        ).first()
+
+        if not budget_exercise:
+            raise ValueError("Aucun Exercice Budgétaire actif trouvé pour la date actuelle." + str(today))
+        
+        AccountState.objects.create(
+            account=account,
+            budgetExercise=budget_exercise
+        )
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
