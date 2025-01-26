@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from authentication.managers import CustomManager
 from django.db import models
 from django.utils import timezone
-from authentication.managers import CustomManager
+from authentication.models import User
 
 ROLES_ACCOUNTING = [
     ('NoRole', 'NoRole'),
@@ -10,20 +12,10 @@ ROLES_ACCOUNTING = [
     ('FinanceManager', 'FinanceManager'),
 ]
 
-SEXE = [
-    ('Male', 'Male'),
-    ('Female', 'Female'),
-]
-
-class AccountingStaff(AbstractUser):
+class AccountingStaff(User):
     role = models.CharField(max_length=20, choices=ROLES_ACCOUNTING, default='Accountant')
-    phone_number = models.CharField(max_length=255, blank=True, default="")
-    cniNumber = models.CharField(max_length=255, blank=True, default="")
-    gender = models.CharField(max_length=50, choices=SEXE, default='Male', blank=True)
-    birthDate = models.DateField(blank=True, null=True, default="1982-01-01")
-    address = models.CharField(max_length=255, blank=True, default="Default Address")
-    user_type = models.CharField(max_length=20, default='accounting')  # Pour différencier avec MedicalStaff
 
+    """
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='accountingstaff_set',  # Nom unique pour la relation
@@ -34,21 +26,22 @@ class AccountingStaff(AbstractUser):
         related_name='accountingstaff_permissions_set',  # Nom unique pour la relation
         blank=True
     )
+    """
 
     objects = CustomManager()
 
     def save(self, *args, **kwargs):
         if self.pk:
             original_password = AccountingStaff.objects.get(pk=self.pk).password
-            if self.password != original_password:
+            if self.password != original_password:  # Check if password has been updated
                 self.set_password(self.password)
         else:
+            # New instance
             self.set_password(self.password)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
-
 
 
 class BudgetExercise(models.Model):

@@ -1,22 +1,18 @@
 from datetime import timezone
 from django.db import models
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
-
 from authentication.managers import CustomManager
+from authentication.models import User
 
-User = settings.AUTH_USER_MODEL
 # Create your models here.
 ROLES = [
     ('NoRole', 'NoRole'),
     ('Doctor', 'Doctor'),
     ('Receptionist', 'Receptionist'),
     ('Admin', 'Admin'),
-    ('Accountant', 'Accountant'),
     ('Nurse', 'Nurse'),
     ('Labtech', 'Labtech'),
     ('HRM', 'HRM'),
@@ -39,14 +35,14 @@ MessageType = [
 
 ]
 
-SEXE = [
-    ('Male', 'Male'),
-    ('Female', 'Female'),
-]
-
 CONDITION = [
     ('NoCritical', 'NoCritical'),
     ('Critical', 'Critical'),
+]
+
+SEXE = [
+    ('Male', 'Male'),
+    ('Female', 'Female'),
 ]
 
 SERVICE = [
@@ -70,14 +66,10 @@ STATECONSULTATION = [
 
 
 # cette classe définie notre classe d'utilsateur par défaut
-class MedicalStaff(AbstractUser):
+class MedicalStaff(User):
     role = models.CharField(max_length=20, choices=ROLES, default='NoRole')
-    cniNumber = models.CharField(max_length=255, blank=True, default="")
-    gender = models.CharField(max_length=50, choices=SEXE, default='Male', blank=True)
-    phoneNumber = models.CharField(max_length=255, blank=True, default=" ")
-    birthDate = models.DateField(blank=True, null=True, default="1982-01-01")
-    address = models.CharField(max_length=255, blank=True, default="Yaounde - damas")
 
+    """
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='medicalstaff_set',  # Nom unique pour la relation
@@ -88,6 +80,7 @@ class MedicalStaff(AbstractUser):
         related_name='medicalstaff_permissions_set',  # Nom unique pour la relation
         blank=True
     )
+    """
 
     objects = CustomManager()
 
@@ -361,4 +354,4 @@ class Message(models.Model):
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
-        return self.dose.__str__() + " " + self.idPatient.__str__()
+        return self.messageType.__str__() + " " + self.idMedicalStaff.__str__()
