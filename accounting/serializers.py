@@ -27,5 +27,10 @@ class FactureSerializer(ModelSerializer):
     class Meta:
         model = Facture
         fields = '__all__'
+
+class AccountingStaffSerializer(ModelSerializer):
+    class Meta:
+        model = AccountingStaff
+        fields = '__all__'
         
         

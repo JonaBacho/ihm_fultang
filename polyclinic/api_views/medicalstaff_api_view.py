@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.http import JsonResponse
 
+tags = ["medical-staff"]
 active_param = openapi.Parameter(
     'active',
     openapi.IN_QUERY,
@@ -37,7 +38,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param, active_param]
+        manual_parameters=[auth_header_param, active_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -48,7 +50,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -60,7 +63,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -72,7 +76,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -84,7 +89,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -95,7 +101,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 class MedicalStaffViewSet(ModelViewSet):
@@ -144,7 +151,9 @@ class MedicalStaffViewSet(ModelViewSet):
                 'first_name': openapi.Schema(type=openapi.TYPE_STRING, description="Prénom du docteur"),
                 'last_name': openapi.Schema(type=openapi.TYPE_STRING, description="Nom du docteur"),
                 'role': openapi.Schema(type=openapi.TYPE_STRING, description="Rôle du docteur")
-            })))})
+            },
+        tags=tags
+        )))})
     @action(methods=['get'], detail=False, url_path='all-doctors')
     def all_doctors(self, request):
         self.pagination_class = None

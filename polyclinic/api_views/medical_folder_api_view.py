@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
+tags = ["medical-folder"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -32,7 +33,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -43,7 +45,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -55,7 +58,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -67,7 +71,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -79,7 +84,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -90,7 +96,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 class MedicalFolderViewSet(ModelViewSet):
@@ -134,7 +141,8 @@ class MedicalFolderViewSet(ModelViewSet):
         },
         manual_parameters=[
             auth_header_param
-        ]
+        ],
+        tags=tags
     )
     @action(methods=['post'], detail=True, url_path='add-page')
     def add_page(self, request, *args, **kwargs):
@@ -163,7 +171,8 @@ class MedicalFolderViewSet(ModelViewSet):
                 description="ID de la page.",
                 type=openapi.TYPE_INTEGER
             )
-        ]
+        ],
+        tags=tags
     )
     @action(methods=['put'], detail=True, url_path='update-page/(?P<id>[^/.]+)')
     def update_page(self, request, id=None, *args, **kwargs):
@@ -198,7 +207,8 @@ class MedicalFolderViewSet(ModelViewSet):
             201: ParametersCreateSerializer,
             400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
             403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        tags=tags
     )
     @action(methods=['post'], detail=True, url_path='new-params')
     def new_params(self, request, *args, **kwargs):
@@ -224,7 +234,8 @@ class MedicalFolderViewSet(ModelViewSet):
             200: ParametersCreateSerializer,
             400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
             403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        tags=tags
     )
     @action(methods=['put'], detail=False, url_path='update-params')
     def update_params(self, request, pk, *args, **kwargs):
@@ -246,7 +257,8 @@ class MedicalFolderViewSet(ModelViewSet):
             200: MedicalFolderPageSerializer,
             404: openapi.Response(description="Page inexistante"),
             403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        tags=tags
     )
     @action(methods=['get'], detail=True, url_path='last-page')
     def last_page(self, request, pk=None, *args, **kwargs):
@@ -263,7 +275,8 @@ class MedicalFolderViewSet(ModelViewSet):
         responses={200: ParametersSerializer,
                    404: openapi.Response(description="Page inexistante"),
                    403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        tags=tags
     )
     @action(methods=['get'], detail=True, url_path='last-params')
     def last_params(self, request, *args, **kwargs):
@@ -282,7 +295,8 @@ class MedicalFolderViewSet(ModelViewSet):
                    404: openapi.Response(description="Page inexistante"),
                    400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
                    403: openapi.Response(description="Token invalide ou expiré."),
-        }
+        },
+        tags=tags
     )
     @action(methods=['get'], detail=True, url_path='get-page')
     def get_page(self, request, *args, **kwargs):

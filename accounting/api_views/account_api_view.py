@@ -7,7 +7,7 @@ from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
 from datetime import date
 
-
+tags = ["account"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -21,7 +21,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Lister les classes de compte",
         operation_description="Retourne une liste paginée des classes de compte.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -29,7 +30,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Récupérer une classe de compte",
         operation_description="Retourne les détails d'une classe de compte.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -41,7 +43,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -53,7 +56,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -65,7 +69,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -76,7 +81,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 class AccountViewSet(ModelViewSet):

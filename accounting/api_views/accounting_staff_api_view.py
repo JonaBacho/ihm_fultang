@@ -2,11 +2,12 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
-from accounting.serializers import FinancialOperationSerializer
-from accounting.models import FinancialOperation
+from accounting.models import AccountingStaff
+from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
+from accounting.serializers import AccountingStaffSerializer
 from rest_framework.viewsets import ModelViewSet
 
-tags = ["financial-operation"]
+tags = ["accounting-staff"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -18,10 +19,13 @@ auth_header_param = openapi.Parameter(
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(
-        operation_summary="Lister les opérations financières",
-        operation_description="Retourne une liste paginée des opérations financières.",
+        operation_summary="Lister les objets",
+        operation_description=(
+            "Cette route retourne une liste paginée de tous les objets du modèle. "
+            "L'authentification est requise pour accéder à cette ressource."
+        ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
 @method_decorator(
@@ -33,7 +37,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
 @method_decorator(
@@ -46,7 +50,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
 @method_decorator(
@@ -59,7 +63,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
 @method_decorator(
@@ -72,7 +76,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
 @method_decorator(
@@ -84,12 +88,24 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=tags
+        tags = tags
     )
 )
-class FinancialOperationViewSet(ModelViewSet):
-    serializer_class = FinancialOperationSerializer
-    permission_classes = [IsAuthenticated]
+class AccountingStaffViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated, AccountingStaffPermission]
 
     def get_queryset(self):
-        return FinancialOperation.objects.select_related('account').all()
+        return AccountingStaff.objects.all()
+
+    def get_serializer_class(self):
+        return AccountingStaffSerializer
+
+    def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
+        serializer.save()
+
+    def perform_update(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
+        serializer.save()
