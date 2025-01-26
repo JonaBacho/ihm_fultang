@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ViewSet
 from polyclinic.models import MedicalStaff
 from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
 from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
@@ -10,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
+from django.http import JsonResponse
 
 active_param = openapi.Parameter(
     'active',
@@ -150,3 +152,18 @@ class MedicalStaffViewSet(ModelViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK, content_type='application/json')
 
 
+    @swagger_auto_schema(
+        operation_description="Renvoie la liste de tous les médécins",
+        responses={
+            200: openapi.Response(description="Liste de tous les m2édécins", schema=openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID du docteur"),
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING, description="Prénom du docteur"),
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING, description="Nom du docteur"),
+                'role': openapi.Schema(type=openapi.TYPE_STRING, description="Rôle du docteur")
+            })))})
+    @action(methods=['get'], detail=False, url_path='all-doctors')
+    def all_doctors(self, request):
+        self.pagination_class = None
+        doctors = MedicalStaff.objects.filter(role__in=['Doctor', 'Specialist', 'Ophtalmologist', 'Dentist'])
+        doctors_list = list(doctors.values('id', 'first_name', 'last_name', 'role'))
+        return JsonResponse(doctors_list, safe=False)
