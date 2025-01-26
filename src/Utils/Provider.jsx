@@ -1,7 +1,7 @@
 import constate from "constate";
 import {useEffect, useMemo, useState} from "react";
 import axios from "axios";
-import axiosInstance from "./axiosInstance.js";
+
 
 
 
@@ -66,9 +66,10 @@ function useLogin() {
             {
                 try
                 {
-                    const response = await axiosInstance.get("/auth/me/");
+                    const response = await axios.get("http://85.214.142.178:8009/api/v1/auth/me/", {headers: {"Authorization": `Bearer ${token}`}});
                     if (response.status === 200)
                     {
+                        console.log(response.data);
                         setIsLogged(true);
                         setUserData(response.data);
                         setUserRole(response.data.role);
