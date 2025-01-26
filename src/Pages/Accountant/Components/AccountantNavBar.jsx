@@ -1,9 +1,9 @@
 import { FaCog, FaEnvelope, FaSignOutAlt } from "react-icons/fa";
 import { Tooltip } from "antd";
-import { useAuthentication } from "../../Utils/Provider.jsx";
-import userIcon from "../../assets/userIcon.png";
+import { useAuthentication } from "../../../Utils/Provider.jsx";
+import userIcon from "../../../assets/userIcon.png";
 
-export function AdminNavBar() {
+export function AccountantNavBar() {
   const { logout, userData } = useAuthentication();
 
   const applyNavLinkBtnStyle = () => {
