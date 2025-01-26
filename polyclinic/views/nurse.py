@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, logout, login as signin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -89,8 +88,4 @@ def add_param(request, username, id):
 
     else:
         return render(request, 'welcome/no_role.html')
-
-
-
-
-
+    
