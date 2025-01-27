@@ -10,7 +10,7 @@ from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 
-
+tags = ["budget-exercise"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -24,7 +24,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Lister les exercices budgétaires",
         operation_description="Retourne une liste paginée des exercices budgétaires.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -32,7 +33,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Récupérer un exercice budgétaire",
         operation_description="Retourne les détails d'un exercice budgétaire.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -40,7 +42,21 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Créer un exercice budgétaire",
         operation_description="Permet de créer un nouvel exercice budgétaire.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
+    )
+)
+@method_decorator(
+    name="update",
+    decorator=swagger_auto_schema(
+        operation_summary="Mettre à jour un objet",
+        operation_description=(
+            "Cette route permet de mettre à jour complètement un objet existant en fonction de son ID. "
+            "Les données doivent être envoyées dans le corps de la requête. "
+            "L'authentification est requise pour accéder à cette ressource."
+        ),
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -48,7 +64,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Mettre à jour un exercice budgétaire",
         operation_description="Permet de mettre à jour un exercice budgétaire existant.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 @method_decorator(
@@ -56,7 +73,8 @@ auth_header_param = openapi.Parameter(
     decorator=swagger_auto_schema(
         operation_summary="Supprimer un exercice budgétaire",
         operation_description="Supprime un exercice budgétaire existant.",
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags
     )
 )
 class BudgetExerciseViewSet(ModelViewSet):

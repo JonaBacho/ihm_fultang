@@ -6,8 +6,7 @@ from authentication.serializers import RegistrationSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from polyclinic.models import MedicalStaff
-from accounting.models import AccountingStaff
+from authentication.user_helper import fultang_user
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -99,20 +98,9 @@ class UserProfileView(APIView):
         }
     )
     def get(self, request):
-        user = request.user  # Récupérer l'utilisateur connecté
-
-        # Vérifier si l'utilisateur est MedicalStaff ou AccountingStaff
-        if MedicalStaff.objects.filter(pk=user.pk).exists():
-            user_type = "medical"
-            user_instance = MedicalStaff.objects.get(pk=user.pk)
-        elif AccountingStaff.objects.filter(pk=user.pk).exists():
-            user_type = "accountant"
-            user_instance = AccountingStaff.objects.get(pk=user.pk)
-        else:
-            user_type = "user"
-            user_instance = user  # Si utilisateur générique
-
+        user_instance, user_type = fultang_user(request)
         # Retourner les informations de l'utilisateur connecté
+        print(user_instance.is_authenticated)
         user_data = {
             #"id": user_instance.id,
             "username": user_instance.username,

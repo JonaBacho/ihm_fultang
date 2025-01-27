@@ -8,6 +8,7 @@ from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 
+tags = ["consultation-type"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -25,7 +26,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -37,7 +38,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -50,7 +51,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -63,7 +64,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -76,7 +77,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -88,7 +89,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["ConsultationType"],
+        tags=tags
     )
 )
 class ConsultationTypeViewSet(ModelViewSet):

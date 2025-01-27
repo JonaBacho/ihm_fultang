@@ -59,6 +59,11 @@ STATECONSULTATION = [
     ('Pending', 'Pending'),
 ]
 
+STATUT_PAIEMENT_CONSULTATION = [
+    ('Invalid', 'Invalid'),
+    ('Valid', 'Valid'),
+]
+
 
 # ======================================
 # ======================================== APPOINTMENT, MEDICALSTAFF, DEPARTMENT, PATIENT
@@ -187,7 +192,7 @@ class Consultation(models.Model):
     consultationPrice = models.FloatField(default=5000)
     consultationReason = models.CharField(max_length=100, blank=True, null=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
-    paymentStatus = models.CharField(max_length=100, default="invalid")
+    paymentStatus = models.CharField(max_length=100, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     state = models.CharField(max_length=100, choices=STATECONSULTATION, default="Pending")
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)

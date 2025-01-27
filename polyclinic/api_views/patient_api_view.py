@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
 from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
 from polyclinic.permissions.patient_permissions import PatientPermission
@@ -14,7 +16,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.utils.timezone import now
 
-
+tags = ["patient"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -31,7 +33,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -42,7 +45,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -54,7 +58,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -66,7 +71,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -78,7 +84,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -89,13 +96,14 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 class PatientViewSet(ModelViewSet):
 
-    #permission_classes = [IsAuthenticated, PatientPermission]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, PatientPermission]
+    #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -120,6 +128,7 @@ class PatientViewSet(ModelViewSet):
             return PatientSerializer
 
     def perform_create(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
 
@@ -133,7 +142,8 @@ class PatientViewSet(ModelViewSet):
         mfolder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
         mfolder.save()
         serializer.validated_data['idMedicalFolder'] = mfolder.pk
-        patient_serializer = PatientSerializer(data=serializer.validated_data)
+        serializer.validated_data['idMedicalStaff'] = user
+        patient_serializer = PatientCreateSerializer(data=serializer.validated_data)
         patient_serializer.is_valid(raise_exception=True)
         patient_serializer.save()
 
@@ -154,7 +164,8 @@ class PatientViewSet(ModelViewSet):
         manual_parameters=[
             openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné", type=openapi.TYPE_INTEGER, required=True),
             auth_header_param
-        ]
+        ],
+        tags=tags
     )
     @action(methods=['post'], detail=True, url_path='remove-access/(?P<id>[^/.]+)', permission_classes=[PatientAccessPermission])
     def remove_access(self, request, id=None, *args, **kwargs):
@@ -193,7 +204,8 @@ class PatientViewSet(ModelViewSet):
             openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
                               type=openapi.TYPE_INTEGER, required=True),
             auth_header_param
-        ]
+        ],
+        tags=tags
     )
     @action(methods=['post'], detail=True, url_path='add-access/(?P<id>[^/.]+)', permission_classes=[PatientAccessPermission])
     def add_access(self, request, id=None, *args, **kwargs):

@@ -1,22 +1,26 @@
 from rest_framework.permissions import BasePermission
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import PatientAccess, Patient
 
 class MedicalFolderPermission(BasePermission):
     def has_permission(self, request, view):
+        user, _ = fultang_user(request)
         if view.action in ["destroy"]:
-            return request.user.is_authenticated and request.user.role == "Admin"
+            return user.is_authenticated and user.role == "Admin"
         elif view.action in ["list", "retrieve"]:
-            return request.user.is_authenticated and (request.user.role in ["Admin", "Receptionist", "Nurse", "Doctor"])
+            return user.is_authenticated and (user.role in ["Admin", "Receptionist", "Nurse", "Doctor"])
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
-            return request.user.is_authenticated
+            return user.is_authenticated
         return False
 
     def has_object_permission(self, request, view, obj):
+        user, _ = fultang_user(request)
         # Autoriser un utilisateur avec le rôle 'Admin' pour toutes les actions
-        if request.user.role == "Admin":
+        if user.role == "Admin":
             return True
         elif view.action in ["list", "retrieve"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
-            if request.user.role in ["Receptionist", "Nurse"]:
+            if user.role in ["Receptionist", "Nurse"]:
                 return True
             else:
                 patient = Patient.objects.get(idMedicalFolder=obj)
@@ -25,6 +29,6 @@ class MedicalFolderPermission(BasePermission):
                         idMedicalStaff=request.user,
                         access=True
                     ).exists()
-        elif (request.user.role in ["Receptionist", "Nurse", "Doctor"]) and view.action not in ["destroy", "create", "update", "partial_update"]:
+        elif (user.role in ["Receptionist", "Nurse", "Doctor"]) and view.action not in ["destroy", "create", "update", "partial_update"]:
             return True
         return False

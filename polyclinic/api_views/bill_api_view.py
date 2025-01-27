@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
+tags = ["bill"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -28,7 +29,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 @method_decorator(
@@ -40,7 +41,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 @method_decorator(
@@ -53,7 +54,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 @method_decorator(
@@ -66,7 +67,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 @method_decorator(
@@ -79,7 +80,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 @method_decorator(
@@ -91,7 +92,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags = ["Bills"]
+        tags = tags
     )
 )
 class BillViewSet(ModelViewSet):

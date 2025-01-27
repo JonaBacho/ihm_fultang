@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.user_helper import fultang_user
 from polyclinic.models import Consultation, MedicalStaff
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
@@ -10,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+tags = ["consultation"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -28,7 +31,7 @@ auth_header_param = openapi.Parameter(
         ),
         manual_parameters=[auth_header_param,
         openapi.Parameter('doctor', openapi.IN_QUERY, description="ID du docteur", type=openapi.TYPE_INTEGER, required=False),],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -40,7 +43,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -53,7 +56,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -66,7 +69,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -79,7 +82,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 @method_decorator(
@@ -91,7 +94,7 @@ auth_header_param = openapi.Parameter(
             "L'authentification est requise pour accéder à cette ressource."
         ),
         manual_parameters=[auth_header_param],
-        tags=["Consultation"],
+        tags=tags
     )
 )
 class ConsultationViewSet(ModelViewSet):
@@ -117,11 +120,13 @@ class ConsultationViewSet(ModelViewSet):
             return ConsultationSerializer
 
     def perform_create(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save(idMedicalStaffSender=user)
 
     def perform_update(self, serializer):
+        user, _ = fultang_user(self.request)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=self.request.user)
+        serializer.save(idMedicalStaffSender=user)

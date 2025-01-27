@@ -12,6 +12,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.utils.timezone import now
 
+tags = ["patient-access"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -28,7 +29,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne une liste paginée de tous les objets du modèle. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -39,7 +41,8 @@ auth_header_param = openapi.Parameter(
             "Cette route retourne les détails d'un objet spécifique en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -51,7 +54,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -63,7 +67,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -75,7 +80,8 @@ auth_header_param = openapi.Parameter(
             "Les données doivent être envoyées dans le corps de la requête. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 @method_decorator(
@@ -86,7 +92,8 @@ auth_header_param = openapi.Parameter(
             "Cette route permet de supprimer un objet existant en fonction de son ID. "
             "L'authentification est requise pour accéder à cette ressource."
         ),
-        manual_parameters=[auth_header_param]
+        manual_parameters=[auth_header_param],
+        tags=tags,
     )
 )
 class PatientAccessViewSet(ModelViewSet):
@@ -121,7 +128,8 @@ class PatientAccessViewSet(ModelViewSet):
         },
         manual_parameters=[
             openapi.Parameter('id', openapi.IN_QUERY, description="ID de l'utilisateur", type=openapi.TYPE_INTEGER)
-        ]
+        ],
+        tags=tags,
     )
     @action(methods=['get'], detail=False, url_path='remove-access')
     def remove_access(self, request, *args, **kwargs):
