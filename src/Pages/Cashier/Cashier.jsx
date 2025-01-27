@@ -20,7 +20,7 @@ export function Cashier()
             setIsLoading(true);
             try
             {
-                const response = await axiosInstance.get("/consultation");
+                const response = await axiosInstance.get("/consultation/");
                 setIsLoading(false);
                 if (response.status === 200)
                 {

@@ -172,18 +172,18 @@ export function AdminMedicalStaffList()
                 <div className="ml-5 mr-5 ">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
-                        <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 rounded-l-2xl ">No</th>
-                            <th className="text-center text-white p-4 text-xl font-bold border-gray-200">First Name</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Last Name
-                            </th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Gender</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Email</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Role</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  flex-col rounded-r-2xl">
-                                <p>Operations</p>
-                            </th>
-                        </tr>
+                            <tr className="bg-gradient-to-l from-primary-start to-primary-end">
+                                <th className="text-center text-white p-4 text-xl font-bold  rounded-l-lg ">No</th>
+                                <th className="text-center text-white p-4 text-xl font-bold">First Name</th>
+                                <th className="text-center text-white p-4 text-xl font-bold">Last Name
+                                </th>
+                                <th className="text-center text-white p-4 text-xl font-bold">Gender</th>
+                                <th className="text-center text-white p-4 text-xl font-bold">Email</th>
+                                <th className="text-center text-white p-4 text-xl font-bold">Role</th>
+                                <th className="text-center text-white p-4 text-xl font-bold  rounded-r-lg">
+                                    <p>Operations</p>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
                         {medicalStaffList.map((medicalStaff, index) => (
