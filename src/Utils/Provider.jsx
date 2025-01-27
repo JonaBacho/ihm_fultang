@@ -35,7 +35,7 @@ function useLogin() {
     {
         try
         {
-            const response = await axios.post("http://localhost:8000/api/v1/auth/login/", data);
+            const response = await axios.post("http://85.214.142.178:8009/api/v1/auth/login/", data);
             if (response.status === 200)
             {
                 setIsLoading(false);
@@ -66,7 +66,7 @@ function useLogin() {
             {
                 try
                 {
-                    const response = await axiosInstance.get("/medical-staff/me/");
+                    const response = await axiosInstance.get("/auth/me/");
                     if (response.status === 200)
                     {
                         setIsLogged(true);

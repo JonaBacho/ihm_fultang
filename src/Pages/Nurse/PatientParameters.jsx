@@ -11,6 +11,7 @@ import {ErrorModal} from "../Modals/ErrorModal.jsx";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import Wait from "../Modals/wait.jsx";
 import {FaArrowLeft} from "react-icons/fa";
+import {PrescribeDoctor} from "./PrescribeDoctor.jsx";
 
 
 
@@ -36,7 +37,6 @@ export  function PatientParameters() {
         idMedicalStaff: userData.id,
     });
     const [errors, setErrors] = useState({});
-   // const [isSubmitted, setIsSubmitted] = useState(false);
     const [canOpenConfirmSaveParameters, setCanOpenConfirmSaveParameters] = useState(false);
     const [bmi, setBmi] = useState('-');
     const [isLoading, setIsLoading] = useState(false);
@@ -44,21 +44,26 @@ export  function PatientParameters() {
     const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const [idCurrentMedicalFolderPage, setIdCurrentMedicalFolderPage] = useState("");
-    const [canActivateTakeParametersBtn, setCanActivateTakeParametersBtn] = useState(true);
+   // const [idCurrentMedicalFolderPage, setIdCurrentMedicalFolderPage] = useState("");
 
-    const localStorageItem = localStorage.getItem(`${patientInfo.firstName}hasSubmittedParameters`);
+
+
+
+    const [canActivatePrescribeDoctorBtn, setCanActivatePrescribeDoctorBtn] = useState(false);
+    const [canPrescribeDoctor, setCanPrescribeDoctor] = useState(false);
+
+
+
+
+
+
 
 
 
 
     useEffect(() => {
         if(parameters.weight && parameters.height) calculateBMI();
-        if (localStorageItem) setCanActivateTakeParametersBtn(false);
-        else setCanActivateTakeParametersBtn(true);
-
-        console.log("active",canActivateTakeParametersBtn);
-    }, [parameters.weight, parameters.height, userData, patientInfo.firstName,  localStorageItem, canActivateTakeParametersBtn])
+    }, [parameters.weight, parameters.height, userData, patientInfo.firstName])
 
 
 
@@ -80,6 +85,8 @@ export  function PatientParameters() {
         setParameters(prev => ({ ...prev, [name]: value }))
         validateField(name, value)
     }
+
+
 
 
     function validateField (name, value) {
@@ -106,35 +113,33 @@ export  function PatientParameters() {
 
 
 
+
+
      function handleSubmit (e) {
-        e.preventDefault()
-         if (canActivateTakeParametersBtn)
+         e.preventDefault()
+         const formErrors = {}
+         Object.entries(parameters).forEach(([key, value]) => {
+             validateField(key, value)
+             if (errors[key]) formErrors[key] = errors[key]
+         })
+         if (Object.keys(formErrors).length === 0)
          {
-             const formErrors = {}
-             Object.entries(parameters).forEach(([key, value]) => {
-                 validateField(key, value)
-                 if (errors[key]) formErrors[key] = errors[key]
-             })
-             if (Object.keys(formErrors).length === 0)
-             {
-                 setCanOpenConfirmSaveParameters(true)
-             } else
-             {
-                 setErrors(formErrors)
-             }
-         }
-         else
+             setCanOpenConfirmSaveParameters(true)
+         } else
          {
-             setErrorMessage("Vous avez deja soumis les parametres de ce patient");
-             setCanOpenErrorMessageModal(true);
+             setErrors(formErrors)
          }
+
     }
 
 
 
-    function deactivateSaveParametersBtn()
-    {
-        localStorage.setItem(`${patientInfo.firstName}hasSubmittedParameters`, "true");
+
+
+
+
+    function saveIdMedicalFolderPage (id) {
+        localStorage.setItem('current_medical_folder_page', id);
     }
 
 
@@ -147,10 +152,10 @@ export  function PatientParameters() {
             if (response.status === 201)
             {
                 console.log(response);
-                setIdCurrentMedicalFolderPage(response.data.idMedicalFolderPage);
+                saveIdMedicalFolderPage(response.data.idMedicalFolderPage);
+                // setIdCurrentMedicalFolderPage(response.data.idMedicalFolderPage);
                 setIsLoading(false);
-               // setIsSubmitted(true);
-                deactivateSaveParametersBtn();
+                setCanActivatePrescribeDoctorBtn(true);
                 setCanOpenConfirmSaveParameters(false);
                 setSuccessMessage(`${patientInfo.firstName + patientInfo.lastName}'s medical parameters saved successfully!`);
                 setErrorMessage("");
@@ -170,7 +175,9 @@ export  function PatientParameters() {
     }
 
 
-    function calculateBMI  ()  {
+
+
+    function calculateBMI ()  {
         const weight = parseFloat(parameters.weight)
         const height = parseFloat(parameters.height)
         if (!isNaN(weight) && !isNaN(height) && height > 0) {
@@ -181,10 +188,12 @@ export  function PatientParameters() {
         }
     }
 
+
     function applyInputStyle()
     {
         return "w-full pl-10 pr-12 py-2 border-2 rounded-md focus:outline-none focus:border-2 focus:border-primary-end transition-all duration-300";
     }
+
     const navigate = useNavigate();
 
 
@@ -438,9 +447,9 @@ export  function PatientParameters() {
                                     </button>
                                     <button
                                         type="button"
-                                        disabled={canActivateTakeParametersBtn}
-                                        onClick={()=>{alert("bjr")}}
-                                        className={` py-4 px-6 rounded-md flex items-center justify-center gap-2 ${!canActivateTakeParametersBtn ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                                        disabled={!canActivatePrescribeDoctorBtn}
+                                        onClick={()=>{setCanPrescribeDoctor(true)}}
+                                        className={` py-4 px-6 rounded-md flex items-center justify-center gap-2 ${canActivatePrescribeDoctorBtn ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                                     >
                                         <UserPlus className="w-5 h-5"/>
                                         Prescribe a Doctor
@@ -450,9 +459,10 @@ export  function PatientParameters() {
                         </div>
                     </div>
             </NurseNavBar>
-            <ConfirmSaveParameters isOpen={canOpenConfirmSaveParameters} onClose={() => setCanOpenConfirmSaveParameters(false)} parameters={parameters} bmi={bmi} action={async  ()=>{await saveParameters()}} patientInfos={patientInfo}/>
+            <ConfirmSaveParameters isOpen={canOpenConfirmSaveParameters} onClose={() => setCanOpenConfirmSaveParameters(false)} parameters={parameters} bmi={bmi} action={ async() => {await saveParameters()}} patientInfos={patientInfo}/>
             <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={() => setCanOpenErrorMessageModal(false)} message={errorMessage}/>
             <SuccessModal isOpen={canOpenSuccessModal} canOpenSuccessModal={() => setCanOpenSuccessModal(false)} message={successMessage}/>
+            <PrescribeDoctor isOpen={canPrescribeDoctor} onClose={()=>setCanPrescribeDoctor(false)} patientInfos={patientInfo} setCanOpenSuccessModal={setCanOpenSuccessModal}/>
             {isLoading && <Wait/>}
 
         </DashBoard>
