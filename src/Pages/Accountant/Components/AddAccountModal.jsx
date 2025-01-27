@@ -13,7 +13,6 @@ export function AddAccountModal({
   AddAccountModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    financialOperations: PropTypes.arrayOf(PropTypes.string).isRequired,
     setCanOpenSuccessModal: PropTypes.func.isRequired,
     setSuccessMessage: PropTypes.func.isRequired,
     setIsLoading: PropTypes.func.isRequired,

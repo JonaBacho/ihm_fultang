@@ -9,9 +9,12 @@ import { InvoiceDetailsModal } from "./Components/InvoiceDetailsModal.jsx"; // M
 import { Tooltip } from "antd"; // Import Tooltip from antd library
 import { AccountantDashBoard } from "./Components/AccountantDashboard.jsx";
 import { AccountantNavLink } from "./AccountantNavLink";
+import { useLocation } from "react-router-dom";
 
 export function AccountDetailsPage() {
   const { accountId } = useParams();
+  const { state } = useLocation();
+  const accountDetail = state.account;
   const [accountDetails, setAccountDetails] = useState({});
   const [invoices, setInvoices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,18 +32,25 @@ export function AccountDetailsPage() {
   const [previousUrl, setPreviousUrl] = useState(null);
 
   // Fonction pour récupérer les détails du compte et les factures paginées
-  const fetchAccountDetails = async (url = `/bill/?page=${currentPage}`) => {
+  const fetchAccountDetails = async (url = `/bill/get_for_account`) => {
     setIsLoading(true);
     try {
       const accountResponse = await axiosInstanceAccountant.get(
         `/acccount-state/${accountId}/`
       );
-      const invoicesResponse = await axiosInstance.get(url);
-
+      console.log(accountResponse);
+      const invoicesResponse = await axiosInstance.get(
+        url + `/?account_id=${accountDetail.id}`
+      );
+      console.log(invoicesResponse);
       if (accountResponse.status === 200 && invoicesResponse.status === 200) {
         setAccountDetails(accountResponse.data);
         setInvoices(invoicesResponse.data.results);
-        setTotalPages(Math.ceil(invoicesResponse.data.count / 10)); // Supposons 10 factures par page
+        setTotalPages(
+          Math.ceil(
+            invoicesResponse.data.count ? invoicesResponse.data.count / 10 : 1
+          )
+        ); // Supposons 10 factures par page
         setNextUrl(invoicesResponse.data.next);
         setPreviousUrl(invoicesResponse.data.previous);
       }
@@ -130,7 +140,7 @@ export function AccountDetailsPage() {
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice, index) => (
+              {invoices?.map((invoice, index) => (
                 <tr key={invoice.id} className="bg-gray-100">
                   <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">
                     {index + 1}

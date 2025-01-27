@@ -8,8 +8,8 @@ export const AccountantNavLink = [
   },
 
   {
-    name: "Account",
-    link: appRoutes.accountantPage,
+    name: "Account List",
+    link: appRoutes.accountList,
     icon: FaWallet,
   },
 ];
