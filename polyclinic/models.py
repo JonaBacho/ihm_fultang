@@ -331,7 +331,8 @@ class Bill(models.Model):
     amount = models.FloatField(default=0.0)
     totalItems = models.IntegerField(default=0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
-
+    isAccounted = models.BooleanField(default=False)
+    operator = models.ForeignKey('polyclinic.MedicalStaff', on_delete=CASCADE, null=False)
 
 class BillItem(models.Model):
     idBill = models.ForeignKey("Bill", on_delete=models.CASCADE, null=False)
