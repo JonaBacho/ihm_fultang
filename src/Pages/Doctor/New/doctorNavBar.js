@@ -8,7 +8,7 @@ import {GiMedicines} from "react-icons/gi";
 export const doctorNavBar = [
     {
         name: "Dashboard",
-        link: appRoutes.doctorHomePage,
+        link: appRoutes.doctorPage,
         icon: FaHome,
     },
     {

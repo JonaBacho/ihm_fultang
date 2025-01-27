@@ -5,6 +5,7 @@ import {AppRoutesPaths} from "./appRouterPaths.js";
 
 
 
+
 export function AppRoute()
 {
     const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Authentication/Login.jsx")).LoginPage}));
@@ -42,6 +43,11 @@ export function AppRoute()
     const FinancialHistory = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialHistory.jsx")).FinancialHistory}));
     const AccountDetailsPage = React.lazy(async () => ({default: (await import("../Pages/Accountant/AccountDetailsPage.jsx")).AccountDetailsPage}));
     const AccountList = React.lazy(async () => ({default: (await import("../Pages/Accountant/AccountList.jsx")).AccountList}));
+
+    const DoctorPatientList = React.lazy(async () => ({default: (await import("../Pages/Doctor/New/DoctorPatientList.jsx")).DoctorPatientList}));
+    const DoctorConsultationList = React.lazy(async () => ({default: (await import("../Pages/Doctor/New/DoctorConsultationList.jsx")).DoctorConsultationList}));
+    const DoctorAddConsultation = React.lazy(async () => ({default: (await import("../Pages/Doctor/New/DoctorAddConsultation.jsx")).DoctorAddConsultation}));
+
 
 
     return (
@@ -82,6 +88,12 @@ export function AppRoute()
                 <Route  path={AppRoutesPaths.accountDetails}   element={<AccountDetailsPage />} />
                 <Route path={AppRoutesPaths.accountList} element={<AccountList />} />
                 <Route path={AppRoutesPaths.notFound} element={<NotFoundPage />} />
+
+
+
+                <Route path={AppRoutesPaths.doctorPatientList} element={<DoctorPatientList />} />
+                <Route path={AppRoutesPaths.doctorConsultationList} element={<DoctorConsultationList />} />
+                <Route path={AppRoutesPaths.doctorAddConsultation} element={<DoctorAddConsultation />} />
             </Routes>
         </React.Suspense>
     )

@@ -6,7 +6,7 @@ export const AppRoutesPaths = {
     loginPage: "/login",
     forgottenPasswordPage: "/forgotten-password",
     pharmacyPage:"/pharmacy",
-    doctorPage: "/doctor",
+    doctorPage: "/doctor/dashboard",
     laboratoryAssistantPage: "/laboratory-assistant",
     receptionistPage: "/receptionist/patients",
     cashierPage: "/cashier/consultation-list",
@@ -36,4 +36,7 @@ export const AppRoutesPaths = {
     financialHistory:"/cashier/financial-history",
     accountDetails: "/accountant/account-details/:accountId",
     accountList: "/accountant/account-list",
+    doctorPatientList: "/doctor/patients",
+    doctorConsultationList: "/doctor/consultations-list",
+    doctorAddConsultation: "/doctor/add-consultation",
 }

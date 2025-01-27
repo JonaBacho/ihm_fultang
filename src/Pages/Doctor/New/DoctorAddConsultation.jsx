@@ -1,12 +1,10 @@
 "use client"
 
-import React, { useState } from "react"
+import  { useState } from "react"
 import { ArrowLeft, User, Calendar, CreditCard, Printer, FileText } from "lucide-react"
-import { DashBoard } from "../../../GlobalComponents/DashBoard.jsx"
-import { links } from "../Doctor.jsx"
+
 import { FaSearch, FaUser, FaChevronRight, FaHistory, FaPills } from "react-icons/fa"
 import { BsExclamationTriangle } from "react-icons/bs"
-import { MdLocalHospital } from "react-icons/md"
 import { IoMedkit } from "react-icons/io5"
 import { GiStethoscope } from "react-icons/gi"
 import { doctorNavBar } from "./doctorNavBar.js"
