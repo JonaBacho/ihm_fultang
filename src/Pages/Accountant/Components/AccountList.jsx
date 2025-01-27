@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { SuccessModal } from "../../Modals/SuccessModal";
 import Wait from "../../Modals/wait.jsx";
 import { ErrorModal } from "../../Modals/ErrorModal.jsx";
-import axiosInstance from "../../../Utils/axiosInstance.js";
+import axiosInstance from "../../../Utils/axiosInstanceAccountant.js";
 import { ConfirmationModal } from "../../Modals/ConfirmAction.Modal.jsx";
 import { useNavigate } from "react-router-dom";
 //import { ViewAccountDetailsModal } from "./ViewAccountDetailsModal.jsx";
@@ -40,7 +40,7 @@ export function AccountList() {
   const navigate = useNavigate();
   // Fonction pour rediriger vers la page de détails du compte
   const handleViewAccountDetails = (accountId) => {
-    navigate(`/account-details/${accountId}`);
+    navigate(`account-details/${accountId}`);
   };
 
   function calculateNumberOfSlide() {
@@ -63,10 +63,11 @@ export function AccountList() {
 
   async function fetchAccountList() {
     try {
-      const response = await axiosInstance.get("/accounts/");
+      const response = await axiosInstance.get("/account/");
+      console.log(response);
       if (response.status === 200) {
-        setAccountList(response.data.results);
-        setNumberOfAccounts(response.data.count);
+        setAccountList(response.data);
+        setNumberOfAccounts(response.data.length);
         setNextUrlForRenderAccountList(response.data.next);
         setPreviousUrlForRenderAccountList(response.data.previous);
       }
@@ -106,7 +107,7 @@ export function AccountList() {
   async function deleteAccount(accountId) {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.delete(`/accounts/${accountId}/`);
+      const response = await axiosInstance.delete(`/account/${accountId}/`);
       if (response.status === 204) {
         setIsLoading(false);
         setSuccessMessage("Account deleted successfully!");
@@ -176,7 +177,7 @@ export function AccountList() {
                   {index + 1}
                 </td>
                 <td className="p-4 text-md text-center font-bold">
-                  {account.accountNumber}
+                  {account.number}
                 </td>
                 <td className="p-4 text-md text-center">
                   {account.accountLabel}

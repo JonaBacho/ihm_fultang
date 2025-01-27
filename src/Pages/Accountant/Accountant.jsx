@@ -1,18 +1,18 @@
-import { AccountantNavBar } from "./Components/AccountantNavBar";
+import { AccountantDashBoard } from "./Components/AccountantDashboard";
+import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountList } from "./Components/AccountList";
+import { AccountantNavBar } from "./Components/AccountantNavBar";
 
 export function Accountant() {
   return (
-    /*<div>
+    <div>
       <AccountantDashBoard
         requiredRole={"Accountant"}
         linkList={AccountantNavLink}
-      ></AccountantDashBoard>
-      Accountant
-    </div>*/
-    <div>
-      <AccountantNavBar></AccountantNavBar>
-      <AccountList></AccountList>
+      >
+        <AccountantNavBar></AccountantNavBar>
+        <AccountList></AccountList>
+      </AccountantDashBoard>
     </div>
   );
 }

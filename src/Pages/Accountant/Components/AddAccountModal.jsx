@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import axiosInstance from "../../../Utils/axiosInstance.js";
+import axiosInstance from "../../../Utils/axiosInstanceAccountant.js";
 import { useState } from "react";
 import { FaTimes, FaSave, FaBan } from "react-icons/fa";
 
@@ -33,9 +33,9 @@ export function AddAccountModal({
 
     setIsLoading(true);
     try {
-      const response = await axiosInstance.post("/accounts/", {
-        accountNumber,
-        accountLabel,
+      const response = await axiosInstance.post("/account/", {
+        number: accountNumber,
+        libelle: accountLabel,
       });
 
       if (response.status === 201) {
