@@ -41,6 +41,7 @@ export function Nurse()
             const response = await axiosInstance.get("/patient/");
             if (response.status === 200)
             {
+                console.log(response.data);
                 setPatientList(response.data.results);
                 setNumberOfPatients(response.data.count);
                 setNexUrlForRenderPatientList(response.data.next);

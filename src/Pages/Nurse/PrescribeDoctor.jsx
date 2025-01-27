@@ -37,8 +37,8 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
                 const response = await axiosInstance("/medical-staff/all-doctors/");
                 if (response.status === 200)
                 {
-                    const data = await response.data.json();
-                    setDoctors(data)
+                   // console.log(response.data);
+                    setDoctors(response.data);
                 }
             } catch (error) {
                 console.error("Error when retrieving doctor list", error)
