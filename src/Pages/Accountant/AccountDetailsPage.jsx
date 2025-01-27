@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant.js";
 import axiosInstance from "../../Utils/axiosInstance.js";
 import { ErrorModal } from "../Modals/ErrorModal.jsx";
 import Wait from "../Modals/wait.jsx";
-import { FaEye, FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { InvoiceDetailsModal } from "./Components/InvoiceDetailsModal.jsx"; // Modal pour les détails de la facture
-import { Tooltip } from "antd"; // Import Tooltip from antd library
+import {
+  FaEye,
+  FaArrowLeft,
+  FaArrowRight,
+  FaSort,
+  FaPlus,
+} from "react-icons/fa";
+import { InvoiceDetailsModal } from "./Components/InvoiceDetailsModal.jsx";
+import { Tooltip, Modal, Input, Button } from "antd";
 import { AccountantDashBoard } from "./Components/AccountantDashboard.jsx";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { useLocation } from "react-router-dom";
@@ -24,25 +30,24 @@ export function AccountDetailsPage() {
   const [canOpenInvoiceDetailsModal, setCanOpenInvoiceDetailsModal] =
     useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [isAddOperationModalVisible, setIsAddOperationModalVisible] =
+    useState(false);
+  const [newOperationName, setNewOperationName] = useState("");
 
-  // États pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [nextUrl, setNextUrl] = useState(null);
   const [previousUrl, setPreviousUrl] = useState(null);
 
-  // Fonction pour récupérer les détails du compte et les factures paginées
   const fetchAccountDetails = async (url = `/bill/get_for_account`) => {
     setIsLoading(true);
     try {
       const accountResponse = await axiosInstanceAccountant.get(
         `/acccount-state/${accountId}/`
       );
-      console.log(accountResponse);
       const invoicesResponse = await axiosInstance.get(
         url + `/?account_id=${accountDetail.id}`
       );
-      console.log(invoicesResponse);
       if (accountResponse.status === 200 && invoicesResponse.status === 200) {
         setAccountDetails(accountResponse.data);
         setInvoices(invoicesResponse.data.results);
@@ -50,7 +55,7 @@ export function AccountDetailsPage() {
           Math.ceil(
             invoicesResponse.data.count ? invoicesResponse.data.count / 10 : 1
           )
-        ); // Supposons 10 factures par page
+        );
         setNextUrl(invoicesResponse.data.next);
         setPreviousUrl(invoicesResponse.data.previous);
       }
@@ -65,16 +70,14 @@ export function AccountDetailsPage() {
 
   useEffect(() => {
     fetchAccountDetails();
-  }, [accountId, currentPage]); // Recharger les données lorsque la page change
+  }, [accountId, accountDetail, currentPage]); // Added accountDetail to dependencies
 
-  // Fonction pour valider une facture
   const validateInvoice = async (invoiceId) => {
     try {
       const response = await axiosInstance.post(
         `/invoices/${invoiceId}/validate/`
       );
       if (response.status === 200) {
-        // Recharger les détails du compte et les factures après validation
         await fetchAccountDetails();
       }
     } catch (error) {
@@ -83,7 +86,6 @@ export function AccountDetailsPage() {
     }
   };
 
-  // Fonction pour changer de page
   const handlePageChange = (action) => {
     if (action === "next" && nextUrl) {
       setCurrentPage(currentPage + 1);
@@ -91,6 +93,29 @@ export function AccountDetailsPage() {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  const handleAddOperation = useCallback(async () => {
+    try {
+      const response = await axiosInstanceAccountant.post(
+        "/financial-operation/",
+        {
+          name: newOperationName,
+          account: accountDetail.id,
+        }
+      );
+      if (response.status === 201) {
+        setIsAddOperationModalVisible(false);
+        setNewOperationName("");
+        await fetchAccountDetails();
+      }
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.detail ||
+          "An error occurred while adding the operation"
+      );
+      setCanOpenErrorMessageModal(true);
+    }
+  }, [newOperationName, accountDetail.id]);
 
   return (
     <AccountantDashBoard
@@ -101,7 +126,6 @@ export function AccountDetailsPage() {
         <h1 className="text-2xl font-bold mb-5">Détails du Compte</h1>
         {isLoading && <Wait />}
 
-        {/* Section des soldes du compte */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-blue-100 p-4 rounded-lg shadow-md">
             <p className="text-lg font-semibold">Valeur Totale</p>
@@ -117,24 +141,35 @@ export function AccountDetailsPage() {
           </div>
         </div>
 
-        {/* Tableau des factures */}
         <div className="bg-white p-5 rounded-lg shadow-md">
           <table className="w-full border-separate border-spacing-y-2">
             <thead>
-              <tr className="bg-gradient-to-l from-primary-start to-primary-end">
-                <th className="text-center text-white p-4 text-xl font-bold rounded-l-2xl">
-                  No
+              <tr className="bg-gradient-to-r from-primary-start to-primary-end text-white">
+                <th className="py-4 px-6 text-left rounded-tl-lg">
+                  <div className="flex items-center">
+                    <span className="mr-2">#</span>
+                    <FaSort className="text-gray-300" />
+                  </div>
                 </th>
-                <th className="text-center text-white p-4 text-xl font-bold">
-                  Date
+                <th className="py-4 px-6 text-left">
+                  <div className="flex items-center">
+                    <span className="mr-2">Date</span>
+                    <FaSort className="text-gray-300" />
+                  </div>
                 </th>
-                <th className="text-center text-white p-4 text-xl font-bold">
-                  Montant
+                <th className="py-4 px-6 text-left">
+                  <div className="flex items-center">
+                    <span className="mr-2">Montant</span>
+                    <FaSort className="text-gray-300" />
+                  </div>
                 </th>
-                <th className="text-center text-white p-4 text-xl font-bold">
-                  Opérateur
+                <th className="py-4 px-6 text-left">
+                  <div className="flex items-center">
+                    <span className="mr-2">Opérateur</span>
+                    <FaSort className="text-gray-300" />
+                  </div>
                 </th>
-                <th className="text-center text-white p-4 text-xl font-bold rounded-r-2xl">
+                <th className="py-4 px-6 text-center rounded-tr-lg">
                   Opérations
                 </th>
               </tr>
@@ -172,7 +207,6 @@ export function AccountDetailsPage() {
             </tbody>
           </table>
 
-          {/* Pagination */}
           <div className="flex justify-center mt-6">
             <div className="flex gap-4">
               <Tooltip placement="left" title="Page précédente">
@@ -208,7 +242,6 @@ export function AccountDetailsPage() {
           </div>
         </div>
 
-        {/* Modal pour les détails de la facture */}
         <InvoiceDetailsModal
           isOpen={canOpenInvoiceDetailsModal}
           onClose={() => setCanOpenInvoiceDetailsModal(false)}
@@ -216,12 +249,43 @@ export function AccountDetailsPage() {
           validateInvoice={validateInvoice}
         />
 
-        {/* Modal d'erreur */}
         <ErrorModal
           isOpen={canOpenErrorMessageModal}
           onCloseErrorModal={() => setCanOpenErrorMessageModal(false)}
           message={errorMessage}
         />
+
+        <Tooltip placement="top" title="Ajouter une nouvelle opération">
+          <button
+            onClick={() => setIsAddOperationModalVisible(true)}
+            className="fixed bottom-5 right-5 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300 flex items-center justify-center"
+          >
+            <FaPlus />
+          </button>
+        </Tooltip>
+
+        <Modal
+          title="Ajouter une nouvelle opération financière"
+          visible={isAddOperationModalVisible}
+          onCancel={() => setIsAddOperationModalVisible(false)}
+          footer={[
+            <Button
+              key="cancel"
+              onClick={() => setIsAddOperationModalVisible(false)}
+            >
+              Annuler
+            </Button>,
+            <Button key="submit" type="primary" onClick={handleAddOperation}>
+              Ajouter
+            </Button>,
+          ]}
+        >
+          <Input
+            placeholder="Nom de l'opération"
+            value={newOperationName}
+            onChange={(e) => setNewOperationName(e.target.value)}
+          />
+        </Modal>
       </div>
     </AccountantDashBoard>
   );
