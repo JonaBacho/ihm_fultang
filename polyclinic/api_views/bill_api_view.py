@@ -159,4 +159,40 @@ class BillViewSet(ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    @swagger_auto_schema(
+        method='patch',
+        operation_summary="Approuver une facture",
+        operation_description="Cette route permet d'approuver une facture en mettant à jour son champ 'isApproved' à True.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'isApproved': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
+            },
+            required=['isApproved']
+        ),
+        manual_parameters=[auth_header_param],
+        tags=["Bills"]
+    )
+    @action(detail=True, methods=['patch'])
+    def approve(self, request, pk=None):
     
+        try:
+            bill = Bill.objects.get(id=pk)
+        except Bill.DoesNotExist:
+            return Response(
+                {"error": "Facture non trouvée."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if bill.isApproved:
+            return Response(
+                {"error": "La facture est déjà approuvée."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        bill.isApproved = True
+        bill.save()
+
+        serializer = self.get_serializer(bill)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
