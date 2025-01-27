@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Search, Calendar, Filter, ChevronDown, ChevronUp,  Clock,  Stethoscope} from 'lucide-react';
 import {AdminDashBoard} from "./AdminDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
@@ -7,6 +7,7 @@ import {Tooltip} from "antd";
 import {FaArrowLeft, FaArrowRight, FaUser} from "react-icons/fa";
 import {AppRoutesPaths} from "../../Router/appRouterPaths.js";
 import {useNavigate} from "react-router-dom";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 const consultations = [
@@ -48,6 +49,34 @@ export function AdminConsultationList() {
             setSortOrder('asc');
         }
     }
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [consultationList, setConsultationList] = useState([]);
+
+
+    useEffect(() => {
+        async function fetchConsultations()
+        {
+            setIsLoading(true);
+            try
+            {
+                const response = await axiosInstance.get("/consultation/");
+                setIsLoading(false);
+                if (response.status === 200)
+                {
+                    console.log(response.data);
+                    setConsultationList(response.data.results);
+                }
+            }
+            catch (error)
+            {
+                setIsLoading(false);
+                console.log(error);
+            }
+        }
+        fetchConsultations();
+    }, []);
+
 
     const navigate = useNavigate();
 
@@ -181,7 +210,6 @@ export function AdminConsultationList() {
                         </div>
                     </div>
         </AdminDashBoard>
-
     );
 }
 

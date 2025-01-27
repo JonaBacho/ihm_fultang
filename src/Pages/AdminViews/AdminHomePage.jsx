@@ -103,7 +103,7 @@ export function AdminHomePage() {
                     />
                 </div>
 
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className=" rounded-lg  p-6">
                     <div className="flex items-center gap-2 mb-6">
                         <ShieldCheck className="w-6 h-6 text-[#4DB6AC]"/>
                         <h2 className="text-xl font-bold text-gray-800">Administrator Privileges</h2>
@@ -125,7 +125,7 @@ export function AdminHomePage() {
                 </div>
 
 
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="rounded-lg  p-6">
                   
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Access</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -183,7 +183,7 @@ function StatCard({icon: Icon, title, value, description, color}) {
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 flex items-start gap-4">
+        <div className="bg-gray-100 rounded-lg hover:shadow-lg p-6 flex items-start transition-all duration-500 hover:-translate-y-2   gap-4">
             <div className={`${color} rounded-full p-3 text-white`}>
                 <Icon className="w-6 h-6"/>
             </div>
