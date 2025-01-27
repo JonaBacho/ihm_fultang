@@ -1,11 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Bill
+from accounting.models import FinancialOperation, Account
 from polyclinic.serializers.bill_serializers import BillSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework import status
 
 tags = ["bill"]
 auth_header_param = openapi.Parameter(
@@ -112,3 +116,84 @@ class BillViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
+
+    from rest_framework import status
+
+    @swagger_auto_schema(
+        method='post',
+        operation_summary="Lister toutes les factures d'un compte",
+        operation_description="Retourne toutes les factures associées à un compte spécifique.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'account_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID du compte"),
+            },
+            required=['account_id']
+        ),
+        manual_parameters=[auth_header_param],
+        tags=["Bills"]
+    )
+    @action(detail=False, methods=['post'])
+    def get_for_account(self, request):
+        # Récupérer account_id depuis le corps de la requête
+        account_id = request.data.get('account_id', None)
+
+        # Vérifier si account_id est fourni
+        if not account_id:
+            return Response(
+                {"error": "Le paramètre 'account_id' est requis dans le corps de la requête."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        account = Account.objects.filter(id=account_id).first()
+        if not account:
+            return Response(
+                {"error": "Aucun compte trouvé avec cet ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        operations = FinancialOperation.objects.filter(account=account)
+
+        bills = Bill.objects.filter(operation__in=operations)
+
+        serializer = self.get_serializer(bills, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(
+        method='patch',
+        operation_summary="Approuver une facture",
+        operation_description="Cette route permet d'approuver une facture en mettant à jour son champ 'isApproved' à True.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'isApproved': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
+            },
+            required=['isApproved']
+        ),
+        manual_parameters=[auth_header_param],
+        tags=["Bills"]
+    )
+    @action(detail=True, methods=['patch'])
+    def approve(self, request, pk=None):
+    
+        try:
+            bill = Bill.objects.get(id=pk)
+        except Bill.DoesNotExist:
+            return Response(
+                {"error": "Facture non trouvée."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if bill.isApproved:
+            return Response(
+                {"error": "La facture est déjà approuvée."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        bill.isApproved = True
+        bill.save()
+
+        serializer = self.get_serializer(bill)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
