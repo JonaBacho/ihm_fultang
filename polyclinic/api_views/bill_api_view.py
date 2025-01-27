@@ -117,31 +117,31 @@ class BillViewSet(ModelViewSet):
             serializer.validated_data.pop('id')
         serializer.save()
 
-    from rest_framework import status
 
     @swagger_auto_schema(
-        method='post',
+        method='get',
         operation_summary="Lister toutes les factures d'un compte",
         operation_description="Retourne toutes les factures associées à un compte spécifique.",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'account_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID du compte"),
-            },
-            required=['account_id']
-        ),
-        manual_parameters=[auth_header_param],
-        tags=["Bills"]
+        manual_parameters=[
+            openapi.Parameter(
+                'account_id', openapi.IN_QUERY, 
+                type=openapi.TYPE_INTEGER, 
+                description="ID du compte", 
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
     )
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def get_for_account(self, request):
-        # Récupérer account_id depuis le corps de la requête
-        account_id = request.data.get('account_id', None)
+        # Récupérer account_id depuis les paramètres de requête
+        account_id = request.query_params.get('account_id')
 
         # Vérifier si account_id est fourni
         if not account_id:
             return Response(
-                {"error": "Le paramètre 'account_id' est requis dans le corps de la requête."},
+                {"error": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -153,12 +153,11 @@ class BillViewSet(ModelViewSet):
             )
 
         operations = FinancialOperation.objects.filter(account=account)
-
         bills = Bill.objects.filter(operation__in=operations)
 
         serializer = self.get_serializer(bills, many=True)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     
     @swagger_auto_schema(
         method='patch',
@@ -172,10 +171,10 @@ class BillViewSet(ModelViewSet):
             required=['isApproved']
         ),
         manual_parameters=[auth_header_param],
-        tags=["Bills"]
+        tags=["bill"]
     )
     @action(detail=True, methods=['patch'])
-    def approve(self, request, pk=None):
+    def account(self, request, pk=None):
     
         try:
             bill = Bill.objects.get(id=pk)
