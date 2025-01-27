@@ -33,4 +33,5 @@ export const AppRoutesPaths = {
     adminConsultationDetailsPage: "/admin/consultation-list/details",
     laboratoryHistory:"/laboratory/exams-history",
     laboratoryCurrent:"/laboratory/current-exams",
+    pharmacypage:"/Pharmacy/Pharmacy"
 }

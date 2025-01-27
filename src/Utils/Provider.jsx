@@ -39,7 +39,7 @@ function useLogin() {
             if (response.status === 200)
             {
                 setIsLoading(false);
-                //console.log(response);
+                console.log(response);
                 saveAuthParameters(response.data.access, response.data.refresh);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
