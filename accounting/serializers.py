@@ -38,9 +38,8 @@ class AccountingViewSerializer(ModelSerializer):
     soldeReel = serializers.FloatField(default=0)
     soldePrevu = serializers.FloatField(default=0)
 
-    account_number = serializers.IntegerField(source='account.number')
-    libelle = serializers.CharField(max_length=255, source='account.libelle')
+    account = AccountSerializer()
     
     class Meta:
         model = AccountState
-        fields = ['soldeReel', 'soldePrevu', 'account_number', 'libelle']
+        fields = ['id', 'soldeReel', 'soldePrevu', 'account']
