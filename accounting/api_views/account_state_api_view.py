@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from datetime import date
 from rest_framework.response import Response
+from polyclinic.pagination import CustomPagination
 
 tags = ["account-state"]
 auth_header_param = openapi.Parameter(
@@ -94,6 +95,7 @@ auth_header_param = openapi.Parameter(
 class AccountStateViewSet(ModelViewSet):
     serializer_class = AccountStateSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return AccountState.objects.all()
