@@ -34,4 +34,4 @@ EXPOSE 8009
 ENV PYTHONUNBUFFERED=1
 
 # Lancer les migrations et démarrer le serveur Django
-CMD ["sh", "-c", "python manage.py makemigrations --merge && python manage.py migrate && python manage.py runserver 0.0.0.0:8009"]
+CMD ["sh", "-c", "python manage.py makemigrations --merge --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:8009"]
