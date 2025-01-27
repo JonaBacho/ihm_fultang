@@ -1,10 +1,15 @@
 from rest_framework import serializers
 from polyclinic.models import Consultation
 from polyclinic.serializers.medical_folder_page_serializers import MedicalFolderPageSerializer
+from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer
+from polyclinic.serializers.patient_serializers import PatientSerializer
 
 
 class ConsultationSerializer(serializers.ModelSerializer):
     idMedicalFolderPage = MedicalFolderPageSerializer(read_only=True)
+    idPatient = PatientSerializer(read_only=True)
+    idMedicalStaffSender = MedicalStaffSerializer(read_only=True)
+    idMedicalStaffGiver = MedicalStaffSerializer(read_only=True)
     class Meta:
         model = Consultation
         fields = '__all__'
