@@ -105,7 +105,7 @@ class AccountStateViewSet(ModelViewSet):
         manual_parameters=[auth_header_param]
     )
     @action(detail=False, methods=['get'])
-    def by_budget_exercise(self, request):
+    def get_by_budget_exercise(self, request):
         # Find the active exercise
         today = date.today()
         budget_exercise = BudgetExercise.objects.filter(
