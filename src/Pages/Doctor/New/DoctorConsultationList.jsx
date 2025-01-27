@@ -150,7 +150,7 @@ export function DoctorConsultationList() {
                                     </div>
                                     <div className="px-4 py-3 text-right">
                                         <button className="text-white px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-primary-end to-primary-start font-bold text-sm hover:text-md transition-all duration-300"
-                                                onClick={()=> {navigate(AppRoutesPaths.adminConsultationDetailsPage)}}>
+                                                onClick={()=> {navigate(AppRoutesPaths.doctorConsultationDetailsPage)}}>
                                             View Details
                                         </button>
                                     </div>
