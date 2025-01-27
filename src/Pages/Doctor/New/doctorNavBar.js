@@ -14,12 +14,12 @@ export const doctorNavBar = [
     {
         name: 'Patient List',
         icon: FaUsers,
-        link: appRoutes.doctorPatientListPage,
+        link: appRoutes.doctorPatientList,
     },
     {
         name: 'Appointments',
         icon: Calendar,
-        link: appRoutes.adminAppointmentsListPage,
+        link: appRoutes.doctorAppointement,
     },
     {
         name: 'Consultation',
@@ -28,12 +28,12 @@ export const doctorNavBar = [
             {
                 icon: FiList,
                 name: "Consultation List",
-                link: appRoutes.doctorConsultationListPage
+                link: appRoutes.doctorConsultationList
             },
             {
                 icon: FaPlus,
                 name: "Add A Consultation",
-                link: appRoutes.doctorAddConsultationPage
+                link: appRoutes.doctorAddConsultation
             }
         ]
     },
