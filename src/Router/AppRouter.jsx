@@ -39,6 +39,7 @@ export function AppRoute()
     const AdminConsultationDetails = React.lazy(async () => ({default: (await import("../Pages/AdminViews/ConsultationDetails.jsx")).ConsultationDetails}));
     const CurrentExamsLaboratoryPage = React.lazy(async () => ({default: (await import("../Pages/Laboratory/CurrentExams.jsx")).CurrentExams}));
     const ExamsHistoryLaboratoryPage = React.lazy(async () => ({default: (await import("../Pages/Laboratory/ExamsHistory.jsx")).ExamHistory}));
+    const FinancialHistory = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialHistory.jsx")).FinancialHistory}));
 
 
 
@@ -77,6 +78,7 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.adminConsultationDetailsPage} element={<AdminConsultationDetails />} />
                 <Route path={AppRoutesPaths.laboratoryHistory} element={<ExamsHistoryLaboratoryPage />} />
                 <Route path={AppRoutesPaths.laboratoryCurrent} element={<CurrentExamsLaboratoryPage />} />
+                <Route path={AppRoutesPaths.financialHistory} element={<FinancialHistory />} />
 
                 <Route path={AppRoutesPaths.notFound} element={<NotFoundPage />} />
             </Routes>

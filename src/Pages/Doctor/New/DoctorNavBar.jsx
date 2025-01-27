@@ -1,9 +1,9 @@
 import {FaCog, FaEnvelope, FaSignOutAlt} from "react-icons/fa";
 import {Tooltip} from "antd";
-import {useAuthentication} from "../../Utils/Provider.jsx";
-import userIcon from "../../assets/userIcon.png";
+import {useAuthentication} from "../../../Utils/Provider.jsx";
+import userIcon from "../../../assets/userIcon.png";
 
-export function CashierNavBar()
+export function DoctorNavBar()
 {
 
     const {logout , userData} = useAuthentication();
@@ -18,7 +18,7 @@ export function CashierNavBar()
             <div className="border-b-2 m-3  border-b-gray-300">
                 <div className="w-full h-[70px] flex justify-between">
                     <h1 className="ml-3 text-4xl text-secondary mt-3.5 font-bold">
-                        Cashier
+                       Doctor
                     </h1>
                     <div className="flex gap-3 mt-3.5 mb-4 mr-5">
                         <Tooltip placement={"top"} title={"settings"}>

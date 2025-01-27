@@ -39,7 +39,7 @@ function useLogin() {
             if (response.status === 200)
             {
                 setIsLoading(false);
-                console.log(response);
+                console.log("logged user data: ",response);
                 saveAuthParameters(response.data.access, response.data.refresh);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
@@ -104,7 +104,7 @@ function useLogin() {
 
     function hasRole(requiredRole)
     {
-        if(isLogged) return userRole === requiredRole;
+        if(isLogged) return userData?.role === requiredRole;
         return false;
     }
 
