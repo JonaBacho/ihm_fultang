@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 
 export function StatisticsReport({ annualStats, monthlyStats, dailyStats }) {
+
+
     StatisticsReport.propTypes = {
         annualStats: PropTypes.shape({
             consultations: PropTypes.number.isRequired,
@@ -169,11 +171,11 @@ function TableStats({ title, stats }) {
             <table className="w-full text-left border-collapse">
                 <thead>
                     <tr>
-                        <th className="border-b p-2">Période</th>
+                        <th className="border-b p-2">Period</th>
                         <th className="border-b p-2">Consultations</th>
-                        <th className="border-b p-2">Examens</th>
-                        <th className="border-b p-2">Médicaments</th>
-                        <th className="border-b p-2">Revenus (FCFA)</th>
+                        <th className="border-b p-2">Exams</th>
+                        <th className="border-b p-2">Medicine</th>
+                        <th className="border-b p-2">Income (FCFA)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -239,17 +241,17 @@ function CustomReportFilter({ onFilter }) {
                     />
                 </div>
                 <div>
-                    <label className="block text-gray-600 mb-2">Catégorie</label>
+                    <label className="block text-gray-600 mb-2">Category</label>
                     <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         className="border p-2 rounded w-full"
                         >
-                            <option value="all">Toutes les catégories</option>
+                            <option value="all">All categories</option>
                             <option value="consultations">Consultations</option>
-                            <option value="exams">Examens</option>
-                            <option value="medications">Médicaments</option>
-                            <option value="revenue">Revenus</option>
+                            <option value="exams">Exams</option>
+                            <option value="medications">Medicines</option>
+                            <option value="revenue">Income</option>
                         </select>
                     </div>
                 </div>
@@ -258,7 +260,7 @@ function CustomReportFilter({ onFilter }) {
                         type="submit"
                         className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
                     >
-                        Filtrer
+                        Filter
                     </button>
                 </div>
             </form>

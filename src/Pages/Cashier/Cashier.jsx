@@ -3,23 +3,45 @@ import {CashierNavBar} from './CashierNavBar.jsx'
 import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import userIcon from "../../assets/userIcon.png"
 import {useAuthentication} from "../../Utils/Provider.jsx";
-import {FaArrowLeft, FaArrowRight,FaSearch} from "react-icons/fa";
-import {Tooltip} from "antd";
 import ConsultationList from './ConsultationList.jsx'
+import {useEffect, useState} from "react";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 export function Cashier()
 {
     const {userData} = useAuthentication();
+    const [consultations, setConsultation] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        async function fetchConsultations()
+        {
+            setIsLoading(true);
+            try
+            {
+                const response = await axiosInstance.get("/consultation");
+                setIsLoading(false);
+                if (response.status === 200)
+                {
+                    console.log(response.data);
+                    setConsultation(response.data);
+                }
+            }
+            catch (error)
+            {
+                setIsLoading(false);
+                console.log(error);
+            }
+        }
+        fetchConsultations();
+    }, []);
 
 
     return(
         <DashBoard linkList={cashierNavLink} requiredRole={"Cashier"}>
             <CashierNavBar/>
-
             <div className="flex flex-col">
-
-                {/*Header with welcome text content */}
                 <div
                     className="ml-5 mr-5 h-[150px] bg-gradient-to-t from-primary-start to-primary-end flex rounded-lg justify-between">
                     <div className="flex gap-4">
@@ -35,9 +57,6 @@ export function Cashier()
                         <p className="text-white mt-28 text-xl font-bold mr-4">12:30:25 AM</p>
                     </div>
                 </div>
-
-                {/*List of consulations */}
-
                 <ConsultationList/>
             </div>
 
