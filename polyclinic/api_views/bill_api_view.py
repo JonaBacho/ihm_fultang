@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Bill, MedicalFolderPage
 from accounting.models import FinancialOperation, Account
 from polyclinic.permissions.bill_permissions import BillPermissions
-from polyclinic.serializers.bill_serializers import BillSerializer
+from polyclinic.serializers.bill_serializers import BillSerializer, BillCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -107,7 +107,7 @@ class BillViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
-            pass
+            return BillCreateSerializer
         else:
             return BillSerializer
 

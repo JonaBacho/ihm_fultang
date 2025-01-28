@@ -1,5 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.viewsets import ViewSet
+
+from accounting.models import AccountingStaff
+from accounting.serializers import AccountingStaffSerializer
 from polyclinic.models import MedicalStaff
 from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
 from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
@@ -115,7 +118,11 @@ class MedicalStaffViewSet(ModelViewSet):
         active_param = self.request.query_params.get('active')
 
         # Base queryset
-        queryset = MedicalStaff.objects.all()
+        medical_staff = MedicalStaff.objects.all()
+        accounting_staff = AccountingStaff.objects.all()
+
+        # Combiner les deux QuerySet avec union
+        queryset = medical_staff.union(accounting_staff)
 
         # Filtrer si `active` est présent dans les paramètres
         if active_param is not None:
@@ -141,6 +148,12 @@ class MedicalStaffViewSet(ModelViewSet):
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
+        userType = serializer.validated_data['userType']
+        if userType == 'Accountant':
+            accountant_serializer = AccountingStaffSerializer(data=serializer.validated_data)
+            if accountant_serializer.is_valid():
+                accountant_serializer.save()
+                return None
         serializer.save()
 
     @swagger_auto_schema(

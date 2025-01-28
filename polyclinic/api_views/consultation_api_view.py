@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentication.user_helper import fultang_user
-from polyclinic.models import Consultation, MedicalStaff, MedicalFolderPage
+from polyclinic.models import Consultation, MedicalStaff, MedicalFolderPage, PatientAccess
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -11,6 +11,8 @@ from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+
+from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 
 tags = ["consultation"]
 auth_header_param = openapi.Parameter(
@@ -128,6 +130,18 @@ class ConsultationViewSet(ModelViewSet):
             medical_folder_page = MedicalFolderPage.objects.get(pk=serializer.validated_data['idMedicalFolderPage'])
             medical_folder_page.nurseNote = serializer.validated_data['consultationReason']
             medical_folder_page.save()
+            # on donne les acces au medecin
+            medical_staff = MedicalStaff.objects.get(id=serializer.validated_data['idMedicalStaffGiver'])
+            patient_access = PatientAccess.objects.filter(idPatient=serializer.validated_data['idPatient'])
+            patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
+            if patient_access:
+                patient_access.access = True
+                patient_access.save()
+                serializer = PatientAccessSerializer(patient_access)
+            else:
+                patient_access = PatientAccess.objects.create(idPatient=serializer.validated_data['idPatient'], idMedicalStaff=medical_staff,
+                                                              access=True)
+                serializer = PatientAccessSerializer(patient_access)
             serializer.save(idMedicalStaffSender=user)
         except Exception as e:
             return Response({'detail': str(e)}, status.HTTP_400_BAD_REQUEST)
