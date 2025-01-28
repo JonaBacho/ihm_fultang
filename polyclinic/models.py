@@ -294,27 +294,33 @@ class Medicament(models.Model):
 
 class Prescription(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    dose = models.TextField()
+    note = models.TextField()
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
-    idMedicament = models.ForeignKey("Medicament", on_delete=models.CASCADE, null=False, default=1)
 
     def __str__(self):
-        return self.dose.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
+        return self.note.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
+
+class PrescriptionDrug(models.Model):
+    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.CASCADE, null=False)
+    quantity = models.IntegerField(default=1)
+    prescription = models.ForeignKey("polyclinic.Prescription", on_delete=models.CASCADE, null=False)
+    dose = models.CharField(max_length=355, null=False)
+
 
 
 class Room(models.Model):
     roomLabel = models.CharField(max_length=100)
     beds = models.PositiveIntegerField(default = 0)
     busyBeds = models.IntegerField(default = 0)
-
+    price = models.FloatField(default=2000)
 
 class Hospitalisation(models.Model):
     atDate = models.DateTimeField(auto_now=True)
     bedLabel = models.CharField(max_length=100)
-    note = models.TextField()
+    note = models.TextField(blank=True, null=True)
     isActive = models.BooleanField(default=True)
     removeAt = models.DateTimeField(auto_now=True)
 
@@ -325,23 +331,24 @@ class Hospitalisation(models.Model):
 
 # La classe pour la facture
 class Bill(models.Model):
-    customer = models.CharField(max_length=50)
-    tel = models.CharField(max_length=20, default="0")
+    billCode = models.CharField(max_length=300)
     date = models.DateTimeField(auto_now=True)
     amount = models.FloatField(default=0.0)
-    totalItems = models.IntegerField(default=0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
     isAccounted = models.BooleanField(default=False)
-    operator = models.ForeignKey('polyclinic.MedicalStaff', on_delete=CASCADE, null=False)
+    medicalOperator = models.ForeignKey('polyclinic.MedicalStaff', on_delete=CASCADE, null=False)
+    patient = models.ForeignKey('polyclinic.Patient', on_delete=models.CASCADE, null=False)
 
 class BillItem(models.Model):
-    idBill = models.ForeignKey("Bill", on_delete=models.CASCADE, null=False)
-    idMedicament = models.ForeignKey("Medicament", on_delete=CASCADE, null=False)
+    bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)
+    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.SET_NULL, null=True)
+    consultation = models.ForeignKey('polyclinic.Consultation', on_delete=models.SET_NULL, null=True)
+    hospitalisation = models.ForeignKey('polyclinic.Hospitalisation', on_delete=models.SET_NULL, null=True)
+    prescription = models.ForeignKey('polyclinic.Prescription', on_delete=models.SET_NULL, null=True)
+    examRequest = models.ForeignKey('polyclinic.ExamRequest', on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField(default=0)
-    designation = models.CharField(max_length=50)
-    unitP = models.FloatField(default=0.0)
-    totalP = models.FloatField(default=0.0)
-
+    designation = models.CharField(max_length=50, default="")
+    total = models.FloatField(default=0)
 
 # ======================================
 # ======================================== I DON'T NO

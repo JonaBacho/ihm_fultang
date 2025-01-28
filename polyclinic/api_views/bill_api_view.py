@@ -106,7 +106,10 @@ class BillViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return BillSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            pass
+        else:
+            return BillSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
@@ -167,9 +170,9 @@ class BillViewSet(ModelViewSet):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'isApproved': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
+                'isAccounted': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
             },
-            required=['isApproved']
+            required=['isAccounted']
         ),
         manual_parameters=[auth_header_param],
         tags=["bill"]
@@ -185,13 +188,13 @@ class BillViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        if bill.isApproved:
+        if bill.isAccounted:
             return Response(
                 {"error": "La facture est déjà approuvée."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        bill.isApproved = True
+        bill.isAccounted = True
         bill.save()
 
         serializer = self.get_serializer(bill)

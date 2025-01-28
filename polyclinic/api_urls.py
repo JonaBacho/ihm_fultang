@@ -1,8 +1,6 @@
 from .api_views.consultation_type_api_view import ConsultationTypeViewSet
-from .api_views.medicalstaff_api_view import MedicalStaffViewSet
 from .api_views.appointment_api_view import AppointmentViewSet
 from .api_views.bill_api_view import BillViewSet
-from .api_views.bill_item_api_view import BillItemViewSet
 from .api_views.consultation_api_view import ConsultationViewSet
 from .api_views.department_api_view import DepartmentViewSet
 from .api_views.exam_api_view import ExamViewSet
@@ -41,7 +39,6 @@ router.register(r'message', MessageViewSet, basename='message')
 router.register(r'patient', PatientViewSet, basename='patient')
 router.register(r'prescription', PrescriptionViewSet, basename='prescription')
 router.register(r'room', RoomViewSet, basename='room')
-router.register(r'bill-item', BillItemViewSet, basename='bill-item')
 
 
 urlpatterns = []
