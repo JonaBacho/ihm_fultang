@@ -3,7 +3,7 @@ from rest_framework import permissions
 from authentication.user_helper import fultang_user
 
 
-class ConsultationPermissions(permissions.BasePermission):
+class ExamPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         user, _ = fultang_user(request)
         if view.action in ["destroy"]:

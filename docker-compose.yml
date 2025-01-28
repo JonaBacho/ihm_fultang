@@ -28,6 +28,33 @@ services:
           - fultang
       container_name: fultang
 
+    redis:
+      image: redis:alpine
+      ports:
+        - 6379:6379
+
+    celery:
+      image: "${FULTANG_IMAGE}"
+      restart: always
+      user: django-user
+      command: [ "celery", "-A", "fultang", "worker", "--loglevel=info" ]
+      volumes:
+        - ./volumes/db.sqlite3:/app/db.sqlite3:rw
+      depends_on:
+        - redis
+        - fultang
+
+    celery-beat:
+      image: "${FULTANG_IMAGE}"
+      restart: always
+      user: django-user
+      command: [ "celery", "-A", "fultang", "beat", "--loglevel=info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
+      volumes:
+        - ./volumes/db.sqlite3:/app/db.sqlite3:rw
+      depends_on:
+        - redis
+        - fultang
+
 networks:
     fultang:
         driver: bridge

@@ -17,11 +17,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app
 
 # Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt
-#    adduser \
-#        --disabled-password \
-#        --no-create-home \
-#        django-user
+RUN pip install --no-cache-dir -r requirements.txt && \
+    adduser \
+        --disabled-password \
+        --no-create-home \
+        django-user
 
 # Copier le reste de l'application dans le conteneur
 COPY . /app
@@ -34,4 +34,4 @@ EXPOSE 8009
 ENV PYTHONUNBUFFERED=1
 
 # Lancer les migrations et démarrer le serveur Django
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8009"]
+CMD ["sh", "-c", "python manage.py makemigrations --merge --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:8009"]

@@ -28,7 +28,7 @@ jobs:
 
     - name: Apply Migration
       run: |
-        python manage.py makemigrations
+        python manage.py makemigrations --merge --noinput
         python manage.py migrate
 
     - name: Run Tests

@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import BillItem
+from polyclinic.permissions.bill_permissions import BillPermissions
 from polyclinic.serializers.bill_items_serializers import BillItemSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -93,7 +94,7 @@ auth_header_param = openapi.Parameter(
 )
 class BillItemViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, BillPermissions]
     pagination_class = CustomPagination
 
     def get_queryset(self):
