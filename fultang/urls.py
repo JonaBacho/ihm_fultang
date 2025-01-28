@@ -17,13 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from polyclinic.sites.cashier_urls import cashier_urls
 from polyclinic.sites.welcom_urls import welcome_urls
-from polyclinic.sites.dashboard_urls import dashboard_urls
-from polyclinic.sites.pharmacist_urls import pharmacist_urls
-from polyclinic.sites.doctor_urls import doctor_urls
-from polyclinic.sites.reception_urls import reception_urls
-from polyclinic.sites.laboratory_urls import laboratory_urls
-from polyclinic.sites.nurse_urls import   nurse_urls
-from polyclinic.sites.cashier_urls import cashier_urls
 from polyclinic import api_urls
 from accounting import urls as accounting_urls
 from authentication import urls as authentication_urls
@@ -54,14 +47,5 @@ urlpatterns = [
     path('api/v1/doc', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/v1/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-
-    path('dashboard/', dashboard_urls()),
-    path('pharmacist/',pharmacist_urls()),
-    path('doctor/', doctor_urls()),
-    path('reception/', reception_urls()),
-    path('nurse/', nurse_urls()),
-    path('laboratory/', laboratory_urls()),
-    path('admin/', admin.site.urls),
-    path('cashier/', cashier_urls()),
 
 ]

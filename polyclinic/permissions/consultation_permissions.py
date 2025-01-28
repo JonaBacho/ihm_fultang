@@ -13,5 +13,5 @@ class ConsultationPermissions(permissions.BasePermission):
         elif view.action == "create":
             return user.is_authenticated and user.role in ["Admin", "Nurse", "Receptionist"]
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
-            return user.is_authenticated
+            return user.is_authenticated and user.role in ["Admin", "Nurse", "Doctor", "Receptionist", "Cashier"]
         return False

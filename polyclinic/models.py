@@ -19,6 +19,7 @@ ROLES = [
     ('Pharmacist', 'Pharmacist'),
     ('Cashier', 'Cashier')
 ]
+
 TYPEDOCTOR = [
     ('Specialist', 'Specialist'),
     ('Ophtalmologist', 'Ophtalmologist'),
@@ -64,6 +65,13 @@ STATUT_PAIEMENT_CONSULTATION = [
     ('Valid', 'Valid'),
 ]
 
+STATEPATIENT = [
+    ("Critical", "Critical"),
+    ("Not Critical", "Not Critical"),
+    ("Serious", "Serious"),
+    ("Stable", "Stable"),
+    ("Inprouving", "Inprouving"),
+]
 
 # ======================================
 # ======================================== APPOINTMENT, MEDICALSTAFF, DEPARTMENT, PATIENT
@@ -194,6 +202,7 @@ class Consultation(models.Model):
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
     paymentStatus = models.CharField(max_length=100, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     state = models.CharField(max_length=100, choices=STATECONSULTATION, default="Pending")
+    statePatient = models.CharField(max_length=100, choices=STATEPATIENT, default="Not Critical")
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)

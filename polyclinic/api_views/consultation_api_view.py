@@ -11,6 +11,8 @@ from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
+from django.utils.timezone import now
 
 from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 
@@ -151,3 +153,31 @@ class ConsultationViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save(idMedicalStaffSender=user)
+
+    @swagger_auto_schema(
+        operation_description="Permet de lister les consultations journalières d'un docteur",
+        responses={
+            200: openapi.Response(description=" Liste des consultations du docteur"),
+            404: openapi.Response(description="Docteur inexistant existent"),
+            400: openapi.Response(description="Bad request"),
+        },
+        manual_parameters=[
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
+                              type=openapi.TYPE_INTEGER, required=True),
+            auth_header_param
+        ],
+        tags=tags
+    )
+    @action(methods=["get"], detail=False, url_path='doctor/(?P<id>[^/.]+)', permission_classes=[ConsultationPermissions])
+    def consultation_doctor(self, request, id):
+        try:
+            self.pagination_class = None
+            medical_staff = MedicalStaff.objects.get(id=id)
+            queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
+            queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
+            return Response(queryset, status.HTTP_200_OK)
+        except MedicalStaff.DoesNotExist:
+            return Response("le docteur spécifé n'existe pas", status.HTTP_404_NOT_FOUND)
+
+
+
