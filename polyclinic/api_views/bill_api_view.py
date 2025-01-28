@@ -184,13 +184,13 @@ class BillViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        if bill.isApproved:
+        if bill.isAccounted:
             return Response(
                 {"error": "La facture est déjà approuvée."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        bill.isApproved = True
+        bill.isAccounted = True
         bill.save()
 
         serializer = self.get_serializer(bill)

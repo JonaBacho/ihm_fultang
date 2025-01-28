@@ -160,3 +160,5 @@ class MedicalStaffViewSet(ModelViewSet):
         doctors = MedicalStaff.objects.filter(role__in=['Doctor', 'Specialist', 'Ophtalmologist', 'Dentist'])
         doctors_list = list(doctors.values('id', 'first_name', 'last_name', 'role'))
         return JsonResponse(doctors_list, safe=False)
+
+    
