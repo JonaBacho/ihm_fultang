@@ -215,10 +215,12 @@ class MedicalFolderViewSet(ModelViewSet):
         user, _ = fultang_user(self.request)
         medical_folder = self.get_object()
         number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
-        page_data = {'idMedicalFolder': medical_folder.id}
+        page_data = {'idMedicalFolder': medical_folder.id,
+                     'idMedicalStaff': user,
+                     'pageNumber': number+1}
         page_serializer = MedicalFolderPageCreateSerializer(data=page_data)
         if page_serializer.is_valid():
-            page = page_serializer.save(idMedicalStaff=user, pageNumber=number+1)
+            page = page_serializer.save()
             params_serializer = ParametersCreateSerializer(data=request.data)
             if params_serializer.is_valid():
                 params_serializer.save(idMedicalFolderPage=page)
