@@ -5,7 +5,7 @@ import {AppRoutesPaths as AppRouterPaths} from "../../../Router/appRouterPaths.j
 import PropTypes from "prop-types";
 import {DoctorDashboard} from "./DoctorDashboard.jsx";
 import {DoctorNavBar} from "./DoctorNavBar.jsx";
-import {doctorNavBar} from "./doctorNavBar.js";
+import {doctorNavLink} from "./doctorNavLink.js";
 
 
 export function DoctorHomePage() {
@@ -24,7 +24,7 @@ export function DoctorHomePage() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavBar} requiredRole={"Doctor"}>
+        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="p-6 space-y-6">
                 <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white">

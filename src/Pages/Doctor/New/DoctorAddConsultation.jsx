@@ -7,7 +7,7 @@ import { FaSearch, FaUser, FaChevronRight, FaHistory, FaPills } from "react-icon
 import { BsExclamationTriangle } from "react-icons/bs"
 import { IoMedkit } from "react-icons/io5"
 import { GiStethoscope } from "react-icons/gi"
-import { doctorNavBar } from "./doctorNavBar.js"
+import { doctorNavLink } from "./doctorNavLink.js"
 import { DoctorDashboard } from "./DoctorDashboard.jsx"
 import {DoctorNavBar} from "./DoctorNavBar.jsx"
 
@@ -517,7 +517,7 @@ export const MedicalRecord2 = () => {
 
 export  function DoctorAddConsultation() {
   return (
-    <DoctorDashboard linkList={doctorNavBar} requiredRole="Doctor">
+    <DoctorDashboard linkList={doctorNavLink} requiredRole="Doctor">
         <DoctorNavBar/>
       <MedicalRecord2></MedicalRecord2>
     </DoctorDashboard>

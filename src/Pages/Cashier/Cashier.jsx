@@ -11,8 +11,10 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 export function Cashier()
 {
     const {userData} = useAuthentication();
-    const [consultations, setConsultation] = useState([]);
+    const [consultations, setConsultations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+
 
     useEffect(() => {
         async function fetchConsultations()
@@ -24,8 +26,7 @@ export function Cashier()
                 setIsLoading(false);
                 if (response.status === 200)
                 {
-                    console.log(response.data);
-                    setConsultation(response.data);
+                    setConsultations(response.data.results);
                 }
             }
             catch (error)
@@ -37,6 +38,8 @@ export function Cashier()
         fetchConsultations();
     }, []);
 
+
+    console.log(consultations);
 
     return(
         <DashBoard linkList={cashierNavLink} requiredRole={"Cashier"}>
@@ -57,7 +60,7 @@ export function Cashier()
                         <p className="text-white mt-28 text-xl font-bold mr-4">12:30:25 AM</p>
                     </div>
                 </div>
-                <ConsultationList/>
+                <ConsultationList consultationList = {consultations}/>
             </div>
 
 

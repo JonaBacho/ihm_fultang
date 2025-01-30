@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react';
 import {
   Search, User, ChevronDown, ChevronUp, AlertCircle, Calendar, DollarSign, FileText, Heart, History, Activity

@@ -2,10 +2,11 @@ import { Users, Calendar, ClipboardList,  FileSpreadsheet, UserPlus, FileText } 
 
 import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
-import PropTypes from "prop-types";
 import {DoctorDashboard} from "./New/DoctorDashboard.jsx"
 import {DoctorNavBar} from "./New/DoctorNavBar.jsx"
-import {doctorNavBar} from "./New/doctorNavBar.js"
+import {doctorNavLink} from "./New/doctorNavLink.js"
+import QuickActionButton from "../../GlobalComponents/QuickActionButton.jsx";
+import StatCard from "../../GlobalComponents/StatCard.jsx";
 
 
 export function Doctor() {
@@ -24,7 +25,7 @@ export function Doctor() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavBar} requiredRole={"Doctor"}>
+        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="p-6 space-y-6">
                 <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white">
@@ -47,7 +48,7 @@ export function Doctor() {
                         icon={ClipboardList}
                         title="Consultations"
                         value={stats?.consultations}
-                        description="Consultations this month"
+                        description="Consultations today"
                         color="bg-purple-500"
                     />
                     <StatCard
@@ -61,7 +62,7 @@ export function Doctor() {
                         icon={FileText}
                         title="Exams"
                         value={stats?.scheduledExams}
-                        description="Scheduled exams"
+                        description="Prescribed exams"
                         color="bg-red-500"
                     />
 
@@ -98,46 +99,5 @@ export function Doctor() {
 }
 
 
-function StatCard({icon: Icon, title, value, description, color}) {
 
-    StatCard.propTypes = {
-        icon: PropTypes.element.isRequired,
-        title: PropTypes.string.isRequired,
-        value: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
-        color: PropTypes.string
-    }
-
-    return (
-        <div className="bg-white rounded-lg shadow-lg p-6 flex items-start gap-4">
-            <div className={`${color} rounded-full p-3 text-white`}>
-                <Icon className="w-6 h-6"/>
-            </div>
-            <div>
-                <h3 className="font-semibold text-gray-800">{title}</h3>
-                <p className="text-2xl font-bold text-gray-900 mb-1">{value}</p>
-                <p className="text-sm text-gray-500">{description}</p>
-            </div>
-        </div>
-    );
-}
-
-
-function QuickActionButton({icon: Icon, label, onClick}) {
-
-    QuickActionButton.propTypes = {
-        icon: PropTypes.element.isRequired,
-        label: PropTypes.string.isRequired,
-        onClick: PropTypes.func.isRequired
-    }
-    return (
-        <button
-            onClick={onClick}
-            className="flex flex-col items-center gap-2 p-4  rounded-lg border border-gray-200 hover:border-2 hover:border-primary-end hover:bg-gray-100 transition-all duration-300"
-        >
-            <Icon className="w-6 h-6 text-primary-end"/>
-            <span className="text-md text-gray-600 font-bold text-center">{label}</span>
-        </button>
-    );
-}
 

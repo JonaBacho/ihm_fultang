@@ -1,11 +1,11 @@
-import {FaFileInvoiceDollar, FaHome, FaNotesMedical, FaPlus,FaUserMd, FaUsers} from "react-icons/fa";
+import {FaHistory, FaHome, FaNotesMedical, FaPlus, FaUsers} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../../Router/appRouterPaths.js";
-import {Bed, BedDouble, Calendar} from "lucide-react";
+import { Calendar} from "lucide-react";
 import {FiList} from "react-icons/fi";
-import {GiMedicines} from "react-icons/gi";
 
 
-export const doctorNavBar = [
+
+export const doctorNavLink = [
     {
         name: "Dashboard",
         link: appRoutes.doctorPage,
@@ -16,11 +16,7 @@ export const doctorNavBar = [
         icon: FaUsers,
         link: appRoutes.doctorPatientList,
     },
-    {
-        name: 'Appointments',
-        icon: Calendar,
-        link: appRoutes.doctorAppointement,
-    },
+
     {
         name: 'Consultation',
         icon: FiList,
@@ -31,11 +27,21 @@ export const doctorNavBar = [
                 link: appRoutes.doctorConsultationList
             },
             {
+                icon: FaHistory,
+                name: "Consultation History",
+                link: appRoutes.doctorConsultationHistory
+            },
+          /*  {
                 icon: FaPlus,
                 name: "Add A Consultation",
                 link: appRoutes.doctorAddConsultation
-            }
+            }*/
         ]
+    },
+    {
+        name: 'Appointments',
+        icon: Calendar,
+        link: appRoutes.doctorAppointment,
     },
     {
         name: 'Exams',

@@ -13,7 +13,7 @@ import {ConfirmationModal} from "../../Modals/ConfirmAction.Modal.jsx";
 //import {AddNewPatientModal} from "../Receptionist/addNewPatientModal.jsx";
 import {DoctorDashboard} from "./DoctorDashboard.jsx";
 import {DoctorNavBar} from "./DoctorNavBar.jsx";
-import {doctorNavBar} from "./doctorNavBar.js";
+import {doctorNavLink} from "./doctorNavLink.js";
 
 export function DoctorPatientList()
 {
@@ -145,7 +145,7 @@ export function DoctorPatientList()
 
 
     return (
-        <DoctorDashboard linkList={doctorNavBar} requiredRole={"Doctor"}>
+        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="mt-5 flex flex-col relative">
 
