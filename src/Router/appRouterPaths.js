@@ -41,5 +41,6 @@ export const AppRoutesPaths = {
     doctorAddConsultation: "/doctor/add-consultation",
     doctorConsultationDetailsPage: "/doctor/consultation-list/details/:id",
     doctorAppointment: "/doctor/appointments",
-    doctorConsultationHistory: "/doctor/consultation-history"
+    doctorConsultationHistory: "/doctor/consultation-history",
+    doctorConsultationHistoryDetails: "/doctor/consultation-history/details/:id",
 }

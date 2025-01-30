@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import {Loading} from "../GlobalComponents/Loading.jsx";
 import {AppRoutesPaths} from "./appRouterPaths.js";
 import {DoctorAppointementPage} from "../Pages/Doctor/New/DoctorAppointementPage.jsx";
+import {ConsultationHistoryDetails} from "../Pages/Doctor/DoctorComponents/ConsultationHistoryDetails.jsx";
 
 
 
@@ -52,6 +53,7 @@ export function AppRoute()
     const DoctorAppointments = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorComponents/AppointmentList.jsx")).AppointmentList}));
     const DoctorConsultationHistory = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorComponents/ConsultationHistory.jsx")).ConsultationHistory}));
     const DoctorConsultationDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/New/DoctorConsultationDetail.jsx")).DoctorConsultationDetails}));
+    const DoctorConsultationHistoryDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorComponents/ConsultationHistoryDetails.jsx")).ConsultationHistoryDetails}));
 
 
 
@@ -101,6 +103,7 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.doctorConsultationList} element={<DoctorConsultationList />} />
                 <Route path={AppRoutesPaths.doctorAddConsultation} element={<DoctorAddConsultation />} />
                 <Route path={AppRoutesPaths.doctorConsultationDetailsPage} element={<DoctorConsultationDetails />} />
+                <Route path={AppRoutesPaths.doctorConsultationHistoryDetails} element={<DoctorConsultationHistoryDetails />} />
             </Routes>
         </React.Suspense>
     )

@@ -62,7 +62,7 @@ export default function ConsultationCard ({ consultation }) {
                         </h3>
                     </div>
                     <span
-                        className={`px-2 py-1 rounded-full border-2 text-sm font-medium ${getStateStyles(consultation.statePatient).badge}`}>
+                        className={`px-2 py-1 rounded-full border-2 text-sm font-medium ${getStateStyles(consultation?.statePatient).badge}`}>
                         {consultation?.statePatient || 'Not Critical'}
                   </span>
                 </div>
@@ -81,7 +81,7 @@ export default function ConsultationCard ({ consultation }) {
                 </div>
 
                 <div className="justify-end flex">
-                    <button onClick={() => {navigate(`/doctor/consultation-list/details/${consultation.id}`)}}
+                    <button onClick={() => {navigate(`/doctor/consultation-list/details/${consultation.id}`, {state: {consultation}})}}
                             className="px-4 py-2 bg-primary-end text-white rounded-lg  transition-colors flex items-center justify-center">
                         <Stethoscope className="h-5 w-5 mr-2"/>
                         Consult Now

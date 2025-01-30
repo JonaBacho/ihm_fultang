@@ -27,8 +27,9 @@ export function formatFullDateTime(dateString) {
 
 export function formatDateOnly(dateString) {
     return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
     }).format(new Date(dateString));
 }

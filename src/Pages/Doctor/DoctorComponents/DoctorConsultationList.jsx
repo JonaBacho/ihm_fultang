@@ -6,7 +6,7 @@ import {DoctorNavBar} from "../New/DoctorNavBar.jsx";
 import ConsultationCard from "./ConsultationCard.jsx";
 
 
-// Données simulées avec heures d'arrivée
+
 const mockConsultations = [
     {
         id: 1,
@@ -88,8 +88,8 @@ export  function DoctorConsultationList() {
     const filteredConsultations = mockConsultations
         .filter(
             (consultation) =>
-                consultation.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                consultation.reason.toLowerCase().includes(searchTerm.toLowerCase()),
+                consultation?.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                consultation?.consultationReason.toLowerCase().includes(searchTerm.toLowerCase()),
         )
         .sort((a, b) => a.arrivalTime.localeCompare(b.arrivalTime))
 
@@ -112,7 +112,6 @@ export  function DoctorConsultationList() {
                             </div>
                         </div>
                     </div>
-
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                         <input
@@ -120,18 +119,15 @@ export  function DoctorConsultationList() {
                             placeholder="Search for a patient or reason for consultation..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-2 focus:border-primary-end"
                         />
                     </div>
                 </div>
-
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredConsultations.map((consultation) => (
                         <ConsultationCard key={consultation.id} consultation={consultation} />
                     ))}
                 </div>
-
             </div>
         </DoctorDashboard>
     )
