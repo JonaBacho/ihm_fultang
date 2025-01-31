@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentication.user_helper import fultang_user
-from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
+from polyclinic.models import Patient, PatientAccess, MedicalFolder
+from authentication.models import MedicalStaff
 from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
 from polyclinic.permissions.patient_permissions import PatientPermission
 from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
@@ -128,7 +128,7 @@ class PatientViewSet(ModelViewSet):
             return PatientSerializer
 
     def perform_create(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
 

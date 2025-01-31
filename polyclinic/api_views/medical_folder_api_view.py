@@ -1,7 +1,6 @@
 from django.db.models.query import Prefetch
 from rest_framework.viewsets import ModelViewSet
 
-from authentication.user_helper import fultang_user
 from polyclinic.models import MedicalFolder, MedicalFolderPage, Parameters
 from polyclinic.permissions.medical_folder_permissions import MedicalFolderPermission
 from polyclinic.serializers.medical_folder_serializers import MedicalFolderSerializer, MedicalFolderDetailsSerializer
@@ -146,7 +145,7 @@ class MedicalFolderViewSet(ModelViewSet):
     )
     @action(methods=['post'], detail=True, url_path='add-page')
     def add_page(self, request, *args, **kwargs):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         medical_folder = self.get_object()
         number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         serializer = MedicalFolderPageCreateSerializer(data=request.data)
@@ -212,7 +211,7 @@ class MedicalFolderViewSet(ModelViewSet):
     )
     @action(methods=['post'], detail=True, url_path='new-params')
     def new_params(self, request, *args, **kwargs):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         medical_folder = self.get_object()
         number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         page_data = {'idMedicalFolder': medical_folder.id,

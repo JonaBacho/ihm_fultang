@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentication.user_helper import fultang_user
-from polyclinic.models import Consultation, MedicalStaff, MedicalFolderPage, PatientAccess
+from polyclinic.models import Consultation, MedicalFolderPage, PatientAccess
+from authentication.models import MedicalStaff
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -124,7 +124,7 @@ class ConsultationViewSet(ModelViewSet):
             return ConsultationSerializer
 
     def perform_create(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         try:
@@ -149,7 +149,7 @@ class ConsultationViewSet(ModelViewSet):
             return Response({'detail': str(e)}, status.HTTP_400_BAD_REQUEST)
 
     def perform_update(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save(idMedicalStaffSender=user)

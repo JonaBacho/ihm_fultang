@@ -1,7 +1,6 @@
 # authentication/management/commands/seed_database.py
 from django.core.management.base import BaseCommand
-from polyclinic.models import MedicalStaff, ROLES
-from accounting.models import AccountingStaff, ROLES_ACCOUNTING
+from authentication.models import MedicalStaff, ROLES, ROLES_ACCOUNTING
 from faker import Faker
 import random
 fake = Faker()
@@ -62,7 +61,7 @@ class Command(BaseCommand):
                     birthDate = fake.date_of_birth(minimum_age=25, maximum_age=65)
                     address = fake.address().replace('\n', ', ')
 
-                    user = AccountingStaff.objects.create(
+                    user = MedicalStaff.objects.create(
                         username=username,
                         email=email,
                         first_name=first_name,

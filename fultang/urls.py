@@ -15,8 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from polyclinic.sites.cashier_urls import cashier_urls
-from polyclinic.sites.welcom_urls import welcome_urls
 from polyclinic import api_urls
 from accounting import urls as accounting_urls
 from authentication import urls as authentication_urls
@@ -39,7 +37,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
 
-    #path('', welcome_urls()),
     #path('api/', api_urls()),
     path('admin/', admin.site.urls),
     path('api/v1/medical/', include(api_urls)),

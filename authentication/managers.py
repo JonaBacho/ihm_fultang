@@ -39,12 +39,10 @@ class CustomManager(BaseUserManager):
         user = self.model(
             email=email,
             username=username,
+            password=password,  # le mot de passe est Hashé dans la methode save du model
             date_joined=now,
             **extra_fields
         )
-
-        #user.password = make_password(password)
-        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -64,8 +62,8 @@ class CustomManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
         # Ajouter des valeurs par défaut pour userType et role si elles ne sont pas fournies
-        #extra_fields.setdefault('userType', 'Medical')
-        #extra_fields.setdefault('role', 'Admin')
+        extra_fields.setdefault('userType', 'Medical')
+        extra_fields.setdefault('role', 'Admin')
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')

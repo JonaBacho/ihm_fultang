@@ -15,7 +15,7 @@ from .api_views.patient_access_api_view import PatientAccessViewSet
 from .api_views.patient_api_view import PatientViewSet
 from .api_views.prescription_api_view import PrescriptionViewSet
 from .api_views.room_api_view import RoomViewSet
-from .api_views.medicalstaff_api_view import MedicalStaffViewSet
+from authentication.api_views.medical_staff_api_views import MedicalStaffViewSet
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 
