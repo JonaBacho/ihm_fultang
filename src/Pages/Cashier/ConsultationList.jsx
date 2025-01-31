@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Search, Calendar, User, DollarSign, Filter, CheckCircle } from "lucide-react"
+import {AlertCircle, Search, Calendar, User, DollarSign, Filter, CheckCircle } from "lucide-react"
 import PropTypes from "prop-types";
 import {FaUserDoctor} from "react-icons/fa6";
 import {PaymentModal} from "./PayementModal.jsx";
@@ -64,76 +64,89 @@ export default function ConsultationList({consultationList}) {
           </div>
         </div>
 
+          <div>
+            {
+              consultationList.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10">
+                    <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+                    <p className="text-lg font-semibold text-gray-600">
+                      Pas de consultations disponibles.
+                    </p>
+                </div>
+              ) : (
+                  
+                  <table className="w-full ">
+                      <thead className="bg-primary-end">
+                        <tr>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase  rounded-l-lg">
+                            Patient
+                          </th>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
+                            Doctor
+                          </th>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Date</th>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
+                            Price
+                          </th>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Status</th>
+                          <th className="px-6 py-5 text-center text-md font-bold text-white uppercase  rounded-r-lg">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                          {filteredConsultations.map((consultation) => {
 
-          <table className="w-full ">
-            <thead className="bg-primary-end">
-            <tr>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase  rounded-l-lg">
-                Patient
-              </th>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                Doctor
-              </th>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Date</th>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                Price
-              </th>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Status</th>
-              <th className="px-6 py-5 text-center text-md font-bold text-white uppercase  rounded-r-lg">Action</th>
-            </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-            {filteredConsultations.map((consultation) => {
-
-              const patientInfo = consultation.idPatient;
-              const doctorInfo = consultation.idMedicalStaffGiver;
-              return (
-                <tr key={consultation.id}>
-                  <td className=" py-6 ">
-                    <div className="flex items-center justify-center">
-                      <User className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md font-semibold text-gray-900">{patientInfo.firstName +" "+ patientInfo.lastName}</div>
-                    </div>
-                  </td>
-                  <td className=" py-6 ">
-                    <div className="flex items-center justify-center">
-                      <FaUserDoctor className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md  font-semibold text-gray-900">{doctorInfo.first_name + " "+ doctorInfo.last_name}</div>
-                    </div>
-                  </td>
-                  <td className=" py-6 ">
-                    <div className="flex items-center justify-center">
-                      <Calendar className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md text-center font-semibold text-gray-900">{new Date(consultation.consultationDate).toLocaleDateString()}</div>
-                    </div>
-                  </td>
-                  <td className=" py-6  ">
-                    <div className="flex items-center justify-center">
-                      <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md text-center font-bold text-gray-900">{consultation.consultationPrice} FCFA</div>
-                    </div>
-                  </td>
-                  <td className=" py-6  items-center justify-center flex ">
-                    <span className={`px-3  py-1 inline-flex text-sm leading-5 border-2  font-semibold rounded-full ${consultation.paymentStatus === "Valid" ? "bg-green-100 text-green-600 border-green-600" : "bg-yellow-100 text-yellow-600 border-yellow-600"}`}
-                    >
-                      {consultation.paymentStatus === "Valid" ? "Paid" : "Pending"}
-                    </span>
-                  </td>
-                  <td className="text-md font-medium text-center py-6">
-                    {consultation.paymentStatus === "Invalid" && (
-                        <button
-                            onClick={() => handlePayment(consultation)}
-                            className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto"
-                        >
-                          <CheckCircle className="h-6 w-6 mr-1" />
-                          Pay
-                        </button>
-                    )}
-                  </td>
-                </tr>
-              )})}
-            </tbody>
-          </table>
+                            const patientInfo = consultation.idPatient;
+                            const doctorInfo = consultation.idMedicalStaffGiver;
+                            return (
+                              <tr key={consultation.id}>
+                                <td className=" py-6 ">
+                                  <div className="flex items-center justify-center">
+                                    <User className="h-5 w-5 text-gray-400 mr-2" />
+                                    <div className="text-md font-semibold text-gray-900">{patientInfo.firstName +" "+ patientInfo.lastName}</div>
+                                  </div>
+                                </td>
+                                <td className=" py-6 ">
+                                  <div className="flex items-center justify-center">
+                                    <FaUserDoctor className="h-5 w-5 text-gray-400 mr-2" />
+                                    <div className="text-md  font-semibold text-gray-900">{doctorInfo.first_name + " "+ doctorInfo.last_name}</div>
+                                  </div>
+                                </td>
+                                <td className=" py-6 ">
+                                  <div className="flex items-center justify-center">
+                                    <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                                    <div className="text-md text-center font-semibold text-gray-900">{new Date(consultation.consultationDate).toLocaleDateString()}</div>
+                                  </div>
+                                </td>
+                                <td className=" py-6  ">
+                                  <div className="flex items-center justify-center">
+                                    <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
+                                    <div className="text-md text-center font-bold text-gray-900">{consultation.consultationPrice} FCFA</div>
+                                  </div>
+                                </td>
+                                <td className=" py-6  items-center justify-center flex ">
+                                  <span className={`px-3  py-1 inline-flex text-sm leading-5 border-2  font-semibold rounded-full ${consultation.paymentStatus === "Valid" ? "bg-green-100 text-green-600 border-green-600" : "bg-yellow-100 text-yellow-600 border-yellow-600"}`}
+                                  >
+                                    {consultation.paymentStatus === "Valid" ? "Paid" : "Pending"}
+                                  </span>
+                                </td>
+                                <td className="text-md font-medium text-center py-6">
+                                  {consultation.paymentStatus === "Invalid" && (
+                                      <button
+                                          onClick={() => handlePayment(consultation)}
+                                          className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto"
+                                      >
+                                        <CheckCircle className="h-6 w-6 mr-1" />
+                                        Pay
+                                      </button>
+                                  )}
+                                </td>
+                              </tr>
+                            )})}
+                      </tbody>
+                  </table>
+              )}
+          </div>
+          
 
         <PaymentModal
             isOpen={canOpenPaymentModal}

@@ -1,51 +1,53 @@
-import { useState } from "react"
-import { Search, Calendar, User, DollarSign, Filter, FileText, Printer, Activity, Home } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Search, Calendar, User, DollarSign, Filter, Printer, Activity, Home } from "lucide-react"
 import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import {cashierNavLink} from "./cashierNavLink.js";
 import {CashierNavBar} from "./CashierNavBar.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
-const mockTransactions = [
-    {
-        id: 1,
-        patientName: "Jean Dupont",
-        type: "Consultation",
-        date: "2023-06-15",
-        amount: 15000,
-    },
-    {
-        id: 2,
-        patientName: "Marie Martin",
-        type: "Examen",
-        date: "2023-06-16",
-        amount: 50000,
-    },
-    {
-        id: 3,
-        patientName: "Pierre Durand",
-        type: "Hospitalisation",
-        date: "2023-06-17",
-        amount: 100000,
-    },
-    {
-        id: 4,
-        patientName: "Sophie Lefebvre",
-        type: "Consultation",
-        date: "2023-06-18",
-        amount: 20000,
-    },
-    {
-        id: 5,
-        patientName: "Luc Moreau",
-        type: "Examen",
-        date: "2023-06-19",
-        amount: 35000,
-    },
-]
+// const mockTransactions = [
+//     {
+//         id: 1,
+//         patientName: "Jean Dupont",
+//         type: "Consultation",
+//         date: "2023-06-15",
+//         amount: 15000,
+//     },
+//     {
+//         id: 2,
+//         patientName: "Marie Martin",
+//         type: "Examen",
+//         date: "2023-06-16",
+//         amount: 50000,
+//     },
+//     {
+//         id: 3,
+//         patientName: "Pierre Durand",
+//         type: "Hospitalisation",
+//         date: "2023-06-17",
+//         amount: 100000,
+//     },
+//     {
+//         id: 4,
+//         patientName: "Sophie Lefebvre",
+//         type: "Consultation",
+//         date: "2023-06-18",
+//         amount: 20000,
+//     },
+//     {
+//         id: 5,
+//         patientName: "Luc Moreau",
+//         type: "Examen",
+//         date: "2023-06-19",
+//         amount: 35000,
+//     },
+// ]
+
 
 export function FinancialHistory() {
 
-    const [transactions, setTransactions] = useState(mockTransactions)
+    const [transactions, setTransactions] = useState()
     const [searchTerm, setSearchTerm] = useState("")
     const [filterType, setFilterType] = useState("all")
     const [showInvoice, setShowInvoice] = useState(null)
@@ -69,6 +71,27 @@ export function FinancialHistory() {
         )
     })
 
+    useEffect(() => {
+        async function fetchFacture()
+        {
+            
+            try
+            {
+                const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/accounting/facture/");
+                
+                if (response.status === 200)
+                {
+                    setTransactions(response.data.results);
+                }
+            }
+            catch (error)
+            {
+                
+                console.log(error);
+            }
+        }
+        fetchFacture();
+    }, []);
 
 
     const getTransactionIcon = (type) => {
@@ -135,13 +158,13 @@ export function FinancialHistory() {
                         </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                        {filteredTransactions.map((transaction) => (
+                        {filteredTransactions.map((transaction, index) => (
                             <tr key={transaction.id}>
                                 <td className="px-6 py-6 whitespace-nowrap">
                                     <div className="flex items-center justify-center">
                                         <User className="h-5 w-5 text-gray-400 mr-2"/>
-                                        <div
-                                            className="text-md font-semibold text-gray-900">{transaction.patientName}</div>
+                                        {/* <div
+                                            className="text-md font-semibold text-gray-900">{transaction.patientName}</div> */}
                                     </div>
                                 </td>
                                 <td className="px-6 py-6 whitespace-nowrap">
@@ -160,12 +183,12 @@ export function FinancialHistory() {
                                 <td className="px-6 py-6 whitespace-nowrap">
                                     <div className="flex items-center justify-center">
                                         <DollarSign className="h-5 w-5 text-gray-400 mr-2"/>
-                                        <div className="text-md text-gray-900">{transaction.amount} FCFA</div>
+                                        <div className="text-md text-gray-900">{transaction.montant} FCFA</div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-6 whitespace-nowrap text-center text-md font-medium">
                                     <button
-                                        onClick={() => handleGenerateInvoice(transaction.id)}
+                                        onClick={() => handleGenerateInvoice(index)}
                                         className="text-indigo-600 hover:text-indigo-900 flex items-center justify-center mx-auto"
                                     >
                                         <Printer className="h-5 w-5 mr-1"/>

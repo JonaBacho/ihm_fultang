@@ -22,7 +22,7 @@ export function Cashier()
             setIsLoading(true);
             try
             {
-                const response = await axiosInstance.get("/consultation/");
+                const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/medical/consultation/");
                 setIsLoading(false);
                 if (response.status === 200)
                 {
