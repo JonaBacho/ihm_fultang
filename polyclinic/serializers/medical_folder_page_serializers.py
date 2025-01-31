@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from polyclinic.models import MedicalFolderPage
-from polyclinic.serializers.consultation_serializers import ConsultationSerializer
-from polyclinic.serializers.exam_result_serializers import ExamResultSerializer
+from polyclinic.serializers.exam_request_serializers import ExamRequestSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from django.utils.timezone import now
 from datetime import timedelta
@@ -20,9 +19,8 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)
-    consultation = ConsultationSerializer(required=False)
     prescription = PrescriptionSerializer(required=False)
-    exam = ExamResultSerializer(required=False)
+    examRequest = ExamRequestSerializer(required=False)
 
     class Meta:
         model = MedicalFolderPage
