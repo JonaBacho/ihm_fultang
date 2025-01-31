@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useState } from "react"
+import  { useState } from "react"
 import {
   Calendar,
   Clock,
@@ -18,9 +16,9 @@ import {
   ArrowLeft,
 } from "lucide-react"
 import { FaSearch, FaUser, FaChevronRight } from "react-icons/fa"
-import { DoctorDashboard } from "./DoctorDashboard.jsx"
-import { DoctorNavBar } from "./DoctorNavBar.jsx"
-import { doctorNavLink } from "./doctorNavLink.js"
+import { DoctorDashboard } from "../DoctorComponents/DoctorDashboard.jsx"
+import { DoctorNavBar } from "../DoctorComponents/DoctorNavBar.jsx"
+import { doctorNavLink } from "../DoctorComponents/doctorNavLink.js"
 
 const patients = [
   { id: 1, name: "Jean Dupont", age: 45, email: "jean@email.com", phone: "0123456789" },

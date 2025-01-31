@@ -46,7 +46,7 @@ export const doctorNavLink = [
     {
         name: 'Exams',
         icon: FaNotesMedical,
-        link: appRoutes.adminExamsListPage,
+        link: appRoutes.doctorExamList,
     },
     
 ];

@@ -43,4 +43,5 @@ export const AppRoutesPaths = {
     doctorAppointment: "/doctor/appointments",
     doctorConsultationHistory: "/doctor/consultation-history",
     doctorConsultationHistoryDetails: "/doctor/consultation-history/details/:id",
+    doctorExamList: "/doctor/exams-list",
 }

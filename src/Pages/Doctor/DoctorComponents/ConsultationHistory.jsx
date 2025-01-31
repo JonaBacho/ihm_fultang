@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Search, Calendar, Eye, User, Clock, DollarSign } from "lucide-react"
-import {DoctorDashboard} from "../New/DoctorDashboard.jsx";
-import {doctorNavLink} from "../New/doctorNavLink.js";
-import {DoctorNavBar} from "../New/DoctorNavBar.jsx";
+import {DoctorDashboard} from "./DoctorDashboard.jsx";
+import {doctorNavLink} from "./doctorNavLink.js";
+import {DoctorNavBar} from "./DoctorNavBar.jsx";
 import {useCalculateAge} from "../../../Utils/compute.js";
 import {formatDateOnly, formatDateToTime} from "../../../Utils/formatDateMethods.js";
 import {getStateStyles} from "./applyStyleFunction.js";

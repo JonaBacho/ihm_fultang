@@ -20,12 +20,12 @@ import { DoctorNavBar } from './DoctorNavBar.jsx';
 import {useState} from "react";
 import {useCalculateAge} from "../../../Utils/compute.js";
 import {formatDateOnly} from "../../../Utils/formatDateMethods.js";
-import MedicalInfoCard from "../DoctorComponents/MedicalParametersCard.jsx";
-import MedicationPrescriptionCard from "../DoctorComponents/MedicationPrescriptionCard.jsx";
-import ExamPrescriptionCard from "../DoctorComponents/ExamPrescriptionCard.jsx";
-import SpecialistPrescriptionCard from "../DoctorComponents/SpecialistPrescriptionCard.jsx";
-import AppointmentPrescriptionCard from "../DoctorComponents/AppointmentPrescriptionCard.jsx";
-import DiagnosticCard from "../DoctorComponents/DiagnosticCard.jsx";
+import MedicalParametersCard from "./MedicalParametersCard.jsx";
+import MedicationPrescriptionCard from "./MedicationPrescriptionCard.jsx";
+import ExamPrescriptionCard from "./ExamPrescriptionCard.jsx";
+import SpecialistPrescriptionCard from "./SpecialistPrescriptionCard.jsx";
+import AppointmentPrescriptionCard from "./AppointmentPrescriptionCard.jsx";
+import DiagnosticCard from "./DiagnosticCard.jsx";
 
 
 
@@ -114,7 +114,7 @@ export function DoctorConsultationDetails() {
         },
     ]);
     const [diagnostic, setDiagnostic] = useState("");
-    const [doctorNotes, setDoctorNotes] = useState("");
+    const [doctorNote, setDoctorNote] = useState("");
     const {calculateAge} = useCalculateAge();
     const { value: ageValue, unit: ageUnit } = calculateAge('2000-01-01');
     const MedicalParametersInfos = [
@@ -237,7 +237,7 @@ export function DoctorConsultationDetails() {
         e.preventDefault()
         console.log("Soumission de la consultation:", {
             diagnostic,
-            doctorNotes,
+            doctorNote,
             prescriptions,
             exams,
         })
@@ -327,7 +327,7 @@ export function DoctorConsultationDetails() {
                         <p className="font-bold text-xl ml-5 text-secondary">Patient Parameters</p>
                         <div className="grid grid-cols-4 gap-4 mt-6">
                             {MedicalParametersInfos.map((info, index) => (
-                                <MedicalInfoCard
+                                <MedicalParametersCard
                                     key={index}
                                     icon={info.icon}
                                     label={info.label}
@@ -367,21 +367,21 @@ export function DoctorConsultationDetails() {
                             ))}
                         </div>
                         <form onSubmit={handleSubmit}>
-                            {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNotes} diagnostic={diagnostic} doctorNotes={doctorNotes}/>}
+                            {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}/>}
                             {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle}/>}
                             {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle}/>}
                             {activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>}
                             {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle}/>}
                             <div className="mt-6 flex justify-end space-x-4">
+                                <button type="submit"
+                                        className="px-4 py-2 bg-primary-end hover:bg-primary-start transition-all duration-300 text-white font-bold rounded-lg">
+                                    End consultation
+                                </button>
                                 <button
                                     type="button"
-                                    className="px-4 py-2 border rounded-lg border-red-300 bg-red-500 transition-all duration-500rounded-lg text-white font-bold hover:bg-red-700"
+                                    className="px-4 py-2 border rounded-lg border-red-300 bg-red-500 transition-all duration-500  text-white font-bold hover:bg-red-700"
                                 >
                                     Cancel
-                                </button>
-                                <button type="submit"
-                                        className="px-4 py-2 bg-primary-end text-white rounded-lg">
-                                    End consultation
                                 </button>
                             </div>
                         </form>

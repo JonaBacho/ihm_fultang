@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 
-export default function MedicalInfoCard ({ icon : Icon, label, value, unit = '' }) {
+export default function MedicalParametersCard ({ icon : Icon, label, value, unit = '' }) {
 
-    MedicalInfoCard.propTypes = {
+    MedicalParametersCard.propTypes = {
         icon: PropTypes.element.isRequired,
         label: PropTypes.string.isRequired,
         value: PropTypes.number.isRequired,
