@@ -155,7 +155,7 @@ class ConsultationViewSet(ModelViewSet):
         serializer.save(idMedicalStaffSender=user)
 
     @swagger_auto_schema(
-        operation_description="Permet de lister les consultations journalières d'un docteur",
+        operation_description="Permet de lister les consultations journalières d'un docteur/ ou les historiques des consultations",
         responses={
             200: openapi.Response(description=" Liste des consultations du docteur"),
             404: openapi.Response(description="Docteur inexistant existent"),
@@ -164,6 +164,13 @@ class ConsultationViewSet(ModelViewSet):
         manual_parameters=[
             openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
                               type=openapi.TYPE_INTEGER, required=True),
+            openapi.Parameter(
+                'history',
+                openapi.IN_QUERY,
+                description="Si `true`, retourne juste les consultations du medicin qui ne sont plus à pending",
+                type=openapi.TYPE_BOOLEAN,
+                required=False
+            ),
             auth_header_param
         ],
         tags=tags
@@ -174,8 +181,13 @@ class ConsultationViewSet(ModelViewSet):
             self.pagination_class = None
             medical_staff = MedicalStaff.objects.get(id=id)
             queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
-            queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
-            return Response(queryset, status.HTTP_200_OK)
+            history = self.request.query_params.get("history", "false")
+            if history and history.lower() == "true":
+                queryset = queryset.exclude(state="Pending")
+                return Response(queryset, status.HTTP_200_OK)
+            else:
+                queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
+                return Response(queryset, status.HTTP_200_OK)
         except MedicalStaff.DoesNotExist:
             return Response("le docteur spécifé n'existe pas", status.HTTP_404_NOT_FOUND)
 

@@ -1,13 +1,18 @@
 from rest_framework import serializers
 from polyclinic.models import MedicalFolderPage
+from polyclinic.serializers.consultation_serializers import ConsultationSerializer
+from polyclinic.serializers.exam_result_serializers import ExamResultSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from django.utils.timezone import now
 from datetime import timedelta
 from rest_framework.exceptions import ValidationError
 
+from polyclinic.serializers.prescription_serializers import PrescriptionSerializer
+
 
 class MedicalFolderPageSerializer(serializers.ModelSerializer):
     parameters = ParametersSerializer(required=False, many=False)
+
 
     class Meta:
         model = MedicalFolderPage
@@ -15,6 +20,9 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)
+    consultation = ConsultationSerializer(required=False)
+    prescription = PrescriptionSerializer(required=False)
+    exam = ExamResultSerializer(required=False)
 
     class Meta:
         model = MedicalFolderPage
@@ -42,7 +50,7 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
             addDate__gte=two_weeks_ago
         ).count()
 
-        if recent_pages_count >= 2:
+        if recent_pages_count > 2:
             raise ValidationError(
                 {"details": "Vous ne pouvez créer que 2 pages médicales pour ce dossier médical toutes les 2 semaines."}
             )
