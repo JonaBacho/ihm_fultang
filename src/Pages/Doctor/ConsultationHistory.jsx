@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Search, Calendar, Eye, User, Clock, DollarSign } from "lucide-react"
-import {DoctorDashboard} from "./DoctorDashboard.jsx";
-import {doctorNavLink} from "./doctorNavLink.js";
-import {DoctorNavBar} from "./DoctorNavBar.jsx";
-import {useCalculateAge} from "../../../Utils/compute.js";
-import {formatDateOnly, formatDateToTime} from "../../../Utils/formatDateMethods.js";
-import {getStateStyles} from "./applyStyleFunction.js";
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
+import {useCalculateAge} from "../../Utils/compute.js";
+import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
+import {getStateStyles} from "./lib/applyStyleFunction.js";
 import {useNavigate} from "react-router-dom";
 
 

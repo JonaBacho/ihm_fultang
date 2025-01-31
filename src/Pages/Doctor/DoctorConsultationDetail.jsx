@@ -14,18 +14,18 @@ import {
     User, Calendar, MapPin, Phone, Printer, ArrowLeft
 } from 'lucide-react';
 import {useLocation, useNavigate} from "react-router-dom";
-import { DoctorDashboard } from './DoctorDashboard.jsx';
-import {doctorNavLink} from "./doctorNavLink.js";
-import { DoctorNavBar } from './DoctorNavBar.jsx';
+import { DoctorDashboard } from './DoctorComponents/DoctorDashboard.jsx';
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
 import {useState} from "react";
-import {useCalculateAge} from "../../../Utils/compute.js";
-import {formatDateOnly} from "../../../Utils/formatDateMethods.js";
-import MedicalParametersCard from "./MedicalParametersCard.jsx";
-import MedicationPrescriptionCard from "./MedicationPrescriptionCard.jsx";
-import ExamPrescriptionCard from "./ExamPrescriptionCard.jsx";
-import SpecialistPrescriptionCard from "./SpecialistPrescriptionCard.jsx";
-import AppointmentPrescriptionCard from "./AppointmentPrescriptionCard.jsx";
-import DiagnosticCard from "./DiagnosticCard.jsx";
+import {useCalculateAge} from "../../Utils/compute.js";
+import {formatDateOnly} from "../../Utils/formatDateMethods.js";
+import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
+import MedicationPrescriptionCard from "./DoctorComponents/MedicationPrescriptionCard.jsx";
+import ExamPrescriptionCard from "./DoctorComponents/ExamPrescriptionCard.jsx";
+import SpecialistPrescriptionCard from "./DoctorComponents/SpecialistPrescriptionCard.jsx";
+import AppointmentPrescriptionCard from "./DoctorComponents/AppointmentPrescriptionCard.jsx";
+import DiagnosticCard from "./DoctorComponents/DiagnosticCard.jsx";
 
 
 

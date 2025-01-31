@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Search, Calendar, Clock, MapPin, Phone, ChevronLeft, ChevronRight, CheckCircle, Eye } from "lucide-react"
-import AppointmentCard from "./AppointmentCard.jsx";
-import {useAuthentication} from "../../../Utils/Provider.jsx";
-import {DoctorDashboard} from "./DoctorDashboard.jsx";
-import {doctorNavLink} from "./doctorNavLink.js";
-import {DoctorNavBar} from "./DoctorNavBar.jsx";
+import AppointmentCard from "./DoctorComponents/AppointmentCard.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 
 // Données simulées
 const mockAppointments = [

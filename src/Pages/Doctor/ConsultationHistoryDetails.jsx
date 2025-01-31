@@ -10,13 +10,13 @@ import {
     Stethoscope,
     ClipboardList, Heart, AlertTriangle, MapPin, Phone, ArrowLeft, Printer, Clock,
 } from "lucide-react"
-import {DoctorDashboard} from "./DoctorDashboard.jsx";
-import {doctorNavLink} from "./doctorNavLink.js";
-import {DoctorNavBar} from "./DoctorNavBar.jsx";
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
-import {useCalculateAge} from "../../../Utils/compute.js";
-import {formatDateOnly, formatDateToTime} from "../../../Utils/formatDateMethods.js";
-import MedicalParametersCard from "./MedicalParametersCard.jsx";
+import {useCalculateAge} from "../../Utils/compute.js";
+import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
+import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
 
 export  function ConsultationHistoryDetails() {
 

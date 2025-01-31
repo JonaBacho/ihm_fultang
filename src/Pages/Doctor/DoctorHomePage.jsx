@@ -1,11 +1,11 @@
 import { Users, Stethoscope, Calendar, ClipboardList, Building2, FileText, ShieldCheck, UserCog, Settings, FileSpreadsheet, UserPlus, Hospital } from 'lucide-react';
 
 import {useNavigate} from "react-router-dom";
-import {AppRoutesPaths as AppRouterPaths} from "../../../Router/appRouterPaths.js";
+import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
 import PropTypes from "prop-types";
-import {DoctorDashboard} from "./DoctorDashboard.jsx";
-import {DoctorNavBar} from "./DoctorNavBar.jsx";
-import {doctorNavLink} from "./doctorNavLink.js";
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
 
 
 export function DoctorHomePage() {
