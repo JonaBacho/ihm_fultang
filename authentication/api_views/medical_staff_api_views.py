@@ -8,7 +8,7 @@ from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
@@ -171,7 +171,7 @@ class MedicalStaffViewSet(ModelViewSet):
     )
     @action(methods=['get'], detail=False, url_path='count')
     def number_of_role(self, request):
-        self.permission_classes = None
+        self.permission_classes = [AllowAny]
         query = MedicalStaff.objects.all()
         data = {}
         data['medical_staff_count'] = query.count()
