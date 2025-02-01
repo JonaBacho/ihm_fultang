@@ -169,9 +169,8 @@ class MedicalStaffViewSet(ModelViewSet):
         },
         tags=tags
     )
-    @action(methods=['get'], detail=False, url_path='count')
+    @action(methods=['get'], detail=False, url_path='count', permission_classes=[AllowAny])
     def number_of_role(self, request):
-        self.permission_classes = [AllowAny]
         query = MedicalStaff.objects.all()
         data = {}
         data['medical_staff_count'] = query.count()
@@ -179,8 +178,9 @@ class MedicalStaffViewSet(ModelViewSet):
         data['medical_staff_active_count'] = query.count()
         data['medical'] = query.filter(userType="Medical").count()
         data['accountant'] = query.filter(userType="Accountant").count()
+
         for role in ROLES + ROLES_ACCOUNTING:
-            data[role] = query.filter(role=role).count()
+            data[role[0]] = query.filter(role=role[0]).count()
 
         return Response(data, status=status.HTTP_200_OK)
 
