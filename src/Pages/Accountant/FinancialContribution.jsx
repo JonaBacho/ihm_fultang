@@ -251,16 +251,18 @@ export function FinancialContributions() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8">
-            <FaSyncAlt className="animate-spin text-4xl text-primary-600" />
-            <p className="mt-2 text-gray-600">Loading contributions...</p>
+          <div className="flex-1 h-52 flex justify-center items-center">
+            <div className=" flex flex-col ">
+              <FaSyncAlt className="animate-spin text-4xl text-primary-600" />
+              <p className="mt-2 text-gray-600 ">Loading contributions...</p>
+            </div>
           </div>
         ) : (
           <>
             <div className="overflow-x-auto rounded-lg shadow-lg">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
+              <table className="w-full border-separate border-spacing-y-2">
+                <thead>
+                  <tr className="bg-gradient-to-l from-primary-start to-primary-end">
                     {[
                       "No",
                       "Invoice",
@@ -271,11 +273,11 @@ export function FinancialContributions() {
                     ].map((header, index) => (
                       <th
                         key={header}
-                        className={`p-4 text-left text-gray-600 font-semibold ${
+                        className={`text-center text-white p-4 text-xl font-bold border-gray-200 ${
                           index === 0
-                            ? "rounded-tl-lg"
+                            ? "rounded-l-2xl"
                             : index === 5
-                            ? "rounded-tr-lg no-print"
+                            ? "rounded-r-2xl"
                             : ""
                         }`}
                       >
@@ -287,36 +289,41 @@ export function FinancialContributions() {
 
                 <tbody>
                   {filteredContributions.map((contribution, index) => (
-                    <tr
-                      key={contribution.id}
-                      className="hover:bg-gray-50 transition-colors border-b"
-                    >
-                      <td className="p-4">{index + 1}</td>
-                      <td className="p-4 font-mono text-primary-600">
+                    <tr key={contribution.id} className="bg-gray-100">
+                      <td className="p-4 text-md text-blue-900 text-center rounded-l-lg">
+                        {index + 1}
+                      </td>
+                      <td className="p-4 text-md text-center font-bold">
                         {contribution.invoiceNumber}
                       </td>
-                      <td className="p-4">
+                      <td className="p-4 text-md text-center">
                         <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
                           {contribution.source}
                         </span>
                       </td>
-                      <td className="p-4 font-semibold">
+                      <td className="p-4 text-md text-center font-semibold">
                         ${contribution.amount.toLocaleString()}
                       </td>
-                      <td className="p-4 text-gray-600">
+                      <td className="p-4 text-md text-center text-gray-600">
                         {format(new Date(contribution.date), "dd MMM yyyy")}
                       </td>
-                      <td className="p-4 flex gap-2 no-print">
-                        <TooltipButton
-                          icon={<FaEye className="text-blue-600" />}
-                          onClick={() => handleViewDetails(contribution)}
-                          tooltip="View details"
-                        />
-                        <TooltipButton
-                          icon={<FaTrash className="text-red-600" />}
-                          onClick={() => handleDelete(contribution)}
-                          tooltip="Delete record"
-                        />
+                      <td className="p-4 relative rounded-r-lg text-center">
+                        <div className="w-full items-center justify-center flex gap-6">
+                          <TooltipButton
+                            icon={
+                              <FaEye className="text-primary-end text-xl" />
+                            }
+                            onClick={() => handleViewDetails(contribution)}
+                            tooltip="View details"
+                            className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
+                          />
+                          <TooltipButton
+                            icon={<FaTrash className="text-red-400 text-xl" />}
+                            onClick={() => handleDelete(contribution)}
+                            tooltip="Delete record"
+                            className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}
