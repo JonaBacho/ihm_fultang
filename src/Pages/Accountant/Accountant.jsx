@@ -3,8 +3,11 @@ import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
 import { Users, DollarSign, FileText, Settings } from "lucide-react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 export function Accountant() {
+  const navigate = useNavigate();
+
   const stats = {
     totalRevenue: 50000,
     totalExpenses: 20000,
@@ -21,12 +24,7 @@ export function Accountant() {
     {
       icon: FileText,
       label: "View Reports",
-      onClick: () => alert("View Reports"),
-    },
-    {
-      icon: Users,
-      label: "Manage Clients",
-      onClick: () => alert("Manage Clients"),
+      onClick: () => navigate("/accountant/financial-reports"),
     },
     { icon: Settings, label: "Settings", onClick: () => alert("Settings") },
   ];
