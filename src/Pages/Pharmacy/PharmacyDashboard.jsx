@@ -1,7 +1,7 @@
 import { FiGrid, FiPlusCircle, FiList, FiFileText } from 'react-icons/fi';
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Navigate} from "react-router-dom";
-import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
+//import {AccessDenied} from "../../GlobalComponents/AccessDenied.jsx";
 import PropTypes from "prop-types";
 
 
@@ -16,19 +16,19 @@ export const PharmacyDashboard = ({ children }) => {
     children: PropTypes.node.isRequired,
   };
 
-  const {isAuthenticated, hasRole} = useAuthentication();
+  //const {isAuthenticated, hasRole} = useAuthentication();
 
-  if (!isAuthenticated()) {
+  {/*if (!isAuthenticated()) {
     return <Navigate to="/login" />;
-  }
+  }*/}
 
-  if (!hasRole('Pharmacist')) {
+  {/*if (!hasRole('Pharmacist')) {
     return <AccessDenied Role={"Pharmacist"}/>;
-  }
+  }*/}
 
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen ">
       {/* Sidebar */}
       <div className="h-screen w-64 bg-gradient-to-b from-[#1A73A3] to-[#50C2B9] text-white p-4 fixed">
         <div className="text-2xl font-bold mb-8">Fultang P</div>

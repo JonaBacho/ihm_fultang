@@ -34,5 +34,4 @@ export const AppRoutesPaths = {
     laboratoryHistory:"/laboratory/exams-history",
     laboratoryCurrent:"/laboratory/current-exams",
     financialHistory:"/cashier/financial-history"
-    pharmacypage:"/Pharmacy/Pharmacy"
 }

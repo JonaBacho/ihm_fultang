@@ -32,7 +32,7 @@ export function LandingPage() {
         return (
             <div className="flex flex-col items-center">
                 <div className="w-full aspect-square overflow-hidden bg-emerald-800">
-                    <img src={photo} alt={name} className="w-full h-full object-cover" />
+                    <img src="/doctorimage.png" alt={name} className="w-full h-full object-cover" />
                 </div>
                 <h3 className="mt-3 font-medium text-gray-800">{name}</h3>
                 <p className="text-sm text-gray-600">{speciality}</p>
@@ -41,54 +41,58 @@ export function LandingPage() {
     }
 
     const stats = [
-        { number: "500+", label: "Doctor", variant: 'white' },
+        { number: "50+", label: "Doctor", variant: 'white' },
         { number: "50+", label: "Patients", variant: 'green' },
         { number: "20+", label: "Expert", variant: 'white' },
-        { number: "500+", label: "Specializations", variant: 'green' }
+        { number: "5+", label: "Specializations", variant: 'green' }
     ];
 
     const services = [
-        { icon: "/icons/hospital.svg", title: "Specialized Services" },
-        { icon: "/icons/vaccine.svg", title: "Vaccination" },
-        { icon: "/icons/doctor.svg", title: "Diagnostics" },
-        { icon: "/icons/tooth.svg", title: "Dental Care" },
-        { icon: "/icons/pharmacy.svg", title: "Pharmacy" }
+        { icon: "/hospital.png", title: "Specialized Services" },
+        { icon: "/injection.png", title: "Vaccination" },
+        { icon: "/doctor.png", title: "Diagnostics" },
+        { icon: "/heart.png", title: "Dental Care" },
+        { icon: "/helpcenter.png", title: "Pharmacy" }
     ];
 
     return (
         <div className="min-h-screen">
             {/* Hero Section - Blue Gradient Background */}
-            <div className="bg-gradient-to-br from-primary-start to-primary-end pb-16">
-                <div className="container mx-auto px-6 pt-12">
-                    <div className="flex flex-col md:flex-row items-start gap-12">
-                        <div className="md:w-1/2">
-                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                                Welcome to<br />
-                                Fultang Polyclinic
-                            </h1>
-                            <p className="text-white/80 text-lg mb-8">
-                                The hospital to trust to care about those you love
-                            </p>
-                            <button
-                                onClick={() => navigate("/login")}
-                                className="px-8 py-3 bg-white text-gray-800 rounded-full font-medium hover:bg-opacity-90 transition-all"
-                            >
-                                Log In Now
-                            </button>
-                        </div>
-                        <div className="md:w-1/2">
-                            <img 
-                                src="/images/doctor-main.jpg" 
-                                alt="Doctor"
-                                className="w-full rounded-lg shadow-xl" 
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div className="relative bg-gradient-to-br from-primary-start to-primary-end pb-16">
+    {/* Image en background avec overlay */}
+    <div className="absolute inset-0">
+        <img 
+            src="/welcomeImage.png" 
+            alt="Background"
+            className="w-full h-full md-5 object-cover" 
+        />
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-start/40 to-primary-end/40"></div>
+    </div>
 
+    {/* Contenu */}
+    <div className="container mx-auto px-6 pt-12 relative z-10">
+        <div className="flex flex-col items-center text-center">
+            <div className="w-full max-w-2xl">
+                <h1 className="text-4xl md:text-5xl font-bold text-white text-left mb-4">
+                    Welcome to<br />
+                    Fultang Polyclinic
+                </h1>
+                <p className="text-white/80 text-left text-lg mb-8">
+                    The hospital to trust to care about those you love
+                </p>
+                <button
+                    onClick={() => navigate("/login")}
+                    className="px-8 py-3 bg-white text-gray-800 text-left rounded-full font-medium hover:bg-opacity-90 transition-all"
+                >
+                    Log In Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
             {/* Stats Section - Overlapping Cards */}
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-6 mt-3 over">
                 <div className="grid grid-cols-4 gap-0 -mt-8">
                     {stats.map((stat, index) => (
                         <StatCard key={index} {...stat} />
@@ -125,7 +129,7 @@ export function LandingPage() {
                                 <DoctorCard
                                     key={i}
                                     photo="/images/doctor-profile.jpg"
-                                    name="Dr. Username"
+                                    name="Dr. James.Lambert"
                                     speciality="Dentist"
                                 />
                             ))}
@@ -146,7 +150,7 @@ export function LandingPage() {
                             </p>
                         </div>
                         <img 
-                            src="/images/about-bg.jpg" 
+                            src="/endpicture.png" 
                             alt="About background" 
                             className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
                         />
@@ -154,7 +158,7 @@ export function LandingPage() {
                 </div>
             </div>
 
-            <footer className="bg-emerald-800/20 py-4 text-center text-white">
+            <footer className="bg-emerald-800 py-4 text-center text-white">
                 <p>© {new Date().getFullYear()} Fultang Polyclinic</p>
             </footer>
         </div>
