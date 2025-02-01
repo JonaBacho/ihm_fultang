@@ -171,6 +171,7 @@ class MedicalStaffViewSet(ModelViewSet):
     )
     @action(methods=['get'], detail=False, url_path='count')
     def number_of_role(self, request):
+        self.permission_classes = None
         query = MedicalStaff.objects.all()
         data = {}
         data['medical_staff_count'] = query.count()
