@@ -12,13 +12,13 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Configuration des données factices
         medicament_names = [
-            "Paracetamol", "Aspirin", "Ibuprofen", "Amoxicillin", "Metformin", 
+            "Paracetamol", "Aspirin", "Ibuprofen", "Amoxicillin", "Metformin",
             "Omeprazole", "Ciprofloxacin", "Atorvastatin", "Azithromycin", "Losartan"
         ]
 
         descriptions = [
-            "Pain reliever", "Anti-inflammatory", "Antibiotic for infections", 
-            "Treatment for diabetes", "Stomach acid reducer", 
+            "Pain reliever", "Anti-inflammatory", "Antibiotic for infections",
+            "Treatment for diabetes", "Stomach acid reducer",
             "Cholesterol control", "Broad-spectrum antibiotic",
             "Blood pressure control", "Heart health", "Cold and flu relief"
         ]

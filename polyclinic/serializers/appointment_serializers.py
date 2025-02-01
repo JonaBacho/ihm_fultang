@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from polyclinic.models import Appointment
 from polyclinic.serializers.patient_serializers import PatientSerializer
-from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer
+from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 
 class AppointmentDetailSerializer(serializers.ModelSerializer):
 

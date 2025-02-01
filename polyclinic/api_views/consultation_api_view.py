@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentication.user_helper import fultang_user
-from polyclinic.models import Consultation, MedicalStaff, MedicalFolderPage
+from polyclinic.models import Consultation, MedicalFolderPage, PatientAccess
+from authentication.models import MedicalStaff
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -11,6 +11,10 @@ from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
+from django.utils.timezone import now
+
+from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 
 tags = ["consultation"]
 auth_header_param = openapi.Parameter(
@@ -120,7 +124,7 @@ class ConsultationViewSet(ModelViewSet):
             return ConsultationSerializer
 
     def perform_create(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         try:
@@ -128,12 +132,68 @@ class ConsultationViewSet(ModelViewSet):
             medical_folder_page = MedicalFolderPage.objects.get(pk=serializer.validated_data['idMedicalFolderPage'])
             medical_folder_page.nurseNote = serializer.validated_data['consultationReason']
             medical_folder_page.save()
+            # on donne les acces au medecin
+            medical_staff = MedicalStaff.objects.get(id=serializer.validated_data['idMedicalStaffGiver'])
+            patient_access = PatientAccess.objects.filter(idPatient=serializer.validated_data['idPatient'])
+            patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
+            if patient_access:
+                patient_access.access = True
+                patient_access.save()
+                serializer = PatientAccessSerializer(patient_access)
+            else:
+                patient_access = PatientAccess.objects.create(idPatient=serializer.validated_data['idPatient'], idMedicalStaff=medical_staff,
+                                                              access=True)
+                serializer = PatientAccessSerializer(patient_access)
             serializer.save(idMedicalStaffSender=user)
         except Exception as e:
             return Response({'detail': str(e)}, status.HTTP_400_BAD_REQUEST)
 
     def perform_update(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save(idMedicalStaffSender=user)
+
+    @swagger_auto_schema(
+        operation_description="Permet de lister les consultations journalières d'un docteur/ ou les historiques des consultations",
+        responses={
+            200: openapi.Response(description=" Liste des consultations du docteur", schema=ConsultationSerializer(many=True)),
+            404: openapi.Response(description="Docteur inexistant existent"),
+            400: openapi.Response(description="Bad request"),
+        },
+        manual_parameters=[
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
+                              type=openapi.TYPE_INTEGER, required=True),
+            openapi.Parameter(
+                'history',
+                openapi.IN_QUERY,
+                description="Si `true`, retourne juste les consultations du medicin qui ne sont plus à pending",
+                type=openapi.TYPE_BOOLEAN,
+                required=False
+            ),
+            auth_header_param
+        ],
+        tags=tags
+    )
+    @action(methods=["get"], detail=False, url_path='doctor/(?P<id>[^/.]+)', permission_classes=[ConsultationPermissions])
+    def consultation_doctor(self, request, id):
+        try:
+            self.pagination_class = None
+            medical_staff = MedicalStaff.objects.get(id=id)
+            if medical_staff.role != "Doctor":
+                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_404_NOT_FOUND)
+            queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
+            history = self.request.query_params.get("history", "false")
+            if history and history.lower() == "true":
+                queryset = queryset.exclude(state="Pending")
+                serializer = ConsultationSerializer(queryset, many=True)
+                return Response(serializer.data, status.HTTP_200_OK)
+            else:
+                queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
+                serializer = ConsultationSerializer(queryset, many=True)
+                return Response(serializer.data, status.HTTP_200_OK)
+        except MedicalStaff.DoesNotExist:
+            return Response({"details": "le docteur spécifé n'existe pas"}, status.HTTP_404_NOT_FOUND)
+
+
+

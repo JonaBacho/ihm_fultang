@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Prescription
-from polyclinic.serializers.prescription_serializers import PrescriptionSerializer
+from polyclinic.serializers.prescription_serializers import PrescriptionSerializer, PrescriptionCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -101,7 +101,10 @@ class PrescriptionViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return PrescriptionSerializer
+        if self.action in ["create", "partial_update", "update"]:
+            return PrescriptionCreateSerializer
+        else:
+            return PrescriptionSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:

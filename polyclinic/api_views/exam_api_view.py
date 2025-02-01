@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Exam
+from polyclinic.permissions.exam_permissions import ExamPermissions
 from polyclinic.serializers.exam_serializers import ExamSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -93,7 +94,7 @@ auth_header_param = openapi.Parameter(
 )
 class ExamViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ExamPermissions]
     pagination_class = CustomPagination
 
     def get_queryset(self):

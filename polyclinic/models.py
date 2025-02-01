@@ -3,22 +3,9 @@ from django.db import models
 from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
-from django.core.exceptions import ObjectDoesNotExist
-from authentication.managers import CustomManager
-from authentication.models import User
 
 # Create your models here.
-ROLES = [
-    ('NoRole', 'NoRole'),
-    ('Doctor', 'Doctor'),
-    ('Receptionist', 'Receptionist'),
-    ('Admin', 'Admin'),
-    ('Nurse', 'Nurse'),
-    ('Labtech', 'Labtech'),
-    ('HRM', 'HRM'),
-    ('Pharmacist', 'Pharmacist'),
-    ('Cashier', 'Cashier')
-]
+
 TYPEDOCTOR = [
     ('Specialist', 'Specialist'),
     ('Ophtalmologist', 'Ophtalmologist'),
@@ -64,43 +51,17 @@ STATUT_PAIEMENT_CONSULTATION = [
     ('Valid', 'Valid'),
 ]
 
+STATEPATIENT = [
+    ("Critical", "Critical"),
+    ("Not Critical", "Not Critical"),
+    ("Serious", "Serious"),
+    ("Stable", "Stable"),
+    ("Inprouving", "Inprouving"),
+]
 
 # ======================================
-# ======================================== APPOINTMENT, MEDICALSTAFF, DEPARTMENT, PATIENT
+# ======================================== APPOINTMENT DEPARTMENT, PATIENT
 # ======================================
-
-
-# cette classe définie notre classe d'utilsateur par défaut
-class MedicalStaff(User):
-    role = models.CharField(max_length=20, choices=ROLES, default='NoRole')
-
-    """
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='medicalstaff_set',  # Nom unique pour la relation
-        blank=True
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='medicalstaff_permissions_set',  # Nom unique pour la relation
-        blank=True
-    )
-    """
-
-    objects = CustomManager()
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            original_password = MedicalStaff.objects.get(pk=self.pk).password
-            if self.password != original_password:  # Check if password has been updated
-                self.set_password(self.password)
-        else:
-            # New instance
-            self.set_password(self.password)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
 
 
 # cette classe définie les départements
@@ -120,7 +81,7 @@ class PatientAccess(models.Model):
     access = models.BooleanField(default=True)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
 # classe qui definie le patient
@@ -140,10 +101,9 @@ class Patient(models.Model):
 
     # l'id du medical staff qui a créé le patient
     idMedicalStaff = models.ForeignKey(
-        "MedicalStaff",
+        "authentication.MedicalStaff",
         on_delete=models.DO_NOTHING,
         null=False,
-        default=1
     )
     idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 
@@ -157,7 +117,7 @@ class Appointment(models.Model):
     requirements = models.CharField(max_length=500)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
 # ======================================
@@ -179,7 +139,7 @@ class Parameters(models.Model):
     addDate = models.DateTimeField(auto_now=True)
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.DO_NOTHING, null=True)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
 class ConsultationType(models.Model):
@@ -194,11 +154,12 @@ class Consultation(models.Model):
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
     paymentStatus = models.CharField(max_length=100, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     state = models.CharField(max_length=100, choices=STATECONSULTATION, default="Pending")
+    statePatient = models.CharField(max_length=100, choices=STATEPATIENT, default="Not Critical")
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaffSender = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send", default=1)  # celui qui envoi vers celui qui va faire la consultation
-    idMedicalStaffGiver = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give", default=1)   # celui qui va effectuer la consultation
+    idMedicalStaffSender = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send", default=1)  # celui qui envoi vers celui qui va faire la consultation
+    idMedicalStaffGiver = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give", default=1)   # celui qui va effectuer la consultation
     idConsultationType = models.ForeignKey("ConsultationType", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
@@ -229,7 +190,7 @@ class MedicalFolderPage(models.Model):
 
 
     idMedicalFolder = models.ForeignKey("MedicalFolder", on_delete=models.CASCADE, null=True)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False, default=1)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, default=1)
 
 
 # ======================================
@@ -255,7 +216,7 @@ class ExamRequest(models.Model):
     idExam = models.ForeignKey("Exam", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return str(self.idPatient) + ' ' + str(self.ExamDescription)
@@ -268,7 +229,7 @@ class ExamResult(models.Model):
     idExamRequest = models.ForeignKey("ExamRequest", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return str(self.idPatient) + ' ' + str(self.ExamDescription)
@@ -294,54 +255,61 @@ class Medicament(models.Model):
 
 class Prescription(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    dose = models.TextField()
+    note = models.TextField()
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
-    idMedicament = models.ForeignKey("Medicament", on_delete=models.CASCADE, null=False, default=1)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
-        return self.dose.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
+        return self.note.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
+
+class PrescriptionDrug(models.Model):
+    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.CASCADE, null=False)
+    quantity = models.IntegerField(default=1)
+    prescription = models.ForeignKey("polyclinic.Prescription", on_delete=models.CASCADE, null=False)
+    dose = models.CharField(max_length=355, null=False)
+
 
 
 class Room(models.Model):
     roomLabel = models.CharField(max_length=100)
     beds = models.PositiveIntegerField(default = 0)
     busyBeds = models.IntegerField(default = 0)
-
+    price = models.FloatField(default=2000)
 
 class Hospitalisation(models.Model):
     atDate = models.DateTimeField(auto_now=True)
     bedLabel = models.CharField(max_length=100)
-    note = models.TextField()
+    note = models.TextField(blank=True, null=True)
     isActive = models.BooleanField(default=True)
     removeAt = models.DateTimeField(auto_now=True)
 
     idRoom = models.ForeignKey("Room", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
 
 # La classe pour la facture
 class Bill(models.Model):
-    customer = models.CharField(max_length=50)
-    tel = models.CharField(max_length=20, default="0")
+    billCode = models.CharField(max_length=300)
     date = models.DateTimeField(auto_now=True)
     amount = models.FloatField(default=0.0)
-    totalItems = models.IntegerField(default=0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
-    isAccounted = models.BooleanField(default=False, null=False)
-    operator = models.ForeignKey('polyclinic.MedicalStaff', on_delete=CASCADE, null=False)
+    isAccounted = models.BooleanField(default=False)
+    medicalOperator = models.ForeignKey("authentication.MedicalStaff", on_delete=CASCADE, null=False)
+    patient = models.ForeignKey('polyclinic.Patient', on_delete=models.CASCADE, null=False)
 
 class BillItem(models.Model):
-    idBill = models.ForeignKey("Bill", on_delete=models.CASCADE, null=False)
-    idMedicament = models.ForeignKey("Medicament", on_delete=CASCADE, null=False)
+    bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)
+    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.SET_NULL, null=True)
+    consultation = models.ForeignKey('polyclinic.Consultation', on_delete=models.SET_NULL, null=True)
+    hospitalisation = models.ForeignKey('polyclinic.Hospitalisation', on_delete=models.SET_NULL, null=True)
+    prescription = models.ForeignKey('polyclinic.Prescription', on_delete=models.SET_NULL, null=True)
+    examRequest = models.ForeignKey('polyclinic.ExamRequest', on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField(default=0)
-    designation = models.CharField(max_length=50)
-    unitP = models.FloatField(default=0.0)
-    totalP = models.FloatField(default=0.0)
-
+    designation = models.CharField(max_length=50, default="")
+    total = models.FloatField(default=0)
 
 # ======================================
 # ======================================== I DON'T NO
@@ -358,7 +326,7 @@ class Message(models.Model):
     reason = models.TextField()
     messageType = models.CharField(max_length=30, choices=MessageType, default='INFO')
 
-    idMedicalStaff = models.ForeignKey("MedicalStaff", on_delete=models.CASCADE, null=False)
+    idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return self.messageType.__str__() + " " + self.idMedicalStaff.__str__()

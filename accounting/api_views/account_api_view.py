@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from accounting.serializers import AccountSerializer
 from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
-from datetime import date
+from django.utils.timezone import now
 
 tags = ["account"]
 auth_header_param = openapi.Parameter(
@@ -97,14 +97,13 @@ class AccountViewSet(ModelViewSet):
             serializer.validated_data.pop('id')
         account = serializer.save()
         # Find the active exercise
-        today = date.today()
         budget_exercise = BudgetExercise.objects.filter(
-            start__lte=today,
-            end__gte=today
+            start__lte=now(),
+            end__gte=now()
         ).first()
 
         if not budget_exercise:
-            raise ValueError("Aucun Exercice Budgétaire actif trouvé pour la date actuelle." + str(today))
+            raise ValueError("Aucun Exercice Budgétaire actif trouvé pour la date actuelle." + str(now()))
         
         AccountState.objects.create(
             account=account,

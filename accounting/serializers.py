@@ -29,11 +29,6 @@ class FactureSerializer(ModelSerializer):
         model = Facture
         fields = '__all__'
 
-class AccountingStaffSerializer(ModelSerializer):
-    class Meta:
-        model = AccountingStaff
-        fields = '__all__'
-        
 class AccountingViewSerializer(ModelSerializer):
     soldeReel = serializers.FloatField(default=0)
     soldePrevu = serializers.FloatField(default=0)

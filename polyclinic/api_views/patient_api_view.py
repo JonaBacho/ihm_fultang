@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentication.user_helper import fultang_user
-from polyclinic.models import Patient, PatientAccess, MedicalFolder, MedicalStaff
+from polyclinic.models import Patient, PatientAccess, MedicalFolder, Consultation
+from authentication.models import MedicalStaff
 from polyclinic.permissions.patient_access_permissions import PatientAccessPermission
 from polyclinic.permissions.patient_permissions import PatientPermission
 from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
@@ -128,21 +128,20 @@ class PatientViewSet(ModelViewSet):
             return PatientSerializer
 
     def perform_create(self, serializer):
-        user, _ = fultang_user(self.request)
+        user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
 
         gender = serializer.validated_data['gender']
         cni_number = serializer.validated_data['cniNumber']
 
+        # on verifie que l'utilisateur donné est l'utilisateur de la requete
+        if user.id != serializer.validated_data['idMedicalStaff']:
+            return Response("l'id du medicalstaff envoyé n'est pas celui de la requete", status=status.HTTP_400_BAD_REQUEST)
+
         if gender is None or cni_number is None:
             return Response("gender ou cni_number absent", status=status.HTTP_400_BAD_REQUEST)
 
-        # creation de dossier medical du patien
-        mfolder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
-        mfolder.save()
-        serializer.validated_data['idMedicalFolder'] = mfolder.pk
-        serializer.validated_data['idMedicalStaff'] = user
         patient_serializer = PatientCreateSerializer(data=serializer.validated_data)
         patient_serializer.is_valid(raise_exception=True)
         patient_serializer.save()
@@ -230,3 +229,38 @@ class PatientViewSet(ModelViewSet):
             return Response({'details': 'MedicalStaff not found'}, status=status.HTTP_404_NOT_FOUND)
         except Patient.DoesNotExist:
             return Response({'details': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        operation_description="Permet de lister les patients d'un docteur",
+        responses={
+            200: openapi.Response(description=" Liste des patients du docteur",
+                                  schema=PatientSerializer(many=True)),
+            404: openapi.Response(description="Docteur inexistant existent"),
+            400: openapi.Response(description="Bad request"),
+        },
+        manual_parameters=[
+            openapi.Parameter('id', openapi.IN_PATH, description="ID dU medical staff concerné",
+                              type=openapi.TYPE_INTEGER, required=True),
+            auth_header_param
+        ],
+        tags=tags
+    )
+    @action(methods=["get"], detail=False, url_path='doctor/(?P<id>[^/.]+)',
+            permission_classes=[PatientPermission])
+    def patient_doctor(self, request, id=None):
+        try:
+            medical_staff = MedicalStaff.objects.get(id=id)
+            if medical_staff.role != "Doctor":
+                return Response({"details": "le medical staff specifie n'est pas un docteur"},
+                                status.HTTP_404_NOT_FOUND)
+            # Récupérer les consultations effectuées par ce docteur
+            consultations = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
+            # Extraire les patients uniques ayant une consultation avec ce docteur
+            patient_ids = consultations.values_list('idPatient', flat=True).distinct()
+            patients = Patient.objects.filter(id__in=patient_ids)
+
+            # Sérialiser les patients
+            serializer = PatientSerializer(patients, many=True)
+            return Response(serializer.data, status.HTTP_200_OK)
+        except MedicalStaff.DoesNotExist:
+            return Response({"details": "le docteur spécifé n'existe pas"}, status.HTTP_404_NOT_FOUND)

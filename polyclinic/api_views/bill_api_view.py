@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Bill, MedicalFolderPage
 from accounting.models import FinancialOperation, Account
 from polyclinic.permissions.bill_permissions import BillPermissions
-from polyclinic.serializers.bill_serializers import BillSerializer
+from polyclinic.serializers.bill_serializers import BillSerializer, BillCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -106,7 +106,10 @@ class BillViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return BillSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return BillCreateSerializer
+        else:
+            return BillSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
@@ -167,9 +170,9 @@ class BillViewSet(ModelViewSet):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'isApproved': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
+                'isAccounted': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Statut d'approbation de la facture"),
             },
-            required=['isApproved']
+            required=['isAccounted']
         ),
         manual_parameters=[auth_header_param],
         tags=["bill"]

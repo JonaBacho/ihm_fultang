@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from polyclinic.models import Consultation
 from polyclinic.serializers.medical_folder_page_serializers import MedicalFolderPageSerializer
-from polyclinic.serializers.medicalstaff_serializers import MedicalStaffSerializer
+from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 from polyclinic.serializers.patient_serializers import PatientSerializer
 
 
