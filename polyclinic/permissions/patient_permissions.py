@@ -19,7 +19,9 @@ class PatientPermission(BasePermission):
         # Autoriser un utilisateur avec le rôle 'Admin' pour toutes les actions
         if user.role == "Admin":
             return True
-        elif user.role in ["Receptionist", "Nurse"] and view.action not in ["destroy", "create"]:
+        elif user.role == "Receptionist" and view.action != "destroy":
+            return True
+        elif user.role == "Nurse" and view.action not in ["destroy", "create"]:
             return True
         elif view.action in ["list", "retrieve", "update", "partial_update"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
             return PatientAccess.objects.filter(
