@@ -36,7 +36,7 @@ export const AccountantNavLink = [
       },
       {
         name: "Financial Report",
-        link: appRoutes.accountList,
+        link: appRoutes.financialReportsAccountant,
         icon: FaChartLine,
       },
     ],
