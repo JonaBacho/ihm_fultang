@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import {useEffect, useState} from "react";
 import {Calendar, Clock, User, FileText, X} from 'lucide-react';
 import axiosInstance from "../../Utils/axiosInstance.js";
+import Wait from "../Modals/wait.jsx";
 
 export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSuccessModal}) {
 
@@ -17,18 +18,16 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
     const idMedicalFolderPage = localStorage.getItem('current_medical_folder_page');
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-
-
-
     const [consultationData, setConsultationData] = useState({
         consultationReason: '',
         consultationNotes: '',
-        paymentStatus:'',
-        state:'',
+        paymentStatus:'Invalid',
+        state:'Pending',
         idMedicalFolderPage:'',
         idPatient: patientInfos.id,
         idMedicalStaffGiver:'',
     });
+
 
 
     useEffect(() => {
@@ -37,7 +36,7 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
                 const response = await axiosInstance("/medical-staff/all-doctors/");
                 if (response.status === 200)
                 {
-                   // console.log(response.data);
+                    console.log(response.data);
                     setDoctors(response.data);
                 }
             } catch (error) {
@@ -48,12 +47,14 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
     }, [])
 
 
+
     function handleDateChange(e) {
         setConsultationData(prevState => ({
             ...prevState,
             [e.name]: e.value
         }))
     }
+
 
     async function handleSubmit (e){
 
@@ -65,11 +66,13 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
         }
         try
         {
+            console.log(consultationData);
             const response = await axiosInstance.post("/consultation/", consultationData);
             setIsLoading(false);
             if (response.status === 201)
             {
                 setError("");
+                localStorage.removeItem('current_medical_folder_page');
                 setCanOpenSuccessModal(true);
                 onClose();
             }
@@ -85,6 +88,8 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
 
 
     if (!isOpen) return;
+
+    if (isLoading) return <Wait/>
 
     return (
 
@@ -118,7 +123,7 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
                                     <option value="">Select a doctor</option>
                                     {doctors.map((doctor) => (
                                         <option key={doctor.id} value={doctor.id}>
-                                            {doctor.name} - {doctor.speciality}
+                                            Dr. {doctor.first_name} {doctor.last_name}  ({doctor.role === 'Doctor' ? 'General Practitioner' : doctor.role})
                                         </option>
                                     ))}
                                 </select>

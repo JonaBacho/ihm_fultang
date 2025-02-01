@@ -34,7 +34,7 @@ export  function PatientParameters() {
         allergies: '',
         currentMedication: '',
         familyMedicalHistory: '',
-        idMedicalStaff: userData.id,
+        idMedicalStaff: userData?.id,
     });
     const [errors, setErrors] = useState({});
     const [canOpenConfirmSaveParameters, setCanOpenConfirmSaveParameters] = useState(false);
@@ -44,18 +44,8 @@ export  function PatientParameters() {
     const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-   // const [idCurrentMedicalFolderPage, setIdCurrentMedicalFolderPage] = useState("");
-
-
-
-
     const [canActivatePrescribeDoctorBtn, setCanActivatePrescribeDoctorBtn] = useState(false);
     const [canPrescribeDoctor, setCanPrescribeDoctor] = useState(false);
-
-
-
-
-
 
 
 
@@ -87,8 +77,6 @@ export  function PatientParameters() {
     }
 
 
-
-
     function validateField (name, value) {
         let error = ''
         switch (name) {
@@ -113,8 +101,6 @@ export  function PatientParameters() {
 
 
 
-
-
      function handleSubmit (e) {
          e.preventDefault()
          const formErrors = {}
@@ -134,10 +120,6 @@ export  function PatientParameters() {
 
 
 
-
-
-
-
     function saveIdMedicalFolderPage (id) {
         localStorage.setItem('current_medical_folder_page', id);
     }
@@ -147,13 +129,12 @@ export  function PatientParameters() {
     async function saveParameters ()
     {
         setIsLoading(true);
+        console.log(parameters);
         try {
             const response = await axiosInstance.post(`/medical-folder/${patientInfo.idMedicalFolder}/new-params/`, parameters);
             if (response.status === 201)
             {
-                console.log(response);
                 saveIdMedicalFolderPage(response.data.idMedicalFolderPage);
-                // setIdCurrentMedicalFolderPage(response.data.idMedicalFolderPage);
                 setIsLoading(false);
                 setCanActivatePrescribeDoctorBtn(true);
                 setCanOpenConfirmSaveParameters(false);

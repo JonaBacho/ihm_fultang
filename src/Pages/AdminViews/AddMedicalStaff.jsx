@@ -24,6 +24,7 @@ export function AddMedicalStaff() {
         birthDate:'',
         address: '',
         phoneNumber: '',
+        userType:'',
     });
 
     function handleChange (e) {
@@ -39,6 +40,20 @@ export function AddMedicalStaff() {
         {
             medicalStaffData.isStaff = medicalStaffData.role === 'Admin';
         }
+        if(medicalStaffData.role === "Accountant")
+        {
+           medicalStaffData.userType = "Accountant";
+        }
+        else
+        {
+            medicalStaffData.userType = "Medical";
+        }
+    }, [medicalStaffData]);
+
+
+
+    useEffect(() => {
+        console.log(medicalStaffData);
     }, [medicalStaffData]);
 
 

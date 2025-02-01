@@ -6,6 +6,7 @@ import {cashierNavLink} from "./cashierNavLink.js";
 import {CashierNavBar} from "./CashierNavBar.jsx";
 
 
+
 const generateMonthlyData = (months) => {
     return Array.from({ length: months }, (_, i) => ({
         month: new Date(2024, i, 1).toLocaleDateString("fr-FR", { month: "short" }),
@@ -125,7 +126,7 @@ export function FinancialReport() {
             </div>
 
             {/* Cartes de résumé */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
                 <div className="p-4 bg-green-100 rounded-lg">
                     <div className="flex justify-between items-start">
                         <div>
@@ -167,8 +168,50 @@ export function FinancialReport() {
                 </div>
             </div>
 
+
+
+            {/* Tableau détaillé */}
+            <table className="w-full  rounded-lg mb-14">
+                <thead className="bg-primary-end">
+                <tr>
+                    <th className="px-6 py-5 text-center text-md font-bold text-white uppercase rounded-l-lg ">
+                        Period
+                    </th>
+                    <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
+                        Consultations
+                    </th>
+                    <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
+                        Exams
+                    </th>
+                    <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Total</th>
+                    <th className="px-6 py-5 text-center text-md font-bold text-white uppercase  rounded-r-lg">
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                {data.map((item, index) => (
+                    <tr key={index}>
+                        <td className="px-6 py-4 whitespace-nowrap text-md text-center font-bold text-gray-900">{item.month}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-md text-center text-gray-900">{item.consultations.toLocaleString()} FCFA</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-md text-center text-gray-900">{item.examens.toLocaleString()} FCFA</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-md  text-center text-gray-900">{item.total.toLocaleString()} FCFA</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-md text-center text-gray-900">
+                            <button
+                                onClick={() => handleGeneratePDF()}
+                                className="flex justify-center mx-auto items-center text-indigo-600 hover:text-indigo-900"
+                            >
+                                <FileText className="h-4 w-4 mr-1" />
+                                Generate PDF
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+
             {/* Graphique */}
-            <div className="mb-6  p-4 rounded-lg border">
+            <div className="mb-5  p-4 rounded-lg border">
                 <h2 className="text-lg font-semibold mb-4">Évolution des entrées</h2>
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart data={data}>
@@ -184,49 +227,9 @@ export function FinancialReport() {
                 </ResponsiveContainer>
             </div>
 
-            {/* Tableau détaillé */}
-            <div  className="w-full">
-                <table className="w-full border rounded-lg">
-                    <thead className="bg-primary-end">
-                    <tr>
-                        <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                            Period
-                        </th>
-                        <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                            Consultations
-                        </th>
-                        <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                            Exams
-                        </th>
-                        <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">Total</th>
-                        <th className="px-6 py-5 text-center text-md font-bold text-white uppercase ">
-                            Actions
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                    {data.map((item, index) => (
-                        <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-md text-gray-900">{item.month}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-md text-gray-900">
-                                {item.consultations.toLocaleString()} $
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-md text-gray-900">{item.examens.toLocaleString()} $</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-md text-gray-900">{item.total.toLocaleString()} $</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-md text-gray-900">
-                                <button
-                                    onClick={() => handleGeneratePDF()}
-                                    className="flex items-center text-indigo-600 hover:text-indigo-900"
-                                >
-                                    <FileText className="h-4 w-4 mr-1" />
-                                    Generate PDF
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+
+
+
         </div>
     </DashBoard>
     )

@@ -4,7 +4,8 @@ import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
-import PropTypes from "prop-types";
+import QuickActionButton from "../../GlobalComponents/QuickActionButton.jsx";
+import StatCard from "../../GlobalComponents/StatCard.jsx";
 
 
 export function AdminHomePage() {
@@ -103,7 +104,7 @@ export function AdminHomePage() {
                     />
                 </div>
 
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className=" rounded-lg  p-6">
                     <div className="flex items-center gap-2 mb-6">
                         <ShieldCheck className="w-6 h-6 text-[#4DB6AC]"/>
                         <h2 className="text-xl font-bold text-gray-800">Administrator Privileges</h2>
@@ -125,7 +126,7 @@ export function AdminHomePage() {
                 </div>
 
 
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="rounded-lg  p-6">
                   
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Access</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -172,46 +173,6 @@ export function AdminHomePage() {
 }
 
 
-function StatCard({icon: Icon, title, value, description, color}) {
-
-    StatCard.propTypes = {
-        icon: PropTypes.element.isRequired,
-        title: PropTypes.string.isRequired,
-        value: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
-        color: PropTypes.string
-    }
-
-    return (
-        <div className="bg-white rounded-lg shadow-lg p-6 flex items-start gap-4">
-            <div className={`${color} rounded-full p-3 text-white`}>
-                <Icon className="w-6 h-6"/>
-            </div>
-            <div>
-                <h3 className="font-semibold text-gray-800">{title}</h3>
-                <p className="text-2xl font-bold text-gray-900 mb-1">{value}</p>
-                <p className="text-sm text-gray-500">{description}</p>
-            </div>
-        </div>
-    );
-}
 
 
-function QuickActionButton({icon: Icon, label, onClick}) {
-
-    QuickActionButton.propTypes = {
-        icon: PropTypes.element.isRequired,
-        label: PropTypes.string.isRequired,
-        onClick: PropTypes.func.isRequired
-    }
-    return (
-        <button
-            onClick={onClick}
-            className="flex flex-col items-center gap-2 p-4  rounded-lg border border-gray-200 hover:border-2 hover:border-primary-end hover:bg-gray-100 transition-all duration-300"
-        >
-            <Icon className="w-6 h-6 text-primary-end"/>
-            <span className="text-md text-gray-600 font-bold text-center">{label}</span>
-        </button>
-    );
-}
 

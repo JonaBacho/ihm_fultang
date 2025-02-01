@@ -1,17 +1,15 @@
 "use client"
 
-import React, { useState } from "react"
+import  { useState } from "react"
 import { ArrowLeft, User, Calendar, CreditCard, Printer, FileText } from "lucide-react"
-import { DashBoard } from "../../../GlobalComponents/DashBoard.jsx"
-import { links } from "../Doctor.jsx"
+
 import { FaSearch, FaUser, FaChevronRight, FaHistory, FaPills } from "react-icons/fa"
 import { BsExclamationTriangle } from "react-icons/bs"
-import { MdLocalHospital } from "react-icons/md"
 import { IoMedkit } from "react-icons/io5"
 import { GiStethoscope } from "react-icons/gi"
-import { doctorNavBar } from "./doctorNavBar.js"
-import { DoctorDashboard } from "./DoctorDashboard.jsx"
-import {DoctorNavBar} from "./DoctorNavBar.jsx"
+import { doctorNavLink } from "../DoctorComponents/doctorNavLink.js"
+import { DoctorDashboard } from "../DoctorComponents/DoctorDashboard.jsx"
+import {DoctorNavBar} from "../DoctorComponents/DoctorNavBar.jsx"
 
 
 const patients = [
@@ -519,7 +517,7 @@ export const MedicalRecord2 = () => {
 
 export  function DoctorAddConsultation() {
   return (
-    <DoctorDashboard linkList={doctorNavBar} requiredRole="Doctor">
+    <DoctorDashboard linkList={doctorNavLink} requiredRole="Doctor">
         <DoctorNavBar/>
       <MedicalRecord2></MedicalRecord2>
     </DoctorDashboard>

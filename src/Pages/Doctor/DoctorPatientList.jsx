@@ -1,19 +1,19 @@
 import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {useEffect, useState} from "react";
-import {SuccessModal} from "../../Modals/SuccessModal.jsx";
-import Wait from "../../Modals/wait.jsx";
-import {ErrorModal} from "../../Modals/ErrorModal.jsx";
-import {ViewPatientDetailsModal} from "../../Receptionist/ViewPatientDetailsModal.jsx";
-import {EditPatientInfosModal} from "../../Receptionist/EditPatientInfosModal.jsx";
-import axiosInstance from "../../../Utils/axiosInstance.js";
+import {SuccessModal} from "../Modals/SuccessModal.jsx";
+import Wait from "../Modals/wait.jsx";
+import {ErrorModal} from "../Modals/ErrorModal.jsx";
+import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
+import {EditPatientInfosModal} from "../Receptionist/EditPatientInfosModal.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
-import {ConfirmationModal} from "../../Modals/ConfirmAction.Modal.jsx";
+import {ConfirmationModal} from "../Modals/ConfirmAction.Modal.jsx";
 //import {AddNewPatientModal} from "../Receptionist/addNewPatientModal.jsx";
-import {DoctorDashboard} from "./DoctorDashboard.jsx";
-import {DoctorNavBar} from "./DoctorNavBar.jsx";
-import {doctorNavBar} from "./doctorNavBar.js";
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
+import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
 
 export function DoctorPatientList()
 {
@@ -145,7 +145,7 @@ export function DoctorPatientList()
 
 
     return (
-        <DoctorDashboard linkList={doctorNavBar} requiredRole={"Doctor"}>
+        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="mt-5 flex flex-col relative">
 
