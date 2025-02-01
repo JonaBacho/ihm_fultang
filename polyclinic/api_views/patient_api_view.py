@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import ValidationError
 
 from polyclinic.models import Patient, PatientAccess, MedicalFolder, Consultation
 from authentication.models import MedicalStaff
@@ -129,22 +130,30 @@ class PatientViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        if 'id' in serializer.validated_data:
-            serializer.validated_data.pop('id')
+        # Récupérer l'utilisateur connecté
+        user = self.request.user
 
-        gender = serializer.validated_data['gender']
-        cni_number = serializer.validated_data['cniNumber']
+        # Si 'id' est présent dans les données validées, on le retire (pour éviter toute interférence)
+        serializer.validated_data.pop('id', None)
 
-        # on verifie que l'utilisateur donné est l'utilisateur de la requete
-        if user.id != serializer.validated_data['idMedicalStaff']:
-            return Response("l'id du medicalstaff envoyé n'est pas celui de la requete", status=status.HTTP_400_BAD_REQUEST)
+        # Récupérer l'instance du MedicalStaff passé dans les données
+        medical_staff = serializer.validated_data.get('idMedicalStaff')
+        if not medical_staff:
+            raise ValidationError({"idMedicalStaff": "Ce champ est requis."})
 
-        if gender is None or cni_number is None:
-            return Response("gender ou cni_number absent", status=status.HTTP_400_BAD_REQUEST)
+        # Vérifier que l'utilisateur connecté correspond à l'idMedicalStaff fourni
+        if user.id != medical_staff.id:
+            raise ValidationError({"detail": "Vous ne pouvez pas créer un patient pour un autre staff."})
 
-        patient_serializer = PatientCreateSerializer(data=serializer.validated_data)
-        patient_serializer.is_valid(raise_exception=True)
-        patient_serializer.save()
+        # Vérifier que les champs 'gender' et 'cniNumber' sont présents
+        gender = serializer.validated_data.get('gender')
+        cni_number = serializer.validated_data.get('cniNumber')
+        if not gender or not cni_number:
+            raise ValidationError({"detail": "Les champs 'gender' et 'cniNumber' sont obligatoires."})
+
+        # Sauvegarder l'instance via le serializer
+        serializer.save()
+
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
