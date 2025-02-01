@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from polyclinic.models import Patient, MedicalFolder
+from authentication.models import MedicalStaff
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,7 +16,7 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         cni_number = validated_data.pop('cniNumber', None)
         gender = validated_data.pop('gender', None)
 
-        # on sauvegarde d'abord le dossier medical
+        # on creer d'abord le dossier medical
         medical_folder = MedicalFolder(folderCode=gender + cni_number, isClosed=False)
         medical_folder.save()
 

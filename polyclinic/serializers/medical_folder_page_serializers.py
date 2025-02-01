@@ -11,6 +11,8 @@ from polyclinic.serializers.prescription_serializers import PrescriptionSerializ
 
 class MedicalFolderPageSerializer(serializers.ModelSerializer):
     parameters = ParametersSerializer(required=False, many=False)
+    prescription = PrescriptionSerializer(required=False)
+    examRequest = ExamRequestSerializer(required=False)
 
 
     class Meta:
@@ -19,24 +21,23 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)
-    prescription = PrescriptionSerializer(required=False)
-    examRequest = ExamRequestSerializer(required=False)
+    pageNumber = serializers.IntegerField(required=False)
 
     class Meta:
         model = MedicalFolderPage
-        exclude = ['id', 'pageNumber', 'idMedicalStaff']
+        exclude = ['id']
 
-    def save(self, **kwargs):
-        instance = self.instance
-        if instance:
-            # Mise à jour : aucune validation spécifique liée à la création
-            return super().save(**kwargs)
+    def create(self, validated_data):
 
         medical_folder = self.validated_data.get('idMedicalFolder')
         medical_staff = self.validated_data.get('idMedicalStaff')
+        pageNumber = self.validated_data.get('pageNumber')
 
         if not medical_folder:
             raise ValidationError({"details": "Le dossier médical (idMedicalFolder) est requis."})
+
+        if not pageNumber:
+            raise ValidationError({"details": "La numero de la page est requis"})
 
         # 2 semaines en arrière
         two_weeks_ago = now() - timedelta(weeks=2)
@@ -48,11 +49,10 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
             addDate__gte=two_weeks_ago
         ).count()
 
-        if recent_pages_count > 2:
+        if recent_pages_count >= 2:
             raise ValidationError(
                 {"details": "Vous ne pouvez créer que 2 pages médicales pour ce dossier médical toutes les 2 semaines."}
             )
         else:
-            # Appeler la méthode save parente avec les kwargs
-            return super().save(**kwargs)
+            return MedicalFolderPage.objects.create(idMedicalFolder=medical_folder, pageNumber=pageNumber, idMedicalStaff=medical_staff)
 

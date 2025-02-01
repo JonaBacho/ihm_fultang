@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.viewsets import ViewSet
 
-from authentication.models import MedicalStaff
+from authentication.models import MedicalStaff, ROLES, ROLES_ACCOUNTING
 from polyclinic.permissions.medical_staff_permissions import MedicalStaffPermission
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer, MedicalStaffCreateSerializer
 from polyclinic.pagination import CustomPagination
@@ -161,3 +161,26 @@ class MedicalStaffViewSet(ModelViewSet):
         doctors = MedicalStaff.objects.filter(role__in=['Doctor', 'Specialist', 'Ophtalmologist', 'Dentist'])
         doctors_list = list(doctors.values('id', 'first_name', 'last_name', 'role'))
         return JsonResponse(doctors_list, safe=False)
+
+    @swagger_auto_schema(
+        operation_description="Permet de compter les medical staff par categorie",
+        responses={
+            200: openapi.Response(description="Nombre de roles et de medical staff")
+        },
+        tags=tags
+    )
+    @action(methods=['get'], detail=False, url_path='count')
+    def number_of_role(self, request):
+        query = MedicalStaff.objects.all()
+        data = {}
+        data['medical_staff_count'] = query.count()
+        query = query.filter(is_active=True)
+        data['medical_staff_active_count'] = query.count()
+        data['medical'] = query.filter(userType="Medical").count()
+        data['accountant'] = query.filter(userType="Accountant").count()
+        for role in ROLES + ROLES_ACCOUNTING:
+            data[role] = query.filter(role=role).count()
+
+        return Response(data, status=status.HTTP_200_OK)
+
+

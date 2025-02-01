@@ -147,10 +147,16 @@ class MedicalFolderViewSet(ModelViewSet):
     def add_page(self, request, *args, **kwargs):
         user = self.request.user
         medical_folder = self.get_object()
-        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
-        serializer = MedicalFolderPageCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(idMedicalFolder=medical_folder, pageNumber=number+1, idMedicalStaff=user)
+        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count() + 1
+        data = request.data
+        data['pageNumber'] = number
+        if user.id != data['idMedicalStaff']:
+            return Response({"details": "l'id du medicalstaff envoyé n'est pas celui de la requete"}, status=status.HTTP_400_BAD_REQUEST)
+        if medical_folder.id != data['idMedicalFolder']:
+            return Response({"details": "l'id du carnet medical donnée n'est pas celui de la requete"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = MedicalFolderPageCreateSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -185,7 +191,7 @@ class MedicalFolderViewSet(ModelViewSet):
             medical_folder = self.get_object()
             if page.idMedicalFolder != medical_folder:
                 return Response(
-                    {'error': 'Cette page n\'est pas associée au carnet médical spécifié.'},
+                    {'details': 'Cette page n\'est pas associée au carnet médical spécifié.'},
                     status=status.HTTP_403_FORBIDDEN
                 )
 
@@ -197,7 +203,7 @@ class MedicalFolderViewSet(ModelViewSet):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except MedicalFolderPage.DoesNotExist:
-            return Response({'error': 'Page inexistante.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'details': 'Page inexistante.'}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
         operation_description="Ajouter de nouveaux paramètres, une nouvelle page sera cree d'abord",
@@ -213,16 +219,18 @@ class MedicalFolderViewSet(ModelViewSet):
     def new_params(self, request, *args, **kwargs):
         user = self.request.user
         medical_folder = self.get_object()
-        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
-        page_data = {'idMedicalFolder': medical_folder.id,
-                     'idMedicalStaff': user,
-                     'pageNumber': number+1}
-        page_serializer = MedicalFolderPageCreateSerializer(data=page_data)
-        if page_serializer.is_valid():
+        number = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count() + 1
+        data = {'idMedicalFolder': medical_folder.id,
+                'idMedicalStaff': user.id,
+                'pageNumber': number}
+        page_serializer = MedicalFolderPageCreateSerializer(data=data)
+        if page_serializer.is_valid(raise_exception=True):
             page = page_serializer.save()
-            params_serializer = ParametersCreateSerializer(data=request.data)
+            data = request.data
+            data['idMedicalFolderPage'] = page.id
+            params_serializer = ParametersCreateSerializer(data=data)
             if params_serializer.is_valid():
-                params_serializer.save(idMedicalFolderPage=page)
+                params_serializer.save()
                 return Response(params_serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(params_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -238,19 +246,19 @@ class MedicalFolderViewSet(ModelViewSet):
         },
         tags=tags
     )
-    @action(methods=['put'], detail=False, url_path='update-params')
-    def update_params(self, request, pk, *args, **kwargs):
+    @action(methods=['put'], detail=True, url_path='update-params/(?P<idParam>[^/.]+)')
+    def update_params(self, request, idParam=None, *args, **kwargs):
         try:
-            if pk is None:
-                return Response({'error', "id du paramètre requis"}, status=status.HTTP_400_BAD_REQUEST)
-            params = Parameters.objects.get(pk)
+            if idParam is None:
+                return Response({'details', "id du paramètre requis"}, status=status.HTTP_400_BAD_REQUEST)
+            params = Parameters.objects.get(id=idParam)
             serializer = ParametersCreateSerializer(params, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Parameters.DoesNotExist:
-            return Response({'error': 'Parameters not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'details': 'Parameters not found'}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
         operation_description="Obtenir la dernière page d'un cahier médical",
@@ -269,7 +277,8 @@ class MedicalFolderViewSet(ModelViewSet):
         if last_page:
             serializer = MedicalFolderPageSerializer(last_page)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'error': 'No pages found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'details': 'No pages found'}, status=status.HTTP_404_NOT_FOUND)
+
 
     @swagger_auto_schema(
         operation_description="Obtenir les paramètres les plus récents",
@@ -288,7 +297,8 @@ class MedicalFolderViewSet(ModelViewSet):
         if last_params:
             serializer = ParametersSerializer(last_params)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'error': 'No parameters found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'details': 'No parameters found'}, status=status.HTTP_404_NOT_FOUND)
+
 
     @swagger_auto_schema(
         operation_description="Obtenir une page par id ou par date",
@@ -297,27 +307,37 @@ class MedicalFolderViewSet(ModelViewSet):
                    400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
                    403: openapi.Response(description="Token invalide ou expiré."),
         },
+        manual_parameters=[auth_header_param,
+           openapi.Parameter('id', openapi.IN_PATH, description="Id de la page",
+                             type=openapi.TYPE_INTEGER, required=True),
+           openapi.Parameter(
+               'date',
+               openapi.IN_QUERY,
+               description="pour effectuer un filtre par date",
+               type=openapi.TYPE_BOOLEAN,
+               required=False
+           ),
+        ],
         tags=tags
     )
-    @action(methods=['get'], detail=True, url_path='get-page')
-    def get_page(self, request, *args, **kwargs):
-        id = request.GET['id']
-        date = request.GET['date']
+    @action(methods=['get'], detail=True, url_path='get-page/(?P<id>[^/.]+)')
+    def get_page(self, request, id=None, *args, **kwargs):
+        date = request.query_params.get('date', None)
         medical_folder = self.get_object()
         pages = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder)
         if id:
             page = pages.filter(id=id).first()
             if not page:
-                return Response({'error': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'details': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = MedicalFolderPageSerializer(page)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if date:
             page = pages.filter(addDate=date).first()
             if not page:
-                return Response({'error': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'details': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = MedicalFolderPageSerializer(page)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'error': 'bad request'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'details': 'bad request'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

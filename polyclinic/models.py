@@ -104,7 +104,6 @@ class Patient(models.Model):
         "authentication.MedicalStaff",
         on_delete=models.DO_NOTHING,
         null=False,
-        default=1
     )
     idMedicalFolder = models.OneToOneField("MedicalFolder", on_delete=models.SET_NULL, null=True)
 

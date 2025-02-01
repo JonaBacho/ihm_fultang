@@ -157,7 +157,7 @@ class ConsultationViewSet(ModelViewSet):
     @swagger_auto_schema(
         operation_description="Permet de lister les consultations journalières d'un docteur/ ou les historiques des consultations",
         responses={
-            200: openapi.Response(description=" Liste des consultations du docteur"),
+            200: openapi.Response(description=" Liste des consultations du docteur", schema=ConsultationSerializer(many=True)),
             404: openapi.Response(description="Docteur inexistant existent"),
             400: openapi.Response(description="Bad request"),
         },
@@ -180,16 +180,20 @@ class ConsultationViewSet(ModelViewSet):
         try:
             self.pagination_class = None
             medical_staff = MedicalStaff.objects.get(id=id)
+            if medical_staff.role != "Doctor":
+                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_404_NOT_FOUND)
             queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
             history = self.request.query_params.get("history", "false")
             if history and history.lower() == "true":
                 queryset = queryset.exclude(state="Pending")
-                return Response(queryset, status.HTTP_200_OK)
+                serializer = ConsultationSerializer(queryset, many=True)
+                return Response(serializer.data, status.HTTP_200_OK)
             else:
                 queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
-                return Response(queryset, status.HTTP_200_OK)
+                serializer = ConsultationSerializer(queryset, many=True)
+                return Response(serializer.data, status.HTTP_200_OK)
         except MedicalStaff.DoesNotExist:
-            return Response("le docteur spécifé n'existe pas", status.HTTP_404_NOT_FOUND)
+            return Response({"details": "le docteur spécifé n'existe pas"}, status.HTTP_404_NOT_FOUND)
 
 
 

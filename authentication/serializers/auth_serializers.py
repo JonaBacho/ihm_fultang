@@ -41,9 +41,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         password = attrs.get('password')
 
         if username and password:
-            user = MedicalStaff.objects.get(username=username)
-            if user.check_password(password):
-                return user
+            try:
+                user = MedicalStaff.objects.get(username=username)
+                if user.check_password(password):
+                    return user
+            except MedicalStaff.DoesNotExist:
+                return None
         return None
 
 
