@@ -43,4 +43,6 @@ export const AppRoutesPaths = {
     doctorConsultationHistory: "/doctor/consultation-history",
     doctorConsultationHistoryDetails: "/doctor/consultation-history/details/:id",
     doctorExamList: "/doctor/exams-list",
+    financialContributions: "/accountant/financial-contributions",
+    financialReportsAccountant: "/accountant/financial-reports",
 }
