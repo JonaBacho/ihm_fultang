@@ -16,13 +16,13 @@ export function DashBoard ({children,linkList, requiredRole})
     const {isAuthenticated, hasRole} = useAuthentication();
 
 
-    //  if (!isAuthenticated()) {
-    //      return <Navigate to="/login" />;
-    //  }
+      if (!isAuthenticated()) {
+          return <Navigate to="/login" />;
+      }
 
-    //  if (!hasRole(requiredRole)) {
-    //     return <AccessDenied Role={requiredRole}/>;
-    //  }
+      if (!hasRole(requiredRole)) {
+         return <AccessDenied Role={requiredRole}/>;
+      }
 
 
     return (

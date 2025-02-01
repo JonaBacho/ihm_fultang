@@ -2,7 +2,8 @@ import { MdPending } from "react-icons/md";
 import { AiOutlineFileExclamation } from "react-icons/ai";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
-import {FaHistory} from "react-icons/fa";
+import {FaHistory, FaHospital} from "react-icons/fa";
+
 
 export const cashierNavLink =
 [
@@ -16,6 +17,12 @@ export const cashierNavLink =
         name: 'Exams List',
         icon: AiOutlineFileExclamation,
         link: appRoutes.examsList,
+    },
+    
+    {
+        name: 'Hospitalisations List',
+        icon: FaHospital,
+        link: appRoutes.hospitalisations,
     },
     {
         name: 'Financial History',
