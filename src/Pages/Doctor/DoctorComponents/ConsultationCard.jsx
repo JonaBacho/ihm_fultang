@@ -48,7 +48,7 @@ export default function ConsultationCard ({ consultation }) {
 
 
     return (
-        <div className={`h-full bg-gray-100 border rounded-lg p-4 hover:-translate-y-1.5 hover:shadow-lg transition-all duration-500 border-l-4 ${getStateStyles(consultation.statePatient).container}`}>
+        <div className={`h-full bg-gray-100 border rounded-2xl p-4 hover:-translate-y-1.5 hover:shadow-lg transition-all duration-500 border-l-4 ${getStateStyles(consultation.statePatient).container}`}>
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">

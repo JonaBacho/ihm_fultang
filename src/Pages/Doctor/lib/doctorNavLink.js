@@ -1,4 +1,4 @@
-import {FaHistory, FaHome, FaNotesMedical, FaPlus, FaUsers} from "react-icons/fa";
+import {FaHistory, FaHome, FaNotesMedical, FaPlus, FaQuestionCircle, FaUsers} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../../Router/appRouterPaths.js";
 import { Calendar} from "lucide-react";
 import {FiList} from "react-icons/fi";
@@ -43,10 +43,15 @@ export const doctorNavLink = [
         icon: Calendar,
         link: appRoutes.doctorAppointment,
     },
-    {
+   /* {
         name: 'Exams',
         icon: FaNotesMedical,
         link: appRoutes.doctorExamList,
-    },
+    },*/
+    {
+        name: 'Help Center',
+        icon: FaQuestionCircle,
+        link: appRoutes.helpCenterPage,
+    }
     
 ];

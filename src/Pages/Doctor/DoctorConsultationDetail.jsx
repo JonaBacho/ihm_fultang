@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import {useLocation, useNavigate} from "react-router-dom";
 import { DoctorDashboard } from './DoctorComponents/DoctorDashboard.jsx';
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {doctorNavLink} from "./lib/doctorNavLink.js";
 import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
 import {useState} from "react";
 import {useCalculateAge} from "../../Utils/compute.js";

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Search, Calendar, Eye, User, Clock, DollarSign } from "lucide-react"
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useCalculateAge} from "../../Utils/compute.js";
 import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
@@ -147,13 +147,13 @@ export function ConsultationHistory() {
                                 </th>
                             </tr>
                             </thead>
-                            <tbody className="bg-white divide-y border-separate divide-gray-200">
+                            <tbody className="bg-white  border-separate ">
                             {filteredConsultations.map((consultation) =>
                             {
                                 const patientInfo = consultation?.idPatient;
                                 return(
-                                    <tr key={consultation.id}>
-                                        <td className={`px-6 py-5 rounded-l-xl bg-gray-50 border-l-4  ${getStateStyles(consultation?.statePatient).container}`}>
+                                    <tr key={consultation.id} className="">
+                                        <td className={`px-6 py-5 rounded-l-xl bg-gray-100  border-l-4  ${getStateStyles(consultation?.statePatient).container}`}>
                                             <div className="w-full flex items-center justify-center">
                                                 <User className="h-6 w-6 text-gray-400 mr-2"/>
                                                 <div>
@@ -163,7 +163,7 @@ export function ConsultationHistory() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 bg-gray-50 ">
+                                        <td className="px-6 py-5 bg-gray-100 ">
                                             <div className="w-full flex justify-center items-center ">
                                                 <Clock className="h-5 w-5 text-gray-400 mr-2 mt-2"/>
                                                 <div>
@@ -172,23 +172,23 @@ export function ConsultationHistory() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 bg-gray-50">
+                                        <td className="px-6 py-5 bg-gray-100">
                                             <div className="text-sm text-center text-gray-900">{consultation?.consultationReason || 'Not Specified'}</div>
                                         </td>
-                                        <td className="px-6 py-4 bg-gray-50 ">
+                                        <td className="px-6 py-4 bg-gray-100 ">
                                             <div className="flex items-center justify-center text-sm text-gray-900">
                                                 <span className={`px-2 py-1 rounded-full border-2 text-sm font-medium ${getStateStyles(consultation?.statePatient).badge}`}>
                                                      {consultation?.statePatient || 'Not Critical'}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 bg-gray-50 ">
+                                        <td className="px-6 py-5 bg-gray-100 ">
                                             <div className="flex items-center justify-center text-sm text-gray-900">
                                                 <DollarSign className="h-5 w-5 text-gray-400 mr-1"/>
                                                 {consultation?.consultationPrice ? consultation?.consultationPrice.toLocaleString() + ' FCFA' : ' - '}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5  bg-gray-50 rounded-r-xl">
+                                        <td className="px-6 py-5  bg-gray-100 rounded-r-xl">
                                             <button
                                                 onClick={()=>{navigate(`/doctor/consultation-history/details/${consultation?.id}`, {state: consultation})}}
                                                 className="flex items-center text-primary-end hover:text-primary-start font-bold hover:text-[17px] transition-all duration-500"
