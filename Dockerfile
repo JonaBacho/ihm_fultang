@@ -28,7 +28,7 @@ COPY . /app
 
 # on donne les droits de lecture et ecriture à tous le monde à la bd (pour celery et celery beat)
 RUN chmod 666 db.sqlite3 && \
-    chmod 666 ./
+    chmod -R 666 /app
 
 # Exposer le port sur lequel l'application va fonctionner
 EXPOSE 8009
