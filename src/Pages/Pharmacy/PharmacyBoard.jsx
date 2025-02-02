@@ -8,14 +8,7 @@ export function PharmacyBoard ()  {
     { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
     { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
     { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    // ... 
+    
   ];
 
   return (

@@ -46,5 +46,5 @@ export const AppRoutesPaths = {
     doctorPatientMedicalFolderPage:"/doctor/patients/medical-folder/:id",
     financialContributions: "/accountant/financial-contributions",
     financialReportsAccountant: "/accountant/financial-reports",
-
+    PharmacyMedication:"/pharmacyMedication",
 }
