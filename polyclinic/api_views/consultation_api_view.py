@@ -114,6 +114,11 @@ class ConsultationViewSet(ModelViewSet):
                 idDoctor = self.request.query_params["doctor"]
                 doctor = MedicalStaff.objects.get(id=idDoctor)
                 queryset = queryset.filter(idMedicalStaffGiver=doctor)
+                return queryset
+            elif "invalid" in self.request.query_params:
+                invalid = self.request.query_params["invalid"].lower()
+                if invalid == "true":
+                    queryset = queryset.filter(paymentStatus="Invalid")
             return queryset
         except MedicalStaff.DoesNotExist:
             raise ValidationError({'details': "l'id du medecin passé ne correspond à aucun docteur existant"})
@@ -136,7 +141,7 @@ class ConsultationViewSet(ModelViewSet):
         user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save(idMedicalStaffSender=user)
+        serializer.save()
 
     @swagger_auto_schema(
         operation_description="Permet de lister les consultations journalières d'un docteur/ ou les historiques des consultations",
