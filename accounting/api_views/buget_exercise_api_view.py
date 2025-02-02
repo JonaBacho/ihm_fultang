@@ -43,7 +43,7 @@ provision_allocations_prefixes = ['69']
 financial_charges_prefixes = ['67']
 taxes_prefixes = ['89']
 
-operating_cash_inflows_prefixes = ['70', '71']
+operating_cash_inflows_prefixes = ['70', '71', '72', '73']
 operating_cash_outflows_prefixes = ['60', '61', '62', '63', '64', '65', '66']
 
 investment_cash_inflows_prefixes = ['82']
@@ -199,17 +199,17 @@ class BudgetExerciseViewSet(ModelViewSet):
         financial_debt = calculate_circulant_balance(financial_debt_prefixes)
         circulant_passive = calculate_circulant_balance(circulant_passives_prefixes, "passive")
         passive_treasury = calculate_treasury(treasury_indexes, "passive")
-        active = immobilized_active + circulant_active + active_treasury
-        passive = equity + financial_debt + circulant_passive + passive_treasury
-        working_capital = equity + financial_debt - immobilized_active
-        working_capital_requirement = circulant_passive - circulant_active
-        treasury = active_treasury - passive_treasury
-        financial_autonomy_ratio = equity / passive
-        debt_to_equity_ratio = financial_debt / equity
-        general_liquidity = circulant_active / circulant_passive
+        active = immobilized_active['total'] + circulant_active['total'] + active_treasury['total']
+        passive = equity['total'] + financial_debt['total'] + circulant_passive['total'] + passive_treasury['total']
+        working_capital = equity['total'] + financial_debt['total'] - immobilized_active['total']
+        working_capital_requirement = circulant_passive['total'] - circulant_active['total']
+        treasury = active_treasury['total'] - passive_treasury['total']
+        financial_autonomy_ratio = equity['total'] / passive
+        debt_to_equity_ratio = financial_debt['total'] / equity['total']
+        general_liquidity = circulant_active['total'] / circulant_passive['total']
         stock = calculate_balance(stock_indexes)
-        reduced_liquidity = (circulant_active - stock) / circulant_passive
-        immediate_liquidity = treasury / circulant_passive
+        reduced_liquidity = (circulant_active['total'] - stock['total']) / circulant_passive['total']
+        immediate_liquidity = treasury['total'] / circulant_passive['total']
         solvability_ratio = active / passive
         return Response(
             {
@@ -255,15 +255,15 @@ class BudgetExerciseViewSet(ModelViewSet):
         products = calculate_balance(products_prefixes)
         sales_figure = calculate_balance(sales_figure_prefixes)
         sold_goods = calculate_balance(sold_goods_prefixes)
-        gross_margin = sales_figure - sold_goods
+        gross_margin = sales_figure['total'] - sold_goods['total']
         working_charges = calculate_balance(working_charges_prefixes)
-        gross_operating_surplus = gross_margin - working_charges
+        gross_operating_surplus = gross_margin - working_charges['total']
         depreciation_allocations = calculate_balance(depreciation_allocations_prefixes)
         provision_allocations = calculate_balance(provision_allocations_prefixes)
-        working_result = gross_operating_surplus - depreciation_allocations - provision_allocations
+        working_result = gross_operating_surplus - depreciation_allocations['total'] - provision_allocations['total']
         financial_charges = calculate_balance(financial_charges_prefixes)
         taxes = calculate_balance(taxes_prefixes)
-        net_result = working_result - financial_charges - taxes
+        net_result = working_result - financial_charges['total'] - taxes['total']
         return Response({
                 "Charges": charges, 
                 "Produits": products,
@@ -273,3 +273,53 @@ class BudgetExerciseViewSet(ModelViewSet):
                 "ResultatNet": net_result
             }
         )
+        
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Calculer l'état des flux de trésorerie",
+        operation_description="Retourne l'état de la trésorerie",
+        manual_parameters=[auth_header_param],
+        tags=tags
+    )
+    @action(detail=False, methods=['get'])
+    def get_treasury_flow(self, request):
+        operating_cash_inflows = calculate_balance(operating_cash_inflows_prefixes)
+        operating_cash_outflows = calculate_balance(operating_cash_outflows_prefixes)
+        financing_cash_inflows = calculate_balance(financing_cash_inflows_prefixes)
+        financing_cash_outflows = calculate_balance(financing_cash_outflows_prefixes)
+        investment_cash_inflows = calculate_balance(investment_cash_inflows_prefixes)
+        investment_cash_outflows = calculate_balance(investment_cash_outflows_prefixes)
+        operating_treasury_flow = operating_cash_inflows['total'] - operating_cash_outflows['total']
+        financing_treasury_flow = financing_cash_inflows['total'] - financing_cash_outflows['total']
+        investment_treasury_flow = investment_cash_inflows['total'] - investment_cash_outflows['total']
+        return Response({
+            "ActivitesDExploitation":{
+                "Encaissements": operating_cash_inflows,
+                "Decaissements": operating_cash_outflows,
+                "FluxDeTresorerieDExploitation": operating_treasury_flow
+            },
+            "ActivitesDInvestissement":{
+                "Encaissements": investment_cash_inflows,
+                "Decaissements": investment_cash_outflows,
+                "FluxDeTresorerieDInvestissement": investment_treasury_flow
+            },
+            "ActivitesDeFinancement":{
+                "Encaissements": financing_cash_inflows,
+                "Decaissements": financing_cash_outflows,
+                "FluxDeTresorerieDeFinancement": financing_treasury_flow
+            }
+        })
+        
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Calculer la balance",
+        operation_description="Retourne la balance",
+        manual_parameters=[auth_header_param],
+        tags=tags
+    )
+    @action(detail=False, methods=['get'])
+    def get_balance(self, request):
+        all_prefixes = [str(i) for i in range(10, 80)]
+        return Response({
+            "balance": calculate_balance(all_prefixes)
+        })
