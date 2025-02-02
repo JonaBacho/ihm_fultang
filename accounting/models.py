@@ -18,7 +18,7 @@ class Account(models.Model):
     
     number = models.IntegerField(default=0)
     libelle = models.CharField(max_length=255)
-    status = models.CharField(max_length=255, choices=status)
+    status = models.CharField(max_length=255, choices=status, null=True)
     
     def clean(self):
         if self.libelle and self.libelle[0] in ['4', '5'] and not self.status:

@@ -1,9 +1,6 @@
 from accounting.serializers import BudgetExerciseSerializer
 from rest_framework.viewsets import ModelViewSet
 from accounting.models import BudgetExercise, AccountState
-from polyclinic.models import ConsultationType
-from polyclinic.permissions.consultation_type_permissions import ConsultationTypePermissions
-from polyclinic.serializers.consultation_type_serializers import ConsultationTypeSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -11,6 +8,7 @@ from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from accounting.services.budget_exercise_service import *
 
 
 tags = ["budget-exercise"]
@@ -169,6 +167,7 @@ def calculate_circulant_balance(prefixes, type):
 class BudgetExerciseViewSet(ModelViewSet):
     serializer_class = BudgetExerciseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = [CustomPagination]
 
     def get_queryset(self):
         return BudgetExercise.objects.all()
