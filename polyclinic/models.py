@@ -210,7 +210,7 @@ class ExamRequest(models.Model):
     addDate = models.DateTimeField(auto_now=True)
     examDetails = models.CharField(max_length=50, null=True)
     examStatus = models.CharField(max_length=20, default="invalid")
-    patientStatus = models.CharField(max_length=20, default="invalid")
+    patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
     idExam = models.ForeignKey("Exam", on_delete=models.CASCADE, null=False)
@@ -283,6 +283,7 @@ class Hospitalisation(models.Model):
     bedLabel = models.CharField(max_length=100)
     note = models.TextField(blank=True, null=True)
     isActive = models.BooleanField(default=True)
+    paymentStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     removeAt = models.DateTimeField(auto_now=True)
 
     idRoom = models.ForeignKey("Room", on_delete=models.CASCADE, null=False)
@@ -308,7 +309,9 @@ class BillItem(models.Model):
     prescription = models.ForeignKey('polyclinic.Prescription', on_delete=models.SET_NULL, null=True)
     examRequest = models.ForeignKey('polyclinic.ExamRequest', on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField(default=0)
-    designation = models.CharField(max_length=50, default="")
+    unityPrice = models.FloatField(default=0)
+    designation = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
     total = models.FloatField(default=0)
 
 # ======================================

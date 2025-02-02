@@ -12,7 +12,7 @@ class BillItemSerializer(serializers.ModelSerializer):
 class BillItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillItem
-        exclude = ['id', 'total', 'bill']
+        exclude = ['id', 'bill']
 
 
 

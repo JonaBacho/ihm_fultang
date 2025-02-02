@@ -19,28 +19,43 @@ class BillCreateSerializer(serializers.ModelSerializer):
         exclude = ['billCode', 'date', 'isAccounted']
 
     def create(self, validated_data):
-        try:
-            patient = Patient.objects.get(pk=validated_data['patient'])
-            amount = validated_data.pop('amount', None)
+        patient = validated_data['patient']
+        if patient:  # c'est la paiement de la facture d'un service pour un patient
+            # amount = validated_data.pop('amount', None)
             bill = Bill.objects.create(
                 billcode=patient.cniNumber + now.__str__(),
                 operation=validated_data['operation'],
-                medicalOperator=validated_data['medicalOperator'],
+                operator=validated_data['operator'],
                 patient=patient,
-                amount=amount if amount else 0
             )
+            if not validated_data['bill_items']:
+                raise serializers.ValidationError({"detail": "Bill items required"})
             total = 0
-            for billItem in validated_data['billItems']:
-                billItem['bill'] = bill.pk
+            for item in validated_data['bill_items']:
+                item['bill'] = bill.id
                 bill_service = BillService()
-                bill_item = bill_service.create_bill_item(billItem)
+                bill_item = bill_service.create_bill_item(item, False)
                 total += bill_item.total
-            if amount != total:
-                bill.amount = total
-                bill.save()
+            bill.amount = total
+            bill.save()
             return bill
-        except Patient.DoesNotExist:
-            raise serializers.ValidationError("patient does not exist")
+        else:
+            bill = Bill.objects.create(
+                billcode=validated_data['operator'].cniNumber + now.__str__(),
+                operation=validated_data['operation'],
+                operator=validated_data['operator'],
+            )
+            if not validated_data['bill_items']:
+                raise serializers.ValidationError({"detail": "Bill items required"})
+            total = 0
+            for item in validated_data['bill_items']:
+                item['bill'] = bill.id
+                bill_service = BillService()
+                bill_item = bill_service.create_bill_item(item, True)
+                total += bill_item.total
+            bill.amount = total
+            bill.save()
+            return bill
 
 
 
