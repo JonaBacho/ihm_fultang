@@ -95,11 +95,7 @@ auth_header_param = openapi.Parameter(
 class AccountStateViewSet(ModelViewSet):
     serializer_class = AccountStateSerializer
     permission_classes = [IsAuthenticated]
-<<<<<<< HEAD
     pagination_class = CustomPagination
-=======
-    pagination_class =  CustomPagination
->>>>>>> f7b975736386d19bce9a3514a500346f145333f6
 
     def get_queryset(self):
         return AccountState.objects.all()

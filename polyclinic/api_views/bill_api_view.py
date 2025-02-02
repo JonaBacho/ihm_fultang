@@ -274,3 +274,27 @@ class BillViewSet(ModelViewSet):
 
         serializer = self.get_serializer(bills, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister toutes les factures avec la source",
+        operation_description="Retourne toutes les factures avec un attribut supplémentaire 'source' basé sur le rôle de l'opérateur médical.",
+        manual_parameters=[auth_header_param],
+        tags=["bill"]
+    )
+    @action(detail=False, methods=['get'])
+    def list_with_source(self, request):
+        bills = Bill.objects.all()
+        response_data = []
+
+        for bill in bills:
+            bill_data = self.get_serializer(bill).data
+            medical_operator = bill.medical_operator
+            if medical_operator:
+                role = medical_operator.role
+                bill_data['source'] == role
+            else:
+                bill_data['source'] = 'inconnu'
+            response_data.append(bill_data)
+
+        return Response(response_data, status=status.HTTP_200_OK)
