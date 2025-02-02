@@ -200,3 +200,77 @@ class BillViewSet(ModelViewSet):
         serializer = self.get_serializer(bill)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister les factures par opération financière",
+        operation_description="Retourne toutes les factures associées à une opération financière spécifique.",
+        manual_parameters=[
+            openapi.Parameter(
+                'operation_id', openapi.IN_QUERY, 
+                type=openapi.TYPE_INTEGER, 
+                description="ID de l'opération financière", 
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(detail=False, methods=['get'])
+    def get_by_operation(self, request):
+        operation_id = request.query_params.get('operation_id')
+
+        if not operation_id:
+            return Response(
+                {"error": "Le paramètre 'operation_id' est requis dans les paramètres de la requête."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        operation = FinancialOperation.objects.filter(id=operation_id).first()
+        if not operation:
+            return Response(
+                {"error": "Aucune opération financière trouvée avec cet ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        bills = Bill.objects.filter(operation=operation)
+
+        serializer = self.get_serializer(bills, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister les factures par opérateur médical",
+        operation_description="Retourne toutes les factures associées à un opérateur médical spécifique.",
+        manual_parameters=[
+            openapi.Parameter(
+                'medical_operator_id', openapi.IN_QUERY, 
+                type=openapi.TYPE_INTEGER, 
+                description="ID de l'opérateur médical", 
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(detail=False, methods=['get'])
+    def get_by_medical_operator(self, request):
+        medical_operator_id = request.query_params.get('medical_operator_id')
+
+        if not medical_operator_id:
+            return Response(
+                {"error": "Le paramètre 'medical_operator_id' est requis dans les paramètres de la requête."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        medical_operator = MedicalFolderPage.objects.filter(id=medical_operator_id).first()
+        if not medical_operator:
+            return Response(
+                {"error": "Aucun opérateur médical trouvé avec cet ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        bills = Bill.objects.filter(medical_operator=medical_operator)
+
+        serializer = self.get_serializer(bills, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

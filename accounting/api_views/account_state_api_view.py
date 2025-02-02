@@ -122,4 +122,29 @@ class AccountStateViewSet(ModelViewSet):
             serialiser = AccountingViewSerializer(queryset, many=True)
             return Response(serialiser.data)
         
-    
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister les états de compte par préfixe de numéro de compte",
+        operation_description="Retourne une liste des états de compte pour les comptes dont le numéro commence par les deux chiffres spécifiés.",
+        manual_parameters=[
+            auth_header_param,
+            openapi.Parameter(
+                'prefix',
+                openapi.IN_QUERY,
+                description="Les deux premiers chiffres du numéro de compte",
+                type=openapi.TYPE_STRING,
+                required=True
+            )
+        ],
+        tags=tags
+    )
+    @action(detail=False, methods=['get'])
+    def get_by_account_prefix(self, request):
+        prefix = request.query_params.get('prefix', None)
+        if prefix is None or len(prefix) != 2 or not prefix.isdigit():
+            return Response({"detail": "Le préfixe doit être composé de deux chiffres."}, status=400)
+
+        accounts = Account.objects.filter(number__startswith=prefix)
+        account_states = AccountState.objects.filter(account__in=accounts)
+        serializer = AccountStateSerializer(account_states, many=True)
+        return Response(serializer.data)
