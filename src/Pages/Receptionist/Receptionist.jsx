@@ -1,5 +1,5 @@
 import {ReceptionistNavBar} from "./ReceptionistNavBar.jsx";
-import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "react-icons/fa";
+import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaPlus, FaSearch, FaTrash,} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {DashBoard} from "../../GlobalComponents/DashBoard.jsx";
 import {receptionistNavLink} from "./receptionistNavLink.js";
@@ -216,8 +216,8 @@ export function Receptionist()
                     <Tooltip placement={"top"} title={"Add new patient"}>
                         <button
                             onClick={()=>setCanOpenAddNewPatientModal(true)}
-                            className="fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
-                            +
+                            className="fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-3xl font-bold text-white from-primary-start to-primary-end hover:text-4xl transition-all duration-300  flex items-center justify-center">
+                            <FaPlus/>
                         </button>
                     </Tooltip>
 
