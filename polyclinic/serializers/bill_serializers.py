@@ -38,6 +38,7 @@ class BillCreateSerializer(serializers.ModelSerializer):
             if amount != total:
                 bill.amount = total
                 bill.save()
+            return bill
         except Patient.DoesNotExist:
             raise serializers.ValidationError("patient does not exist")
 

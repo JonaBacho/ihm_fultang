@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import ValidationError
 
-from polyclinic.models import Consultation, MedicalFolderPage, PatientAccess
+from polyclinic.models import Consultation
 from authentication.models import MedicalStaff
 from polyclinic.permissions.consultation_permissions import ConsultationPermissions
 from polyclinic.serializers.consultation_serializers import ConsultationSerializer, ConsultationCreateSerializer
@@ -116,7 +116,7 @@ class ConsultationViewSet(ModelViewSet):
                 queryset = queryset.filter(idMedicalStaffGiver=doctor)
             return queryset
         except MedicalStaff.DoesNotExist:
-            return Response({'details': "l'id du medecin passé ne correspond à aucun docteur existant"}, status.HTTP_404_NOT_FOUND)
+            raise ValidationError({'details': "l'id du medecin passé ne correspond à aucun docteur existant"})
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
@@ -128,30 +128,9 @@ class ConsultationViewSet(ModelViewSet):
         user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        try:
-            # avant de sauvegarder la consultation on met à jour la page en question en BD avec les notes
-            medical_folder_page = MedicalFolderPage.objects.get(pk=serializer.validated_data['idMedicalFolderPage'])
-            medical_folder_page.nurseNote = serializer.validated_data['consultationReason']
-            medical_folder_page.save()
-            # on donne les acces au medecin
-            medical_staff = MedicalStaff.objects.get(id=serializer.validated_data['idMedicalStaffGiver'])
-            if user.id != serializer.validated_data['idMedicalStaffSender'].id:
-                raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
-            patient_access = PatientAccess.objects.filter(idPatient=serializer.validated_data['idPatient'])
-            patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
-            if patient_access:
-                patient_access.access = True
-                patient_access.save()
-                serializer = PatientAccessSerializer(patient_access)
-            else:
-                patient_access = PatientAccess.objects.create(idPatient=serializer.validated_data['idPatient'], idMedicalStaff=medical_staff,
-                                                              access=True)
-                serializer = PatientAccessSerializer(patient_access)
-            serializer.save()
-        except MedicalStaff.DoesNotExist:
+        if user.id != serializer.validated_data['idMedicalStaffSender'].id:
             raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
-        except MedicalFolderPage.DoesNotExist:
-            raise ValidationError({"details": "La page dont l'id est fourni ne se passe pas"})
+        serializer.save()
 
     def perform_update(self, serializer):
         user = self.request.user

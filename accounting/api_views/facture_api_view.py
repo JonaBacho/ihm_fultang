@@ -2,6 +2,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+
+from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
 from accounting.serializers import FactureSerializer
 from accounting.models import Facture
 from rest_framework.viewsets import ModelViewSet
@@ -89,7 +91,7 @@ auth_header_param = openapi.Parameter(
 )
 class FactureViewSet(ModelViewSet):
     serializer_class = FactureSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AccountingStaffPermission]
 
     def get_queryset(self):
         return Facture.objects.select_related('financialOperation').all()

@@ -158,8 +158,8 @@ class Consultation(models.Model):
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalStaffSender = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send", default=1)  # celui qui envoi vers celui qui va faire la consultation
-    idMedicalStaffGiver = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give", default=1)   # celui qui va effectuer la consultation
+    idMedicalStaffSender = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_send")  # celui qui envoi vers celui qui va faire la consultation
+    idMedicalStaffGiver = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False, related_name="consultation_give")   # celui qui va effectuer la consultation
     idConsultationType = models.ForeignKey("ConsultationType", on_delete=models.CASCADE, null=True)
 
     def __str__(self):

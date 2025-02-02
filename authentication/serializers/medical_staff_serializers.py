@@ -17,7 +17,7 @@ class MedicalStaffSerializer(serializers.ModelSerializer):
 
 class MedicalStaffCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Ne pas inclure le mot de passe dans la réponse
-    userType = serializers.ChoiceField(write_only=True, required=True, choices=["Medical", "Accountant"])
+    userType = serializers.ChoiceField(required=True, choices=["Medical", "Accountant"])
 
     class Meta:
         model = MedicalStaff

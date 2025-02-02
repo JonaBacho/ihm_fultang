@@ -1,3 +1,4 @@
+from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
 from accounting.serializers import BudgetExerciseSerializer
 from rest_framework.viewsets import ModelViewSet
 from accounting.models import BudgetExercise, AccountState
@@ -166,8 +167,8 @@ def calculate_circulant_balance(prefixes, type):
 )
 class BudgetExerciseViewSet(ModelViewSet):
     serializer_class = BudgetExerciseSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = [CustomPagination]
+    permission_classes = [IsAuthenticated, AccountingStaffPermission]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return BudgetExercise.objects.all()
@@ -189,7 +190,7 @@ class BudgetExerciseViewSet(ModelViewSet):
         manual_parameters=[auth_header_param],
         tags=tags
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[AccountingStaffPermission])
     def get_balance_sheet(self, request):
         immobilized_active = calculate_balance(immobilized_actives_prefixes)
         circulant_active = calculate_circulant_balance(circulant_actives_prefixes, "active")
@@ -247,7 +248,7 @@ class BudgetExerciseViewSet(ModelViewSet):
         manual_parameters=[auth_header_param],
         tags=tags
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[AccountingStaffPermission])
     def get_income_statement(self, request):
 
         charges = calculate_balance(charges_prefixes)
