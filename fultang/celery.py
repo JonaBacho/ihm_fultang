@@ -13,10 +13,10 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'new_budget_exercise': {
         'task': 'accounting.tasks.new_budget_exercise',
-        'schedule': crontab(minute='0', hour='0', day_of_month='1', month_of_year='1'),
+        'schedule': crontab(minute='*/20'),
     },
     'update_consultations_status': {
         'task': 'polyclinic.tasks.update_consultations_status',
-        'schedule': crontab(hour='4')
+        'schedule': crontab(hour='*/30')
     }
 }
