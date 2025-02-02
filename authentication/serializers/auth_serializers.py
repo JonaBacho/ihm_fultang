@@ -24,6 +24,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
             'user': {
+                'id': authenticated_user.id,
                 'username': authenticated_user.username,
                 'email': authenticated_user.email,
                 'role': authenticated_user.role,
