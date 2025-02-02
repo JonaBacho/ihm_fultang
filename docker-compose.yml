@@ -37,7 +37,7 @@ services:
       image: "${FULTANG_IMAGE}"
       restart: always
       user: django-user
-      command: ["sh", "-c", "chmod 664 db.sqlite3 && chown $(whoami):$(whoami) db.sqlite3 celery -A fultang worker --loglevel=info" ]
+      command: ["sh", "-c", "celery -A fultang worker --loglevel=info" ]
       volumes:
         - ./volumes/db.sqlite3:/app/db.sqlite3:rw
       depends_on:
@@ -48,7 +48,7 @@ services:
       image: "${FULTANG_IMAGE}"
       restart: always
       user: django-user
-      command: ["sh", "-c", "chmod 664 db.sqlite3 && chown $(whoami):$(whoami) db.sqlite3 celery -A fultang beat -loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler" ]
+      command: ["sh", "-c", "celery -A fultang beat -loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler" ]
       volumes:
         - ./volumes/db.sqlite3:/app/db.sqlite3:rw
       depends_on:
