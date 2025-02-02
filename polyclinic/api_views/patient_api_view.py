@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 
 tags = ["patient"]
 auth_header_param = openapi.Parameter(
@@ -231,7 +231,7 @@ class PatientViewSet(ModelViewSet):
                 serializer = PatientAccessSerializer(patient_access)
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             else:
-                patient_access = PatientAccess.objects.create(idPatient=patient, idMedicalStaff=medical_staff, access=True)
+                patient_access = PatientAccess.objects.create(idPatient=patient, idMedicalStaff=medical_staff, access=True, lostAt=now() + timedelta(weeks=2))
                 serializer = PatientAccessSerializer(patient_access)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         except MedicalStaff.DoesNotExist:

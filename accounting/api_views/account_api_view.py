@@ -2,6 +2,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+
+from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
 from accounting.serializers import AccountSerializer
 from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
@@ -88,7 +90,7 @@ auth_header_param = openapi.Parameter(
 )
 class AccountViewSet(ModelViewSet):
     serializer_class = AccountSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AccountingStaffPermission]
 
     def get_queryset(self):
         return Account.objects.all()

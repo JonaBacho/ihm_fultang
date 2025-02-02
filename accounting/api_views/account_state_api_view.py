@@ -1,4 +1,5 @@
 from accounting.models import AccountState, BudgetExercise, Account
+from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
 from accounting.serializers import AccountStateSerializer, AccountingViewSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -94,7 +95,7 @@ auth_header_param = openapi.Parameter(
 )
 class AccountStateViewSet(ModelViewSet):
     serializer_class = AccountStateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AccountingStaffPermission]
     pagination_class =  CustomPagination
 
     def get_queryset(self):
@@ -106,7 +107,7 @@ class AccountStateViewSet(ModelViewSet):
         operation_description="Retourne une liste des états de compte pour un exercice budgétaire spécifié, avec des champs spécifiques de l'AccountState et de l'Account.",
         manual_parameters=[auth_header_param]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[AccountingStaffPermission])
     def get_by_budget_exercise(self, request):
         # Find the active exercise
         today = date.today()
@@ -138,7 +139,7 @@ class AccountStateViewSet(ModelViewSet):
         ],
         tags=tags
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[AccountingStaffPermission])
     def get_by_account_prefix(self, request):
         prefix = request.query_params.get('prefix', None)
         if prefix is None or len(prefix) != 2 or not prefix.isdigit():
