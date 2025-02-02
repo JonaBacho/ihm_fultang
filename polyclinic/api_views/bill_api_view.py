@@ -11,6 +11,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
+from accounting.models import AccountState, BudgetExercise
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+
 
 tags = ["bill"]
 auth_header_param = openapi.Parameter(
@@ -112,9 +116,49 @@ class BillViewSet(ModelViewSet):
             return BillSerializer
 
     def perform_create(self, serializer):
-        if 'id' in serializer.validated_data:
-            serializer.validated_data.pop('id')
-        serializer.save()
+        bill = serializer.save()
+        
+        operation = bill.operation
+        if not operation:
+            raise ValidationError(
+                {"error": "Aucune opération financière associée à cette facture."}
+            )
+            
+        account = operation.account
+        if not account:
+            raise ValidationError(
+                {"error": "Aucun compte associé à cette opération financière."}
+            )
+
+        current_date = timezone.now().date()
+        budget_exercises = BudgetExercise.objects.filter(
+            start_date__lte=current_date,
+            end_date__gte=current_date
+        )
+
+        if str(account.number).startswith(('5', '4')):
+            status_param = self.request.query_params.get('status')
+            if status_param:
+                account_state = AccountState.objects.filter(
+                    account=account,
+                    budget_exercise__in=budget_exercises,
+                    status=status_param
+                ).first()
+            else:
+                account_state = AccountState.objects.filter(
+                    account=account,
+                    budget_exercise__in=budget_exercises
+                ).first()
+
+            if not account_state:
+                raise ValidationError(
+                    {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
+                )
+
+            account_state.soldePrevu += bill.amount
+            account_state.save()
+
+        return bill
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
@@ -139,10 +183,8 @@ class BillViewSet(ModelViewSet):
     )
     @action(detail=False, methods=['get'])
     def get_for_account(self, request):
-        # Récupérer account_id depuis les paramètres de requête
         account_id = request.query_params.get('account_id')
 
-        # Vérifier si account_id est fourni
         if not account_id:
             return Response(
                 {"error": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
@@ -166,7 +208,7 @@ class BillViewSet(ModelViewSet):
     @swagger_auto_schema(
         method='patch',
         operation_summary="Approuver une facture",
-        operation_description="Cette route permet d'approuver une facture en mettant à jour son champ 'isApproved' à True.",
+        operation_description="Cette route permet d'approuver une facture en mettant à jour son champ 'isApproved' à True et en mettant à jour le solde réel du compte associé.",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -179,7 +221,6 @@ class BillViewSet(ModelViewSet):
     )
     @action(detail=True, methods=['patch'])
     def account(self, request, pk=None):
-    
         try:
             bill = Bill.objects.get(id=pk)
         except Bill.DoesNotExist:
@@ -194,11 +235,45 @@ class BillViewSet(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        operation = bill.operation
+        if not operation:
+            return Response(
+                {"error": "Aucune opération financière associée à cette facture."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        account = operation.account
+        if not account:
+            return Response(
+                {"error": "Aucun compte associé à cette opération financière."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        current_date = timezone.now().date()
+        budget_exercises = BudgetExercise.objects.filter(start_date__lte=current_date, end_date__gte=current_date)
+        if str(account.number).startswith(('5', '4')):
+            status_param = request.query_params.get('status')
+            if status_param:
+                account_state = AccountState.objects.filter(
+                    account=account, 
+                    budget_exercise__in=budget_exercises, 
+                    status=status_param
+                ).first()
+        else:
+            account_state = AccountState.objects.filter(account=account, budget_exercise__in=budget_exercises).first()
+
+        if not account_state:
+            return Response(
+                {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        account_state.soldeReel += bill.amount
+        account_state.save()
+
         bill.isAccounted = True
         bill.save()
-
         serializer = self.get_serializer(bill)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(
