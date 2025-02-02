@@ -11,7 +11,7 @@ import {
     ClipboardList, Heart, AlertTriangle, MapPin, Phone, ArrowLeft, Printer, Clock,
 } from "lucide-react"
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useCalculateAge} from "../../Utils/compute.js";

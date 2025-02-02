@@ -85,28 +85,28 @@ export function Appointments() {
             <div className="ml-5 mr-5 ">
                 <table className="w-full border-separate border-spacing-y-2">
                     <thead>
-                    <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
-                        <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 rounded-l-2xl ">No</th>
-                        <th className="text-center text-white p-4 text-xl font-bold border-gray-200">Doctor</th>
-                        <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Patient
+                    <tr className=" ">
+                        <th className="text-center text-white p-4 text-xl font-bold bg-primary-end   rounded-l-2xl ">No</th>
+                        <th className="text-center text-white p-4 text-xl font-bold bg-primary-end ">Doctor</th>
+                        <th className="text-center text-white p-4 text-xl font-bold  bg-primary-end ">Patient
                         </th>
-                        <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Reason</th>
-                        <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Scheduled Time
+                        <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  ">Reason</th>
+                        <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  ">Scheduled Time
                         </th>
-                        <th className="text-center text-white p-4 text-xl font-bold  flex-col rounded-r-2xl">
+                        <th className="text-center text-white p-4 text-xl font-bold bg-primary-end flex-col rounded-r-2xl">
                             <p>Requirements</p>
                         </th>
                     </tr>
                     </thead>
                     <tbody>
                     {ScheduledAppointments.map((patient, index) => (
-                        <tr key={patient.id || index} className="bg-gray-100">
-                            <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                            <td className="p-4 text-md text-center font-bold">{patient.doctor}</td>
-                            <td className="p-4 text-md text-center">{patient.patient}</td>
-                            <td className="p-4 text-md text-center">{patient.reason}</td>
-                            <td className="p-4 text-center text-md">{patient.atDate}</td>
-                            <td className="p-4 relative rounded-r-lg">
+                        <tr key={patient.id || index} className="">
+                            <td className="p-4 text-md text-blue-900 rounded-l-lg bg-gray-100 text-center">{index + 1}</td>
+                            <td className="p-4 text-md text-center bg-gray-100 font-bold">{patient.doctor}</td>
+                            <td className="p-4 text-md  bg-gray-100 text-center">{patient.patient}</td>
+                            <td className="p-4 text-md bg-gray-100 text-center">{patient.reason}</td>
+                            <td className="p-4 text-center bg-gray-100 text-md">{patient.atDate}</td>
+                            <td className="p-4 relative bg-gray-100 rounded-r-lg">
                                 <div className="w-full items-center justify-center flex gap-6">
                                     <p>{patient.requirements}</p>
                                 </div>

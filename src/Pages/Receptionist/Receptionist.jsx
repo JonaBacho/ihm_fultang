@@ -31,23 +31,22 @@ export function Receptionist()
     const [numberOfPatients, setNumberOfPatients] = useState(0);
     const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
     const [previousUrlForRenderPatientList, setPreviousUrlForRenderPatientList] = useState("");
-    const [actualPageNumber, setActualPageNumber] = useState(1);
+    const [actualPageNumber, setActualPageNumber] = useState(0);
+    const [numberOfPages, setNumberOfPages] = useState(0);
 
 
-    //const {fetchPatients, patients, numberOfPatients, fetchNextOrPreviousPatientList, nexUrlForRenderPatientList, previousUrlForRenderPatientList} = useAuthentication();
+
 
     const {isAuthenticated} = useAuthentication();
 
 
-    function calculateNumberOfSlideToRender() {
-        return numberOfPatients % 5 === 0 ? numberOfPatients / 5 : Math.floor(numberOfPatients / 5) + 1;
-    }
+
 
 
     function updateActualPageNumber(action) {
         if (action === "next")
         {
-            if(actualPageNumber < calculateNumberOfSlideToRender())
+            if(actualPageNumber < numberOfPages)
             {
                 setActualPageNumber(actualPageNumber + 1);
             }
@@ -73,11 +72,12 @@ export function Receptionist()
                     const response = await axiosInstance.get("/patient/");
                     if (response.status === 200)
                     {
-                        //console.log(response)
+                        console.log(response)
                         setPatients(response.data.results);
-                        setNumberOfPatients(response.data.count);
                         setNexUrlForRenderPatientList(response.data.next);
                         setPreviousUrlForRenderPatientList(response.data.previous);
+                        setActualPageNumber(response.data.current_page);
+                        setNumberOfPages(response.data.total_pages);
                     }
                 }
                 catch (error)
@@ -102,9 +102,10 @@ export function Receptionist()
                 {
                     //console.log(response)
                     setPatients(response.data.results);
-                    setNumberOfPatients(response.data.count);
                     setNexUrlForRenderPatientList(response.data.next);
                     setPreviousUrlForRenderPatientList(response.data.previous);
+                    setActualPageNumber(response.data.current_page);
+                    setNumberOfPages(response.data.total_pages);
                 }
             } catch (error) {
                 console.log(error);
@@ -114,33 +115,7 @@ export function Receptionist()
 
 
 
-    // const [canOpenConfirmActionModal, setCanOpenConfirmActionModal] = useState(false);
-    //  const [patientToDelete, setPatientToDelete] = useState({});
 
-
-/*
-    async function deletePatient(patientId){
-        setIsLoading(true);
-        try {
-            const response = await axiosInstance.delete(`/patient/${patientId}/`);
-            if (response.status === 204) {
-                setIsLoading(false);
-                setSuccessMessage("Patient deleted successfully !");
-                setErrorMessage("");
-                setCanOpenErrorMessageModal(false);
-                setCanOPenSuccessModal(true);
-            }
-        }
-        catch (error) {
-            setIsLoading(false);
-            setSuccessMessage("");
-            setErrorMessage(error.response.data.detail)
-            setCanOPenSuccessModal(false);
-            setCanOpenErrorMessageModal(true);
-            console.log(error);
-        }
-    }
- */
 
 
     return (
@@ -171,27 +146,27 @@ export function Receptionist()
                 <div className="ml-5 mr-5 ">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
-                        <tr className="bg-gradient-to-l from-primary-start to-primary-end ">
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 rounded-l-2xl ">No</th>
-                            <th className="text-center text-white p-4 text-xl font-bold border-gray-200">First Name</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Last Name
+                        <tr className="">
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  border-gray-200 rounded-l-2xl ">No</th>
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  border-gray-200">First Name</th>
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  border-gray-200 ">Last Name
                             </th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Gender</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  border-gray-200 ">Address</th>
-                            <th className="text-center text-white p-4 text-xl font-bold  flex-col rounded-r-2xl">
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  border-gray-200 ">Gender</th>
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  border-gray-200 ">Address</th>
+                            <th className="text-center text-white p-4 text-xl font-bold bg-primary-end  flex-col rounded-r-2xl">
                                 <p>Operations</p>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
                         {patients.map((patient, index) => (
-                            <tr key={patient.id || index} className="bg-gray-100">
-                                <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">{index + 1}</td>
-                                <td className="p-4 text-md text-center font-bold">{patient.firstName}</td>
-                                <td className="p-4 text-md text-center">{patient.lastName}</td>
-                                <td className="p-4 text-md text-center">{patient.gender}</td>
-                                <td className="p-4 text-center text-md">{patient.address}</td>
-                                <td className="p-4 relative rounded-r-lg">
+                            <tr key={patient.id || index} className="">
+                                <td className="p-4 text-md text-blue-900 rounded-l-lg bg-gray-100 text-center">{index + 1}</td>
+                                <td className="p-4 text-md text-center bg-gray-100 font-bold">{patient.firstName}</td>
+                                <td className="p-4 text-md text-center bg-gray-100">{patient.lastName}</td>
+                                <td className="p-4 text-md text-center bg-gray-100">{patient.gender}</td>
+                                <td className="p-4 text-center text-md bg-gray-100 ">{patient.address}</td>
+                                <td className="p-4 relative bg-gray-100 rounded-r-lg">
                                     <div className="w-full items-center justify-center flex gap-6">
                                         <Tooltip placement={"left"} title={"view details"}>
                                             <button
@@ -207,15 +182,6 @@ export function Receptionist()
                                                 <FaEdit/>
                                             </button>
                                         </Tooltip>
-                                        {/*
-                                        <Tooltip placement={"right"} title={"delete"}>
-                                            <button
-                                                onClick={()=>{setPatientToDelete(patient),setCanOpenConfirmActionModal(true)}}
-                                                className="flex items-center justify-center w-9 h-9 text-red-400 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300">
-                                                <FaTrash/>
-                                            </button>
-                                        </Tooltip>
-                                        */}
                                     </div>
                                 </td>
                             </tr>
@@ -234,7 +200,7 @@ export function Receptionist()
                                     <FaArrowLeft/>
                                 </button>
                             </Tooltip>
-                            <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlideToRender()}</p>
+                            <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{numberOfPages}</p>
                             <Tooltip placement={"right"} title={"next slide"}>
                                 <button
                                     onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
