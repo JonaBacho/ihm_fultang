@@ -297,8 +297,8 @@ class Bill(models.Model):
     amount = models.FloatField(default=0.0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
     isAccounted = models.BooleanField(default=False)
-    medicalOperator = models.ForeignKey("authentication.MedicalStaff", on_delete=CASCADE, null=False)
-    patient = models.ForeignKey('polyclinic.Patient', on_delete=models.CASCADE, null=False)
+    operator = models.ForeignKey("authentication.MedicalStaff", on_delete=CASCADE, null=False)
+    patient = models.ForeignKey('polyclinic.Patient', on_delete=models.CASCADE, null=True)
 
 class BillItem(models.Model):
     bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)

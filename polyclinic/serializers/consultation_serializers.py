@@ -17,4 +17,4 @@ class ConsultationSerializer(serializers.ModelSerializer):
 class ConsultationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consultation
-        exclude = ['id', 'consultationPrice', 'idConsultationType', 'idMedicalStaffSender']
+        exclude = ['consultationPrice', 'idConsultationType']

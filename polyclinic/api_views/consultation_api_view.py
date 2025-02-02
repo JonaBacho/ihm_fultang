@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import ValidationError
 
 from polyclinic.models import Consultation, MedicalFolderPage, PatientAccess
 from authentication.models import MedicalStaff
@@ -134,6 +135,8 @@ class ConsultationViewSet(ModelViewSet):
             medical_folder_page.save()
             # on donne les acces au medecin
             medical_staff = MedicalStaff.objects.get(id=serializer.validated_data['idMedicalStaffGiver'])
+            if user.id != serializer.validated_data['idMedicalStaffSender'].id:
+                raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
             patient_access = PatientAccess.objects.filter(idPatient=serializer.validated_data['idPatient'])
             patient_access = patient_access.filter(idMedicalStaff=medical_staff).first()
             if patient_access:
@@ -144,9 +147,11 @@ class ConsultationViewSet(ModelViewSet):
                 patient_access = PatientAccess.objects.create(idPatient=serializer.validated_data['idPatient'], idMedicalStaff=medical_staff,
                                                               access=True)
                 serializer = PatientAccessSerializer(patient_access)
-            serializer.save(idMedicalStaffSender=user)
-        except Exception as e:
-            return Response({'detail': str(e)}, status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+        except MedicalStaff.DoesNotExist:
+            raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
+        except MedicalFolderPage.DoesNotExist:
+            raise ValidationError({"details": "La page dont l'id est fourni ne se passe pas"})
 
     def perform_update(self, serializer):
         user = self.request.user

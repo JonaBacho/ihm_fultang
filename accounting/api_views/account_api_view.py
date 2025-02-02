@@ -6,6 +6,7 @@ from accounting.serializers import AccountSerializer
 from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
 from django.utils.timezone import now
+from rest_framework.exceptions import ValidationError
 
 tags = ["account"]
 auth_header_param = openapi.Parameter(
@@ -103,7 +104,7 @@ class AccountViewSet(ModelViewSet):
         ).first()
 
         if not budget_exercise:
-            raise ValueError("Aucun Exercice Budgétaire actif trouvé pour la date actuelle." + str(now()))
+            raise ValidationError({"details": f"Aucun Exercice Budgétaire actif trouvé pour la date actuelle. {str(now())}"})
         
         AccountState.objects.create(
             account=account,
