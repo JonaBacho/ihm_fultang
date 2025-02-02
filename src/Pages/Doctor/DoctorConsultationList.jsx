@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Search, Calendar} from "lucide-react"
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import ConsultationCard from "./DoctorComponents/ConsultationCard.jsx";
 

@@ -3,7 +3,7 @@ import { Search, Calendar, Clock, MapPin, Phone, ChevronLeft, ChevronRight, Chec
 import AppointmentCard from "./DoctorComponents/AppointmentCard.jsx";
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js";
+import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 
 // Données simulées
@@ -85,12 +85,13 @@ export  function AppointmentList() {
             <DoctorNavBar/>
             <div className="mx-auto p-6 h-fit">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">{`Appointments of Dr. ${userData?.first_name + " " + userData?.last_name}`}</h1>
-                {/* Filtres et recherche */}
+
+
                 <div className="mb-8 space-y-4">
                     <div className="flex flex-wrap gap-4">
                         <button
                             onClick={() => setFilter("upcoming")}
-                            className={`px-4 py-2 rounded-md hover:bg-primary-start duration-300 transition-all ${filter === "upcoming" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"} transition-colors`}
+                            className={`px-4 py-2 rounded-md hover:bg-primary-start text-white duration-300 transition-all ${filter === "upcoming" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"} transition-colors`}
                         >
                             Upcoming appointments
                         </button>

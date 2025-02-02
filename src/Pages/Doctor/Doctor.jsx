@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx"
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx"
-import {doctorNavLink} from "./DoctorComponents/doctorNavLink.js"
+import {doctorNavLink} from "./lib/doctorNavLink.js"
 import QuickActionButton from "../../GlobalComponents/QuickActionButton.jsx";
 import StatCard from "../../GlobalComponents/StatCard.jsx";
 

@@ -53,6 +53,8 @@ export function AppRoute()
     const DoctorConsultationDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorConsultationDetail.jsx")).DoctorConsultationDetails}));
     const DoctorConsultationHistoryDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/ConsultationHistoryDetails.jsx")).ConsultationHistoryDetails}));
     const DoctorExamList = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorExamsList.jsx")).DoctorExamsList}));
+    const DoctorPatientMedicalFolder = React.lazy(async () => ({default: (await import("../Pages/Doctor/PatientMedicalFolder.jsx")).PatientMedicalFolder}));
+
 
     const FinancialContributions = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialContribution.jsx")).FinancialContributions,}));
     const FinancialReportsAccountant = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialReports.jsx")).FinancialReports,}));
@@ -106,6 +108,8 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.doctorConsultationList} element={<DoctorConsultationList />} />
                 <Route path={AppRoutesPaths.doctorConsultationDetailsPage} element={<DoctorConsultationDetails />} />
                 <Route path={AppRoutesPaths.doctorConsultationHistoryDetails} element={<DoctorConsultationHistoryDetails />} />
+                <Route path={AppRoutesPaths.doctorPatientMedicalFolderPage} element={<DoctorPatientMedicalFolder />} />
+
 
                 <Route path={AppRoutesPaths.financialContributions} element={<FinancialContributions />}/>
                 <Route path={AppRoutesPaths.financialReportsAccountant} element={<FinancialReportsAccountant />}/>
