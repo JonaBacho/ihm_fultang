@@ -34,4 +34,4 @@ EXPOSE 8009
 ENV PYTHONUNBUFFERED=1
 
 # Lancer les migrations et démarrer le serveur Django
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && sudo chmod 664 db.sqlite3 && sudo chown $(whoami):$(whoami) db.sqlite3 && python manage.py runserver 0.0.0.0:8009"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && chmod 664 db.sqlite3 && chown $(whoami):$(whoami) db.sqlite3 && python manage.py runserver 0.0.0.0:8009"]
