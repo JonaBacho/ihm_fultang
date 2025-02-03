@@ -116,6 +116,8 @@ class BillViewSet(ModelViewSet):
             return BillSerializer
 
     def perform_create(self, serializer):
+        if 'id' in serializer.validated_data:
+            serializer.validated_data.pop('id')
         bill = serializer.save()
         
         operation = bill.operation
@@ -157,8 +159,6 @@ class BillViewSet(ModelViewSet):
 
             account_state.soldePrevu += bill.amount
             account_state.save()
-
-        return bill
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
