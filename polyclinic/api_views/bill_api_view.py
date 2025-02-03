@@ -365,7 +365,7 @@ class BillViewSet(ModelViewSet):
             medical_operator = bill.operator
             if medical_operator:
                 role = medical_operator.role
-                bill_data['source'] == role
+                bill_data['source'] = role
             else:
                 bill_data['source'] = 'inconnu'
             response_data.append(bill_data)
