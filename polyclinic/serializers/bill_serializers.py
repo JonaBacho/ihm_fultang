@@ -19,9 +19,9 @@ class BillCreateSerializer(serializers.ModelSerializer):
         exclude = ['billCode', 'date', 'isAccounted']
 
     def create(self, validated_data):
-        patient = validated_data['patient']
-        if patient:  # c'est la paiement de la facture d'un service pour un patient
+        if 'patient' in validated_data and validated_data['patient']:  # c'est la paiement de la facture d'un service pour un patient
             # amount = validated_data.pop('amount', None)
+            patient = validated_data['patient']
             bill = Bill.objects.create(
                 billCode=patient.cniNumber + now.__str__(),
                 operation=validated_data['operation'],
