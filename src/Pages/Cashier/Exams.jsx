@@ -1,48 +1,10 @@
-import { useState } from "react"
-import { Search, Calendar, User, DollarSign, Filter, CheckCircle, Activity } from "lucide-react"
+import { useEffect, useState } from "react"
+import {AlertCircle, Search, Calendar, User, DollarSign, Filter, CheckCircle, Activity } from "lucide-react"
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 const mockExams = [
-  {
-    id: 1,
-    patientName: "Marie Dubois",
-    examType: "IRM Cérébral",
-    date: "2023-06-20",
-    amount: 75000,
-    status: "pending",
-  },
-  {
-    id: 2,
-    patientName: "Paul Martin",
-    examType: "Scanner Thoracique",
-    date: "2023-06-21",
-    amount: 50000,
-    status: "paid",
-  },
-  {
-    id: 3,
-    patientName: "Lucie Petit",
-    examType: "Échographie Abdominale",
-    date: "2023-06-22",
-    amount: 30000,
-    status: "pending",
-  },
-  {
-    id: 4,
-    patientName: "Thomas Leroy",
-    examType: "Radiographie Dentaire",
-    date: "2023-06-23",
-    amount: 25000,
-    status: "pending",
-  },
-  {
-    id: 5,
-    patientName: "Sophie Moreau",
-    examType: "Mammographie",
-    date: "2023-06-24",
-    amount: 40000,
-    status: "paid",
-  },
+  
 ]
 
 export default function Exams() {
@@ -61,6 +23,28 @@ export default function Exams() {
         (filterStatus === "all" || exam.status === filterStatus)
     )
   })
+
+   useEffect(() => {
+     async function fetchExams()
+     {
+        
+         try
+         {
+             const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/medical/exam-request/");
+           
+             if (response.status === 200)
+             {
+                 setExams(response.data.results);
+             }
+         }
+         catch (error)
+         {
+            
+             console.log(error);
+         }
+     }
+     fetchExams();
+ }, []);
 
   return (
       <div className="mx-auto p-6  rounded-lg">
@@ -92,80 +76,90 @@ export default function Exams() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full bg-white">
-            <thead className="bg-primary-end">
-            <tr>
-              <th className="px-6 py-5 text-center text-md font-semibold text-white uppercase rounded-l-lg ">
-                Patient
-              </th>
+        {
+              exams.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10">
+                    <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+                    <p className="text-lg font-semibold text-gray-600">
+                      No exams available.
+                    </p>
+                </div>
+              ) : ( 
+                <table className="w-full bg-white">
+                  <thead className="bg-primary-end">
+                  <tr>
+                    <th className="px-6 py-5 text-center text-md font-semibold text-white uppercase rounded-l-lg ">
+                      Patient
+                    </th>
 
-              <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">
-                Exam Type
-              </th>
+                    <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">
+                      Exam Type
+                    </th>
 
-              <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Date</th>
+                    <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Date</th>
 
-              <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">
-                Price
-              </th>
+                    <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">
+                      Price
+                    </th>
 
-              <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Status</th>
+                    <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Status</th>
 
-              <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase rounded-r-lg">Action</th>
+                    <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase rounded-r-lg">Action</th>
 
-            </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-            {filteredExams.map((exam) => (
-                <tr key={exam.id}>
-                  <td className="px-6 py-5 ">
-                    <div className="flex items-center justify-center">
-                      <User className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md font-semibold text-gray-900">{exam.patientName}</div>
-                    </div>
-                  </td>
+                  </tr>
+                  </thead>
+                    <tbody className="divide-y divide-gray-200">
+                    {filteredExams.map((exam) => (
+                        <tr key={exam.id}>
+                          <td className="px-6 py-5 ">
+                            <div className="flex items-center justify-center">
+                              <User className="h-5 w-5 text-gray-400 mr-2" />
+                              <div className="text-md font-semibold text-gray-900">{exam.patientName}</div>
+                            </div>
+                          </td>
 
-                  <td className="px-6 py-5 ">
-                    <div className="flex items-center justify-center">
-                      <Activity className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md text-gray-900">{exam.examType}</div>
-                    </div>
-                  </td>
+                          <td className="px-6 py-5 ">
+                            <div className="flex items-center justify-center">
+                              <Activity className="h-5 w-5 text-gray-400 mr-2" />
+                              <div className="text-md text-gray-900">{exam.examType}</div>
+                            </div>
+                          </td>
 
-                  <td className="px-6 py-5 ">
-                    <div className="flex items-center justify-center">
-                      <Calendar className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-md text-gray-900">{new Date(exam.date).toLocaleDateString()}</div>
-                    </div>
-                  </td>
+                          <td className="px-6 py-5 ">
+                            <div className="flex items-center justify-center">
+                              <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                              <div className="text-md text-gray-900">{new Date(exam.date).toLocaleDateString()}</div>
+                            </div>
+                          </td>
 
-                  <td className="px-6 py-5 ">
-                    <div className="flex items-center justify-center">
-                      <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
-                      <div className="text-sm text-gray-900">{exam.amount} FCFA</div>
-                    </div>
-                  </td>
+                          <td className="px-6 py-5 ">
+                            <div className="flex items-center justify-center">
+                              <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
+                              <div className="text-sm text-gray-900">{exam.amount} FCFA</div>
+                            </div>
+                          </td>
 
-                  <td className="px-6 py-5  flex justify-center items-center">
-                    <span className={`px-2 inline-flex text-center text-xs leading-5 font-semibold rounded-full ${exam.status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
-                      {exam.status === "paid" ? "Paid" : "On Load"}
-                    </span>
-                  </td>
+                          <td className="px-6 py-5  flex justify-center items-center">
+                            <span className={`px-2 inline-flex text-center text-xs leading-5 font-semibold rounded-full ${exam.status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
+                              {exam.status === "paid" ? "Paid" : "On Load"}
+                            </span>
+                          </td>
 
-                  <td className="text-md font-medium text-center py-5">
-                    {exam.status === "pending" && (
-                        <button onClick={() => handlePayment(exam.id)}
-                            className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto">
-                          <CheckCircle className="h-5 w-5 mr-1" />
-                          Pay
-                        </button>
-                    )}
-                  </td>
+                          <td className="text-md font-medium text-center py-5">
+                            {exam.status === "pending" && (
+                                <button onClick={() => handlePayment(exam.id)}
+                                    className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto">
+                                  <CheckCircle className="h-5 w-5 mr-1" />
+                                  Pay
+                                </button>
+                            )}
+                          </td>
 
-                </tr>
-            ))}
-            </tbody>
+                        </tr>
+                    ))}
+                    </tbody>
           </table>
+              )}
         </div>
       </div>
   )
