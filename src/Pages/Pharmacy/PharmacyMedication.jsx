@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PharmacyDashboard } from './PharmacyDashboard';
 import { PharmacyNavbar } from './PharmacyNavBar';
 
-const PharmacyMedication = () => {
+export function PharmacyMedication () {
   const [formData, setFormData] = useState({
     medicineName: '',
     quantity: '',
@@ -201,4 +201,3 @@ const PharmacyMedication = () => {
   );
 };
 
-export default PharmacyMedication;
