@@ -94,7 +94,6 @@ auth_header_param = openapi.Parameter(
 class MedicamentViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated]
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         queryset = Medicament.objects.all()
