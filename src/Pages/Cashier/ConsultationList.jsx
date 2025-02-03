@@ -70,7 +70,7 @@ export default function ConsultationList({consultationList}) {
                 <div className="flex flex-col items-center justify-center py-10">
                     <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
                     <p className="text-lg font-semibold text-gray-600">
-                      Pas de consultations disponibles.
+                      No consultations available
                     </p>
                 </div>
               ) : (
