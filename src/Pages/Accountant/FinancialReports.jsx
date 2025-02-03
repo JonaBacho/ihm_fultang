@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaFilePdf, FaFileExcel, FaExclamationCircle } from "react-icons/fa";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import BalanceSheet from "./Components/BalanceSheet";
 import IncomeStatement from "./Components/IncomeStatement";
 import FinancialCharts from "./Components/FinancialCharts";
@@ -9,7 +10,6 @@ import { AccountantNavBar } from "./Components/AccountantNavBar";
 
 export function FinancialReports() {
   const [selectedYear, setSelectedYear] = useState("2024");
-  const [activeTab, setActiveTab] = useState("balance");
   const [error, setError] = useState(null);
 
   const handleExport = (format) => {
@@ -79,47 +79,43 @@ export function FinancialReports() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Aperçu Financier {selectedYear}
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Vue d'ensemble de la situation financière de l'hôpital
-          </p>
-          <FinancialCharts year={selectedYear} />
-        </div>
-
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="flex border-b">
-            <button
-              className={`flex-1 px-6 py-3 text-center font-medium ${
-                activeTab === "balance"
-                  ? "text-primary-start border-b-2 border-primary-start"
-                  : "text-gray-600 hover:text-primary-start"
-              }`}
-              onClick={() => setActiveTab("balance")}
-            >
+        <Tabs>
+          <TabList className="flex border-b">
+            <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
+              Aperçu
+            </Tab>
+            <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
               Bilan
-            </button>
-            <button
-              className={`flex-1 px-6 py-3 text-center font-medium ${
-                activeTab === "income"
-                  ? "text-primary-start border-b-2 border-primary-start"
-                  : "text-gray-600 hover:text-primary-start"
-              }`}
-              onClick={() => setActiveTab("income")}
-            >
+            </Tab>
+            <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
               Compte de Résultat
-            </button>
-          </div>
-          <div className="p-6">
-            {activeTab === "balance" ? (
+            </Tab>
+          </TabList>
+
+          <TabPanel>
+            <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-2 text-secondary">
+                Aperçu Financier {selectedYear}
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Vue d'ensemble de la situation financière de l'hôpital
+              </p>
+              <FinancialCharts year={selectedYear} />
+            </div>
+          </TabPanel>
+
+          <TabPanel>
+            <div className="mt-6">
               <BalanceSheet year={selectedYear} />
-            ) : (
+            </div>
+          </TabPanel>
+
+          <TabPanel>
+            <div className="mt-6">
               <IncomeStatement year={selectedYear} />
-            )}
-          </div>
-        </div>
+            </div>
+          </TabPanel>
+        </Tabs>
       </div>
     </AccountantDashBoard>
   );

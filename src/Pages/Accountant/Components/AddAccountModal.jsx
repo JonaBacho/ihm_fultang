@@ -13,10 +13,14 @@ export function AddAccountModal({
   const [accountNumber, setAccountNumber] = useState("");
   const [accountLabel, setAccountLabel] = useState("");
   const [error, setError] = useState("");
+  const [typeFlux, setTypeFlux] = useState("");
+  const shouldShowTypeFlux = /^[45]/.test(accountNumber);
 
   const handleAddAccount = async () => {
-    // Vérification que les champs ne sont pas vides
-    if (!accountNumber || !accountLabel) {
+    const shouldShowTypeFlux = /^[45]/.test(accountNumber);
+
+    // Validation modifiée
+    if (!accountNumber || !accountLabel || (shouldShowTypeFlux && !typeFlux)) {
       setError("Tous les champs sont obligatoires.");
       return;
     }
@@ -31,12 +35,17 @@ export function AddAccountModal({
 
     setError("");
     setIsLoading(true);
+    const accountData = {
+      number: accountNumber,
+      libelle: accountLabel,
+    };
+
+    if (shouldShowTypeFlux) {
+      accountData.status = typeFlux;
+    }
 
     try {
-      const response = await axiosInstance.post("/account/", {
-        number: accountNumber,
-        libelle: accountLabel,
-      });
+      const response = await axiosInstance.post("/account/", accountData);
 
       if (response.status === 201) {
         setSuccessMessage("Compte ajouté avec succès !");
@@ -53,9 +62,12 @@ export function AddAccountModal({
 
   const handleAccountNumberChange = (e) => {
     const value = e.target.value;
-    // N'accepte que les chiffres
     if (/^\d*$/.test(value)) {
       setAccountNumber(value);
+      // Reset typeFlux si le numéro ne commence plus par 4 ou 5
+      if (!/^[45]/.test(value)) {
+        setTypeFlux("");
+      }
     }
     setError("");
   };
@@ -121,6 +133,27 @@ export function AddAccountModal({
                 placeholder="Entrez le libellé du compte"
               />
             </div>
+            {shouldShowTypeFlux && (
+              <div>
+                <label
+                  htmlFor="typeFlux"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Type de Flux
+                </label>
+                <select
+                  id="typeFlux"
+                  value={typeFlux}
+                  onChange={(e) => setTypeFlux(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Sélectionnez un type</option>
+                  <option value="credit">Crédit</option>
+                  <option value="debit">Débit</option>
+                  <option value="creance">Créance</option>
+                </select>
+              </div>
+            )}
           </div>
 
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axiosInstanceAccountant from "../../../Utils/axiosInstanceAccountant";
 
 export default function BalanceSheet({ year }) {
   const assets = [
@@ -66,10 +67,25 @@ export default function BalanceSheet({ year }) {
     },
   ];
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axiosInstanceAccountant.get(
+          `/budget-exercise/get_balance_sheet/`
+        );
+
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const formatAmount = (amount) => {
     return new Intl.NumberFormat("fr-FR", {
       style: "currency",
-      currency: "EUR",
+      currency: "XAF",
     }).format(amount);
   };
 
