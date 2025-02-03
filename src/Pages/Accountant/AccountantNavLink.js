@@ -20,8 +20,8 @@ export const AccountantNavLink = [
   },
 
   {
-    name: "make an invoice",
-    link: appRoutes.patientList,
+    name: "Create a bill",
+    link: appRoutes.createFactureAccountant,
     icon: FaFileInvoice,
   },
 

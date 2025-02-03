@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant.js";
-import axiosInstance from "../../Utils/axiosInstance.js";
-import { ErrorModal } from "../Modals/ErrorModal.jsx";
-import Wait from "../Modals/wait.jsx";
+import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant";
+import axiosInstance from "../../Utils/axiosInstance";
+import { ErrorModal } from "../Modals/ErrorModal";
+import Wait from "../Modals/wait";
 import {
   FaEye,
   FaArrowLeft,
@@ -193,6 +193,7 @@ export function AccountDetailsPage() {
                         <button
                           onClick={() => {
                             setSelectedInvoice(invoice);
+                            console.log("Voici la facture", invoice);
                             setCanOpenInvoiceDetailsModal(true);
                           }}
                           className="flex items-center justify-center w-9 h-9 text-primary-end text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
@@ -266,7 +267,7 @@ export function AccountDetailsPage() {
 
         <Modal
           title="Ajouter une nouvelle opération financière"
-          visible={isAddOperationModalVisible}
+          open={isAddOperationModalVisible}
           onCancel={() => setIsAddOperationModalVisible(false)}
           footer={[
             <Button
