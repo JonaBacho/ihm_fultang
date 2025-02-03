@@ -1,7 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Bill, MedicalFolderPage
+from polyclinic.models import Bill, MedicalFolderPage, BillItem
 from accounting.models import FinancialOperation, Account
 from polyclinic.permissions.bill_permissions import BillPermissions
+from polyclinic.serializers.bill_items_serializers import BillItemSerializer
 from polyclinic.serializers.bill_serializers import BillSerializer, BillCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -163,6 +164,55 @@ class BillViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
+
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Liste les items d'une facture",
+        operation_description="Retourne tous les items d'une facture",
+        manual_parameters=[
+            openapi.Parameter(
+                'id', openapi.IN_PATH,
+                type=openapi.TYPE_INTEGER,
+                description="ID de la facture",
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(methods=['get'], detail=True, url_path="bill-items")
+    def get_bill_items(self, request):
+        bill = self.get_object()
+        bill_items = BillItem.objects.filter(bill=bill)
+        serializer = BillItemSerializer(bill_items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="recupère un item",
+        operation_description="Retourne un item dont on connait l'id",
+        manual_parameters=[
+            openapi.Parameter(
+                'id', openapi.IN_PATH,
+                type=openapi.TYPE_INTEGER,
+                description="ID de l'item",
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(methods=['get'], detail=False, url_path="bill-item/(?P<id>[^/.]+)")
+    def get_bill_item(self, request, id=None):
+        try:
+            if id is None:
+                return Response({"details": "id abscent"}, status=status.HTTP_400_BAD_REQUEST)
+            bill_item = BillItem.objects.get(id=id)
+            serializer = BillItemSerializer(bill_item)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except BillItem.DoesNotExist:
+            return Response({"details": "cet item n'existe pas"}, status=status.HTTP_404_NOT_FOUND)
 
 
     @swagger_auto_schema(

@@ -23,7 +23,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
             # amount = validated_data.pop('amount', None)
             patient = validated_data['patient']
             bill = Bill.objects.create(
-                billCode=patient.cniNumber + now.__str__(),
                 operation=validated_data['operation'],
                 operator=validated_data['operator'],
                 patient=patient,
@@ -41,7 +40,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
             return bill
         else:
             bill = Bill.objects.create(
-                billCode=validated_data['operator'].cniNumber + now.__str__(),
                 operation=validated_data['operation'],
                 operator=validated_data['operator'],
             )

@@ -1,9 +1,8 @@
-from datetime import timezone
 from django.db import models
 from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
-
+import uuid
 # Create your models here.
 
 TYPEDOCTOR = [
@@ -293,13 +292,28 @@ class Hospitalisation(models.Model):
 
 # La classe pour la facture
 class Bill(models.Model):
-    billCode = models.CharField(max_length=300)
+    billCode = models.CharField(max_length=300, unique=True, editable=False)
     date = models.DateTimeField(auto_now=True)
     amount = models.FloatField(default=0.0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
     isAccounted = models.BooleanField(default=False)
     operator = models.ForeignKey("authentication.MedicalStaff", on_delete=CASCADE, null=False)
     patient = models.ForeignKey('polyclinic.Patient', on_delete=models.CASCADE, null=True)
+
+    def generate_bill_code(self):
+        today = now().strftime('%Y%m%d')  # Format : YYYYMMDD
+        operation_code = self.operation.id if self.operation else "000"  # ID de l'opération
+        unique_id = str(uuid.uuid4().hex[:6]).upper()  # ID aléatoire pour éviter les collisions
+
+        return f"{today}-{operation_code}-{self.operator.cniNumber}-{unique_id}"
+
+    def save(self, *args, **kwargs):
+        if not self.billCode:  # Génère un billCode uniquement s'il n'existe pas encore
+            self.billCode = self.generate_bill_code()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Bill {self.billCode} - {self.amount}FCFA"
 
 class BillItem(models.Model):
     bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)
