@@ -10,4 +10,4 @@ class PrescriptionDrugSerializer(serializers.ModelSerializer):
 class PrescriptionDrugCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrescriptionDrug
-        exclude = ['id']
+        exclude = ['id', 'prescription']

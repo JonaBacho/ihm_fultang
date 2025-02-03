@@ -254,10 +254,10 @@ class Medicament(models.Model):
 
 class Prescription(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    note = models.TextField()
+    note = models.TextField(blank=True, null=True)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
-    idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
+    idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=True)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
     def __str__(self):
@@ -267,7 +267,11 @@ class PrescriptionDrug(models.Model):
     medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.CASCADE, null=False)
     quantity = models.IntegerField(default=1)
     prescription = models.ForeignKey("polyclinic.Prescription", on_delete=models.CASCADE, null=False)
-    dose = models.CharField(max_length=355, null=False)
+    dosage = models.CharField(max_length=255, null=False, default=" ")
+    instructions = models.CharField(max_length=255, null=False, default=" ")
+    frequency = models.CharField(max_length=255, null=False, default=" ")
+    duration = models.CharField(max_length=255, null=False, default=" ")
+
 
 
 
