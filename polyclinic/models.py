@@ -296,7 +296,7 @@ class Hospitalisation(models.Model):
 
 # La classe pour la facture
 class Bill(models.Model):
-    billCode = models.CharField(max_length=300, unique=True, editable=False)
+    billCode = models.CharField(max_length=355)
     date = models.DateTimeField(auto_now=True)
     amount = models.FloatField(default=0.0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
