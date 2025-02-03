@@ -144,7 +144,7 @@ export  function ConsultationHistoryDetails() {
                         <div className="flex items-center">
                             <button
                                 onClick={() => {
-                                    alert("implementing print function")
+                                    window.print();
                                 }}
                                 className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
                                 <Printer size={20} className="inline mr-2"/>

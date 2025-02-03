@@ -7,6 +7,8 @@ import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {useNavigate} from "react-router-dom";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+
 
 export function DoctorPatientList()
 {
@@ -22,7 +24,7 @@ export function DoctorPatientList()
     const [nexUrlForRenderPatientList, setNexUrlForRenderPatientList] = useState("");
     const [previousUrlForRenderPatientList, setPreviousUrlForRenderPatientList] = useState("");
     const [actualPageNumber, setActualPageNumber] = useState(1);
-
+    const {userData} = useAuthentication();
 
 
 
@@ -52,11 +54,12 @@ export function DoctorPatientList()
     async function fetchPatients () {
         try
         {
-            const response = await axiosInstance.get("/patient/");
+            const response = await axiosInstance.get(`/patient/doctor/${userData?.id}/`);
             if (response.status === 200)
             {
-                setPatients(response.data.results);
-                setNumberOfPatients(response.data.count);
+                console.log(response);
+                setPatients(response.data);
+                setNumberOfPatients(response.data.length);
                 setNexUrlForRenderPatientList(response.data.next);
                 setPreviousUrlForRenderPatientList(response.data.previous);
             }
