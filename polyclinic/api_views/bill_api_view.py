@@ -249,17 +249,16 @@ class BillViewSet(ModelViewSet):
             )
 
         current_date = timezone.now().date()
-        budget_exercises = BudgetExercise.objects.filter(start_date__lte=current_date, end_date__gte=current_date)
+        budget_exercises = BudgetExercise.objects.filter(start__lte=current_date, end__gte=current_date)
         if str(account.number).startswith(('5', '4')):
             status_param = request.query_params.get('status')
             if status_param:
                 account_state = AccountState.objects.filter(
                     account=account, 
-                    budget_exercise__in=budget_exercises, 
-                    status=status_param
+                    budgetExercise__in=budget_exercises
                 ).first()
         else:
-            account_state = AccountState.objects.filter(account=account, budget_exercise__in=budget_exercises).first()
+            account_state = AccountState.objects.filter(account=account, budgetExercise__in=budget_exercises).first()
 
         if not account_state:
             return Response(
@@ -344,7 +343,7 @@ class BillViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        bills = Bill.objects.filter(medical_operator=medical_operator)
+        bills = Bill.objects.filter(operator=medical_operator)
 
         serializer = self.get_serializer(bills, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -363,7 +362,7 @@ class BillViewSet(ModelViewSet):
 
         for bill in bills:
             bill_data = self.get_serializer(bill).data
-            medical_operator = bill.medical_operator
+            medical_operator = bill.operator
             if medical_operator:
                 role = medical_operator.role
                 bill_data['source'] == role
