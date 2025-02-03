@@ -117,8 +117,9 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
         setIsLoading(true);
         if(!dateError)
         {
-            formData.idMedicalStaff = userData?.id;
+            formData.idMedicalStaff = userData.id;
             console.log(formData);
+            console.log(userData);
             try
             {
                 const response = await axiosInstance.post("/patient/", formData);

@@ -3,14 +3,17 @@ import {useEffect, useState} from "react";
 import {Calendar, Clock, User, FileText, X} from 'lucide-react';
 import axiosInstance from "../../Utils/axiosInstance.js";
 import Wait from "../Modals/wait.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
-export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSuccessModal}) {
+export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSuccessModal, setSuccessMessage}) {
+
 
     PrescribeDoctor.propTypes = {
         isOpen: PropTypes.bool.isRequired,
         onClose: PropTypes.func.isRequired,
         patientInfos: PropTypes.object.isRequired,
         setCanOpenSuccessModal: PropTypes.func,
+        setSuccessMessage:PropTypes.func,
     }
 
 
@@ -18,6 +21,7 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
     const idMedicalFolderPage = localStorage.getItem('current_medical_folder_page');
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const {userData} = useAuthentication();
     const [consultationData, setConsultationData] = useState({
         consultationReason: '',
         consultationNotes: '',
@@ -26,6 +30,7 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
         idMedicalFolderPage:'',
         idPatient: patientInfos.id,
         idMedicalStaffGiver:'',
+        idMedicalStaffSender:'',
     });
 
 
@@ -60,9 +65,10 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
 
         e.preventDefault();
         setIsLoading(true);
-        if(idMedicalFolderPage !== null)
+        if(idMedicalFolderPage !== null && userData.id)
         {
             consultationData.idMedicalFolderPage = idMedicalFolderPage;
+            consultationData.idMedicalStaffSender  = userData.id;
         }
         try
         {
@@ -73,6 +79,7 @@ export function PrescribeDoctor({isOpen, onClose, patientInfos, setCanOpenSucces
             {
                 setError("");
                 localStorage.removeItem('current_medical_folder_page');
+                setSuccessMessage("Consultation created successfully !");
                 setCanOpenSuccessModal(true);
                 onClose();
             }

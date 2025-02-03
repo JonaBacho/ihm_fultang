@@ -16,7 +16,7 @@ export function AccessDenied({Role})
     const navigate = useNavigate();
 
 
-    return (
+   return (
         <div
             style={{
                 backgroundImage: `url(${accessDeniedImage})`,
@@ -49,4 +49,3 @@ export function AccessDenied({Role})
         </div>
     )
 }
-

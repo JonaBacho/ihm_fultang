@@ -56,9 +56,9 @@ export function AppRoute()
     const DoctorPatientMedicalFolder = React.lazy(async () => ({default: (await import("../Pages/Doctor/PatientMedicalFolder.jsx")).PatientMedicalFolder}));
 
 
-    const FinancialContributions = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialContribution.jsx")).FinancialContributions}));
-    const FinancialReportsAccountant = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialReports.jsx")).FinancialReports}));
-
+    const FinancialContributions = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialContribution.jsx")).FinancialContributions,}));
+    const FinancialReportsAccountant = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialReports.jsx")).FinancialReports,}));
+    const PharmacyMedication = React.lazy(async () => ({default: (await import("../Pages/Pharmacy/PharmacyMedication.jsx")).PharmacyMedication,}));
 
 
 
@@ -113,6 +113,7 @@ export function AppRoute()
 
                 <Route path={AppRoutesPaths.financialContributions} element={<FinancialContributions />}/>
                 <Route path={AppRoutesPaths.financialReportsAccountant} element={<FinancialReportsAccountant />}/>
+                <Route path={AppRoutesPaths.PharmacyMedication} element ={<PharmacyMedication/>}/>
             </Routes>
         </React.Suspense>
     )
