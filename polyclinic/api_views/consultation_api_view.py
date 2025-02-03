@@ -178,7 +178,8 @@ class ConsultationViewSet(ModelViewSet):
                 serializer = ConsultationSerializer(queryset, many=True)
                 return Response(serializer.data, status.HTTP_200_OK)
             else:
-                queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
+                #queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
+                queryset = queryset.filter(state="Pending")
                 serializer = ConsultationSerializer(queryset, many=True)
                 return Response(serializer.data, status.HTTP_200_OK)
         except MedicalStaff.DoesNotExist:

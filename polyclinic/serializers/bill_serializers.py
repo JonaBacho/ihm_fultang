@@ -32,7 +32,7 @@ class BillCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"detail": "Bill items required"})
             total = 0
             for item in validated_data['bill_items']:
-                item['bill'] = bill.id
+                item['bill'] = bill
                 bill_service = BillService()
                 bill_item = bill_service.create_bill_item(item, False)
                 total += bill_item.total

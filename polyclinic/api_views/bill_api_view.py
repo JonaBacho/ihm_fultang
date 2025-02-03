@@ -134,8 +134,8 @@ class BillViewSet(ModelViewSet):
 
         current_date = timezone.now().date()
         budget_exercises = BudgetExercise.objects.filter(
-            start_date__lte=current_date,
-            end_date__gte=current_date
+            start__lte=current_date,
+            end__gte=current_date
         )
 
         if str(account.number).startswith(('5', '4')):
@@ -143,13 +143,12 @@ class BillViewSet(ModelViewSet):
             if status_param:
                 account_state = AccountState.objects.filter(
                     account=account,
-                    budget_exercise__in=budget_exercises,
-                    status=status_param
+                    budgetExercise__in=budget_exercises,
                 ).first()
             else:
                 account_state = AccountState.objects.filter(
                     account=account,
-                    budget_exercise__in=budget_exercises
+                    budgetExercise__in=budget_exercises
                 ).first()
 
             if not account_state:

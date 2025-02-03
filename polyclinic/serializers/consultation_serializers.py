@@ -60,4 +60,10 @@ class ConsultationCreateSerializer(serializers.ModelSerializer):
             raise ValidationError({"details": "La page dont l'id est fourni n'existe pas"})
 
 
+    def update(self, instance, validated_data):
+        if 'state' in validated_data:
+            if validated_data.get('state') != "Pending" and instance.paymentStatus == "Invalid":
+                raise ValidationError({"details": "on ne peut pas changer l'etat d'une consultation non payé"})
+
+
 
