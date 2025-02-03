@@ -2,6 +2,7 @@ import {XIcon} from "lucide-react";
 import {useState} from "react";
 import PropTypes from "prop-types";
 import axiosInstance from "../../Utils/axiosInstance.js";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
 
 export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, setSuccessMessage, setIsLoading})
@@ -14,6 +15,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
         setIsLoading: PropTypes.func.isRequired
     }
 
+    const {userData} = useAuthentication();
      const [formData, setFormData] = useState({
             firstName: '',
             lastName: '',
@@ -23,6 +25,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
             cniNumber: '',
             phoneNumber: '',
             email: '',
+            idMedicalStaff:'',
         });
     const [error, setError] = useState("");
     const [isYears, setIsYears] = useState(false);
@@ -31,6 +34,8 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
     const [isDay, setIsDay] = useState(false);
     const [age, setAge] = useState(0);
     const [dateError, setDateError] =useState("");
+
+
 
 
 
@@ -112,6 +117,9 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
         setIsLoading(true);
         if(!dateError)
         {
+            formData.idMedicalStaff = userData.id;
+            console.log(formData);
+            console.log(userData);
             try
             {
                 const response = await axiosInstance.post("/patient/", formData);

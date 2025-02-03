@@ -20,9 +20,9 @@ export function DashBoard ({children,linkList, requiredRole})
     //      return <Navigate to="/login" />;
     //  }
 
-    //  if (!hasRole(requiredRole)) {
-    //     return <AccessDenied Role={requiredRole}/>;
-    //  }
+   {/*  if (!hasRole(requiredRole)) {
+        return <AccessDenied Role={requiredRole}/>;
+     }*/}
 
 
     return (

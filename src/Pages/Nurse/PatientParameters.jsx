@@ -443,7 +443,7 @@ export  function PatientParameters() {
             <ConfirmSaveParameters isOpen={canOpenConfirmSaveParameters} onClose={() => setCanOpenConfirmSaveParameters(false)} parameters={parameters} bmi={bmi} action={ async() => {await saveParameters()}} patientInfos={patientInfo}/>
             <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={() => setCanOpenErrorMessageModal(false)} message={errorMessage}/>
             <SuccessModal isOpen={canOpenSuccessModal} canOpenSuccessModal={() => setCanOpenSuccessModal(false)} message={successMessage}/>
-            <PrescribeDoctor isOpen={canPrescribeDoctor} onClose={()=>setCanPrescribeDoctor(false)} patientInfos={patientInfo} setCanOpenSuccessModal={setCanOpenSuccessModal}/>
+            <PrescribeDoctor isOpen={canPrescribeDoctor} onClose={()=>setCanPrescribeDoctor(false)} patientInfos={patientInfo} setCanOpenSuccessModal={setCanOpenSuccessModal} setSuccessMessage={setSuccessMessage}/>
             {isLoading && <Wait/>}
 
         </DashBoard>

@@ -2,9 +2,9 @@ import { Users, Calendar, ClipboardList,  FileSpreadsheet, UserPlus, FileText } 
 
 import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
-import {DoctorDashboard} from "./New/DoctorDashboard.jsx"
-import {DoctorNavBar} from "./New/DoctorNavBar.jsx"
-import {doctorNavLink} from "./New/doctorNavLink.js"
+import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx"
+import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx"
+import {doctorNavLink} from "./lib/doctorNavLink.js"
 import QuickActionButton from "../../GlobalComponents/QuickActionButton.jsx";
 import StatCard from "../../GlobalComponents/StatCard.jsx";
 

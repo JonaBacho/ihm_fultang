@@ -38,9 +38,15 @@ export const AppRoutesPaths = {
     accountList: "/accountant/account-list",
     doctorPatientList: "/doctor/patients",
     doctorConsultationList: "/doctor/consultation-list",
-    doctorAddConsultation: "/doctor/add-consultation",
     doctorConsultationDetailsPage: "/doctor/consultation-list/details/:id",
     doctorAppointment: "/doctor/appointments",
     doctorConsultationHistory: "/doctor/consultation-history",
     doctorConsultationHistoryDetails: "/doctor/consultation-history/details/:id",
+    doctorExamList: "/doctor/exams-list",
+    doctorPatientMedicalFolderPage:"/doctor/patients/medical-folder/:id",
+    financialContributions: "/accountant/financial-contributions",
+    financialReportsAccountant: "/accountant/financial-reports",
+    PharmacyMedication:"/pharmacyMedication",
+    createFactureAccountant: "/accountant/create-facture",
+
 }

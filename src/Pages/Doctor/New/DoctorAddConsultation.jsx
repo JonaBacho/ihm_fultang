@@ -7,9 +7,9 @@ import { FaSearch, FaUser, FaChevronRight, FaHistory, FaPills } from "react-icon
 import { BsExclamationTriangle } from "react-icons/bs"
 import { IoMedkit } from "react-icons/io5"
 import { GiStethoscope } from "react-icons/gi"
-import { doctorNavLink } from "./doctorNavLink.js"
-import { DoctorDashboard } from "./DoctorDashboard.jsx"
-import {DoctorNavBar} from "./DoctorNavBar.jsx"
+import { doctorNavLink } from "../lib/doctorNavLink.js"
+import { DoctorDashboard } from "../DoctorComponents/DoctorDashboard.jsx"
+import {DoctorNavBar} from "../DoctorComponents/DoctorNavBar.jsx"
 
 
 const patients = [
