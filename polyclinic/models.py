@@ -311,7 +311,7 @@ class BillItem(models.Model):
     quantity = models.PositiveIntegerField(default=0)
     unityPrice = models.FloatField(default=0)
     designation = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, null=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
     total = models.FloatField(default=0)
 
 # ======================================
