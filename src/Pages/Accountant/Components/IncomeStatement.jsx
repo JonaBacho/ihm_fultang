@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import axiosInstanceAccountant from "../../../Utils/axiosInstanceAccountant";
+
 export default function IncomeStatement({ year }) {
   const expenses = [
     { code: "60", label: "Achats de biens et services", amount: 2500000 },
@@ -13,10 +16,25 @@ export default function IncomeStatement({ year }) {
     { code: "76", label: "Produits financiers", amount: 75000 },
   ];
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axiosInstanceAccountant.get(
+          `/budget-exercise/get_balance_sheet/`
+        );
+
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const formatAmount = (amount) => {
     return new Intl.NumberFormat("fr-FR", {
       style: "currency",
-      currency: "EUR",
+      currency: "XAF",
     }).format(amount);
   };
 

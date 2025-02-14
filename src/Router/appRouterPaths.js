@@ -12,6 +12,7 @@ export const AppRoutesPaths = {
     cashierPage: "/cashier/consultation-list",
     consultationsList: "/cashier/consultations-list",
     examsList: "/cashier/exams-list",
+    hospitalisations: "/cashier/hospitalisations-list",
     financialReport: "/cashier/financial-report",
     specialistPage: "/specialist",
     nursePage:"/nurse/patients",
@@ -46,5 +47,7 @@ export const AppRoutesPaths = {
     doctorPatientMedicalFolderPage:"/doctor/patients/medical-folder/:id",
     financialContributions: "/accountant/financial-contributions",
     financialReportsAccountant: "/accountant/financial-reports",
+    PharmacyMedication:"/pharmacyMedication",
+    createFactureAccountant: "/accountant/create-facture",
 
 }

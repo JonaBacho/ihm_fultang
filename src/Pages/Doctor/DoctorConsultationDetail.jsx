@@ -26,6 +26,8 @@ import ExamPrescriptionCard from "./DoctorComponents/ExamPrescriptionCard.jsx";
 import SpecialistPrescriptionCard from "./DoctorComponents/SpecialistPrescriptionCard.jsx";
 import AppointmentPrescriptionCard from "./DoctorComponents/AppointmentPrescriptionCard.jsx";
 import DiagnosticCard from "./DoctorComponents/DiagnosticCard.jsx";
+import axios from "axios";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 
@@ -116,7 +118,7 @@ export function DoctorConsultationDetails() {
     const [diagnostic, setDiagnostic] = useState("");
     const [doctorNote, setDoctorNote] = useState("");
     const {calculateAge} = useCalculateAge();
-    const { value: ageValue, unit: ageUnit } = calculateAge('2000-01-01');
+    const { value: ageValue, unit: ageUnit } = calculateAge(patientInfo?.birthDate);
     const MedicalParametersInfos = [
         {
             icon: Weight,
@@ -234,7 +236,48 @@ export function DoctorConsultationDetails() {
 
 
     async function handleSubmit (e) {
-        e.preventDefault()
+        e.preventDefault();
+        let medicalFolderPageData =
+            {
+                diagnostic: diagnostic,
+                doctorNote: doctorNote,
+            }
+        let prescriptionData = {
+            prescriptions: prescriptions,
+            note:'',
+            idPatient: patientInfo?.id,
+            idMedicalFolderPage: medicalPageInfo?.id,
+            idMedicalStaff: consultation?.idMedicalStaffGiver
+        }
+
+        try
+        {
+            if (prescriptions)
+            {
+                const prescriptionRequestResponse = await axiosInstance.post("/prescription/", prescriptionData);
+                if (prescriptionRequestResponse.status === 201)
+                {
+
+                }
+
+            }
+            if (exams)
+            {
+
+            }
+            const response = await axiosInstance.put(`/medical-folder/${medicalPageInfo?.idMedicalFolder}/update-page/${medicalPageInfo?.id}/`, medicalFolderPageData );
+            if (response.status === 200)
+            {
+
+
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+
+
+
         console.log("Soumission de la consultation:", {
             diagnostic,
             doctorNote,
@@ -263,7 +306,7 @@ export function DoctorConsultationDetails() {
                         <div className="flex-1 flex flex-col gap-3">
                             <div className="flex justify-between">
                                 <h1 className="text-3xl font-bold text-white">CONSULTATION
-                                    OF {patientInfo?.firstName || 'NGOUPAYE DJIO'} {patientInfo?.lastName || 'Thierry'}</h1>
+                                    OF {patientInfo?.firstName || 'Not Specified'} {patientInfo?.lastName || 'Not Specified'}</h1>
 
                                 <p className="text-white font-bold text-xl">
                                     {formatDateOnly(new Date())}
@@ -272,11 +315,11 @@ export function DoctorConsultationDetails() {
                             <div className="mt-3.5 grid grid-cols-3 gap-4 font-semibold">
                                 <div className="flex items-center gap-2 text-white">
                                     <Calendar className="w-6 h-6"/>
-                                    <div className="flex">
+                                    <div className="flex flex-col">
                                         <span>Born on {patientInfo?.birthDate && formatDateOnly(patientInfo?.birthDate) || 'Not Specified'}</span>
                                         <div className="flex gap-1 mt-0.5 ">
-                                            <span className="ml-2 text-white text-sm">({ageValue}</span>
-                                            <span className="text-white text-sm">{ageUnit})</span>
+                                            <span className="text-white text-sm">{ageValue}</span>
+                                            <span className="text-white text-sm">{ageUnit}</span>
                                         </div>
                                     </div>
                                     </div>
@@ -309,7 +352,7 @@ export function DoctorConsultationDetails() {
                         <div className="flex items-center">
                             <button
                                 onClick={() => {
-                                    alert("implementing print function")
+                                    window.print()
                                 }}
                                 className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
                                 <Printer size={20} className="inline mr-2"/>
@@ -345,7 +388,7 @@ export function DoctorConsultationDetails() {
                             Nurse Notes
                         </h3>
                         <p className="text-md text-gray-600">
-                            {medicalPageInfo?.nurseNote || 'No note from the nurse'}
+                            {consultation?.consultationNotes || 'No note from the nurse'}
                         </p>
                     </div>
 

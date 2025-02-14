@@ -1,4 +1,4 @@
-import {  Clock, Phone, Stethoscope, User } from "lucide-react"
+import {  Clock, Phone, Stethoscope, User, FileText } from "lucide-react"
 import PropTypes from "prop-types";
 import {formatDateToTime} from "../../../Utils/formatDateMethods.js";
 import {useCalculateAge} from "../../../Utils/compute.js";
@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 export default function ConsultationCard ({ consultation }) {
 
     ConsultationCard.propTypes = {
-        consultation: PropTypes.object.isRequired,
+        consultation: PropTypes.array.isRequired,
     }
 
 
@@ -23,29 +23,40 @@ export default function ConsultationCard ({ consultation }) {
         const styles = {
             Critical: {
                 container: "border-l-red-600",
-                badge: "bg-red-200 border-red-600 text-red-600"
+                badge: "bg-red-100 border-red-500 text-red-500"
             },
             Serious: {
                 container: "border-l-orange-500",
-                badge: "bg-orange-200 border-orange-600  text-orange-600"
+                badge: "bg-orange-100 border-orange-500  text-orange-500"
             },
             "Not Critical": {
                 container: "border-l-yellow-500",
-                badge: "bg-yellow-200 border-yellow-600 text-yellow-600"
+                badge: "bg-yellow-50 border-yellow-500 text-yellow-500"
             },
             Stable: {
                 container: "border-l-green-500",
-                badge: "bg-green-200 border-green-600 text-green-600"
+                badge: "bg-green-100 border-green-600 text-green-600"
             },
             Improving: {
                 container: "border-l-blue-500",
-                badge: "bg-blue-200 border-blue-600 text-blue-600"
+                badge: "bg-blue-100 border-blue-600 text-blue-600"
             }
         };
 
         return styles[state] || { container: "border-l-gray-300", badge: "bg-gray-100 border-gray-600 text-gray-600" };
     }
 
+    if (!consultation || Object.keys(consultation).length === 0) {
+        return (
+            <div className="h-full bg-gray-100 border rounded-2xl p-4 hover:-translate-y-1.5 hover:shadow-lg transition-all duration-500 border-l-4 border-blue-500 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <Stethoscope className="h-16 w-16 text-blue-500 mx-auto" />
+                    <h3 className="font-semibold text-gray-800 text-xl">No Consultation Data</h3>
+                    <p className="text-gray-600">There are currently no consultations available.</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className={`h-full bg-gray-100 border rounded-2xl p-4 hover:-translate-y-1.5 hover:shadow-lg transition-all duration-500 border-l-4 ${getStateStyles(consultation.statePatient).container}`}>
@@ -67,16 +78,22 @@ export default function ConsultationCard ({ consultation }) {
                   </span>
                 </div>
 
-                <p className="text-gray-600">{consultation.consultationNotes}</p>
+                <div className="flex ml-7 gap-2 text-gray-600">
+                    <FileText className="h-5 w-5 mr-1 mt-2"/>
+                    <p className=" ">Consultation Reason:</p>
+                    <p className="text-black font-semibold">{consultation.consultationNotes}</p>
+                </div>
 
-                <div className="flex flex-col gap-4">
+
+                <div className="flex flex-col gap-4 ml-7">
                     <div className="flex items-center text-gray-500">
                         <Clock className="h-4 w-4 mr-1"/>
-                        <span>Arrival Time: {formatDateToTime(consultation?.consultationDate)}</span>
+                        <span className="text-gray-500 mr-2"> Arrival Time: </span>
+                        <span className="font-semibold text-black"> {formatDateToTime(consultation?.consultationDate)}</span>
                     </div>
                     <div className="flex items-center text-gray-500">
                         <Phone className="h-4 w-4 mr-1"/>
-                        <span>{patientInfos?.phoneNumber}</span>
+                        <span className="font-semibold text-black">{patientInfos?.phoneNumber}</span>
                     </div>
                 </div>
 

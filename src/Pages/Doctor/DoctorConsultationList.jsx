@@ -1,9 +1,11 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Search, Calendar} from "lucide-react"
 import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import ConsultationCard from "./DoctorComponents/ConsultationCard.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
 
 
@@ -85,16 +87,44 @@ export  function DoctorConsultationList() {
         day: "numeric",
     });
 
-    const filteredConsultations = mockConsultations
+    const [consultations, setConsultations] = useState([]);
+    const filteredConsultations = consultations
         .filter(
             (consultation) =>
-                consultation?.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                consultation?.consultationReason.toLowerCase().includes(searchTerm.toLowerCase()),
+            {
+                const patientFullName = consultation?.idPatient?.firstName + consultation?.idPatient?.lastName
+                return(
+                    patientFullName.toLowerCase().includes(searchTerm.toLowerCase()) || consultation?.consultationReason.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            }
+
         )
         .sort((a, b) => a.arrivalTime.localeCompare(b.arrivalTime))
 
 
 
+    const {userData} = useAuthentication();
+    const idDoctor = userData?.id;
+
+
+    useEffect(() => {
+        async function loadDoctorConsultations() {
+            try
+            {
+                const response = await axiosInstance.get(`/consultation/doctor/${idDoctor}/`);
+                if (response.status === 200)
+                {
+                    console.log(response);
+                    setConsultations(response?.data);
+                }
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+        loadDoctorConsultations();
+    }, []);
 
 
     return (
@@ -123,11 +153,27 @@ export  function DoctorConsultationList() {
                         />
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredConsultations.map((consultation) => (
-                        <ConsultationCard key={consultation.id} consultation={consultation} />
-                    ))}
-                </div>
+                {filteredConsultations.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredConsultations.map((consultation) => (
+                            <ConsultationCard key={consultation.id} consultation={consultation} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="p-8 mt-24 flex items-center justify-center">
+                        <div className="flex flex-col">
+                            <Calendar className="h-16 w-16 text-primary-end mx-auto mb-4" />
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2 mx-auto">No Consultations Today</h2>
+                            <p className="text-gray-600 mb-4 mx-auto">There are currently no consultations scheduled for today.</p>
+                            <button
+                                className="px-4 hover:bg-primary-start  duration-300 mx-auto py-2 bg-primary-end text-white rounded-lg transition-all "
+                                onClick={() => {window.location.reload()}}
+                            >
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </DoctorDashboard>
     )

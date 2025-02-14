@@ -97,7 +97,7 @@ export default function FinancialCharts({ year }) {
             if (context.parsed.y !== null) {
               label += new Intl.NumberFormat("fr-FR", {
                 style: "currency",
-                currency: "EUR",
+                currency: "XAF",
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               }).format(context.parsed.y);
@@ -113,7 +113,7 @@ export default function FinancialCharts({ year }) {
           callback: (value) =>
             new Intl.NumberFormat("fr-FR", {
               style: "currency",
-              currency: "EUR",
+              currency: "XAF",
               minimumFractionDigits: 0,
               maximumFractionDigits: 0,
             }).format(value),

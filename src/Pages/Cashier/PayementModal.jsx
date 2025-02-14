@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant.js";
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
+import {formatDateOnly} from "../../Utils/formatDateMethods.js";
 
 export function PaymentModal({ isOpen, onClose, consultationData }) {
 
@@ -29,8 +30,6 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
         if (isOpen) {
             setIsClosing(false);
             setIsSuccess(false);
-            setSelectedFinancialOperation("");
-            setBillNumber("");
         }
     }, [isOpen])
 
@@ -44,19 +43,27 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
         e.preventDefault();
         setIsProcessing(true);
         let billData = {
-            customer: consultationData?.idPatient?.firstName + " " + consultationData?.idPatient?.lastName,
-            tel: consultationData?.idPatient?.phoneNumber,
-            amount: consultationData?.consultationPrice,
+            bill_items:
+                [
+                    {
+                        designation : 'consultation',
+                        consultation: consultationData?.id
+
+                    },
+                ],
+            patient: consultationData?.idPatient?.id,
             operation: selectedFinancialOperation,
             operator: userData?.id,
         }
         try
         {
+            console.log(billData);
             const response = await axiosInstance.post("/bill/", billData);
             setIsProcessing(false);
             if (response.status === 201)
             {
                 console.log(response);
+                setBillNumber(response?.data?.id);
                 setIsSuccess(true);
                 setError(null);
             }
@@ -73,6 +80,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
 
     function handlePrint  ()  {
         console.log("Impression de la facture:", billNumber);
+        window.print();
     }
 
 
@@ -178,7 +186,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                                             <input
                                                 type="text"
                                                 value={consultationData?.idPatient?.phoneNumber || ""}
@@ -194,7 +202,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
                                             <input
                                                 type="text"
-                                                value={`${consultationData?.consultationPrice.toLocaleString()} FCFA`}
+                                                value={`${consultationData?.consultationPrice} FCFA`}
                                                 disabled
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
                                             />
@@ -203,7 +211,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                                             <input
                                                 type="text"
-                                                value={new Date(consultationData?.consultationDate).toLocaleDateString()}
+                                                value={consultationData?.consultationDate ? formatDateOnly(consultationData?.consultationDate) : 'Not Specified'}
                                                 disabled
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
                                             />
@@ -221,7 +229,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
                                         >
                                             <option value="">Select operation type</option>
                                             {financialOperations && financialOperations.length > 0 && financialOperations.map((operation) => (
-                                                <option key={operation?.id} value={operation?.name}>{operation?.name}</option>
+                                                <option key={operation?.id} value={operation?.id}>{operation?.name}</option>
                                             ))}
                                         </select>
                                     </div>

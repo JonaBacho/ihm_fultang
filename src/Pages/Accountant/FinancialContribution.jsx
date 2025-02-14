@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import DatePicker from "react-datepicker";
@@ -7,67 +6,21 @@ import {
   FaFileExcel,
   FaFileCsv,
   FaPrint,
-  FaCalendarAlt,
   FaEye,
   FaTrash,
-  FaFilter,
   FaSyncAlt,
 } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { motion } from "framer-motion";
 import { useDebounce } from "use-debounce";
 import { AccountantDashBoard } from "./Components/AccountantDashboard";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
 import { AccountantNavLink } from "./AccountantNavLink";
+import axiosInstance from "../../Utils/axiosInstance";
+import { ViewBillDetailsModal } from "./Components/ViewBillDetailsModal";
 
-const mockContributions = [
-  {
-    id: 1,
-    invoiceNumber: "INV001",
-    source: "Cash",
-    amount: 5000,
-    date: "2025-01-15",
-  },
-  {
-    id: 2,
-    invoiceNumber: "INV002",
-    source: "Pharmacy",
-    amount: 2500,
-    date: "2025-01-20",
-  },
-  {
-    id: 3,
-    invoiceNumber: "INV003",
-    source: "Donation",
-    amount: 10000,
-    date: "2025-01-25",
-  },
-  {
-    id: 4,
-    invoiceNumber: "INV004",
-    source: "Grant",
-    amount: 50000,
-    date: "2025-01-30",
-  },
-  {
-    id: 5,
-    invoiceNumber: "INV005",
-    source: "Patient Payment",
-    amount: 1500,
-    date: "2025-02-01",
-  },
-];
-
-const operationTypes = [
-  "All",
-  "Cash",
-  "Pharmacy",
-  "Donation",
-  "Grant",
-  "Patient Payment",
-];
+const operationTypes = ["All", "Accountant", "Cashier", "Pharmacist", "Other"];
 
 export function FinancialContributions() {
   const [startDate, setStartDate] = useState(startOfMonth(new Date()));
@@ -75,46 +28,62 @@ export function FinancialContributions() {
   const [operationType, setOperationType] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch] = useDebounce(searchTerm, 300);
+  const [contributions, setContributions] = useState([]);
   const [filteredContributions, setFilteredContributions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axiosInstance.get(`/bill/list_with_source/`);
+        setContributions(response.data);
+        setFilteredContributions(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     handleFilter();
-  }, [debouncedSearch, startDate, endDate, operationType]);
+  }, [contributions, startDate, endDate, operationType]); //Corrected dependencies
 
   const handleFilter = () => {
     setIsLoading(true);
 
-    // Simulate API call delay
-    setTimeout(() => {
-      let filtered = mockContributions.filter((contribution) => {
-        const matchesDate =
-          new Date(contribution.date) >= startDate &&
-          new Date(contribution.date) <= endDate;
-        const matchesType =
-          operationType === "All" || contribution.source === operationType;
-        const matchesSearch =
-          contribution.invoiceNumber
-            .toLowerCase()
-            .includes(debouncedSearch.toLowerCase()) ||
-          contribution.source
-            .toLowerCase()
-            .includes(debouncedSearch.toLowerCase());
+    const filtered = contributions.filter((contribution) => {
+      const contributionDate = new Date(contribution.date);
+      const matchesDate =
+        contributionDate >= startDate && contributionDate <= endDate;
+      const matchesType =
+        operationType === "All" || contribution.source === operationType;
+      const matchesSearch =
+        contribution.billCode
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        contribution.source
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase());
 
-        return matchesDate && matchesType && matchesSearch;
-      });
+      return matchesDate && matchesType && matchesSearch;
+    });
 
-      setFilteredContributions(filtered);
-      setIsLoading(false);
-    }, 500);
+    setFilteredContributions(filtered);
+    setIsLoading(false);
   };
 
   const handleExport = (format) => {
     const data = filteredContributions.map((item) => ({
-      "Invoice Number": item.invoiceNumber,
+      "Bill Code": item.billCode,
       Source: item.source,
       Amount: item.amount,
       Date: format(new Date(item.date), "PPP"),
+      Accounted: item.isAccounted ? "Yes" : "No",
     }));
 
     if (format === "csv") {
@@ -141,8 +110,8 @@ export function FinancialContributions() {
   };
 
   const handleViewDetails = (contribution) => {
-    // Implement view details functionality
-    console.log("View details for:", contribution);
+    setSelectedBill(contribution);
+    setIsModalOpen(true);
   };
 
   const handleDelete = (contribution) => {
@@ -155,67 +124,67 @@ export function FinancialContributions() {
     setEndDate(endOfMonth(new Date()));
     setOperationType("All");
     setSearchTerm("");
+    setFilteredContributions(contributions);
   };
+
+  const TooltipButton = ({ icon, onClick, tooltip, className }) => (
+    <button
+      onClick={onClick}
+      className={className}
+      data-tooltip-id="my-tooltip"
+    >
+      {icon}
+      <Tooltip id="my-tooltip" place="top" effect="solid">
+        {tooltip}
+      </Tooltip>
+    </button>
+  );
 
   return (
     <AccountantDashBoard
       requiredRole={"Accountant"}
       linkList={AccountantNavLink}
     >
-      <AccountantNavBar></AccountantNavBar>
+      <AccountantNavBar />
       <div className="container mx-auto px-4 py-8">
-        <style>
-          {`
-          @media print {
-            .no-print {
-              display: none !important;
-            }
-            table {
-              width: 100% !important;
-              border-collapse: collapse;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-              text-align: left;
-            }
-            th {
-              background-color: #f2f2f2;
-            }
-          }
-        `}
-        </style>
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold mb-6 text-gray-800"
-        >
-          <FaFilter className="inline-block mr-2 text-primary-600" />
+        <h1 className="text-3xl font-bold mb-6 text-secondary">
           Financial Contributions
-        </motion.h1>
+        </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="relative">
+        <div className="flex flex-wrap gap-4 mb-6">
+          <div className="flex items-center">
+            <label htmlFor="start-date" className="mr-2">
+              Start Date:
+            </label>
             <DatePicker
+              id="start-date"
               selected={startDate}
-              onChange={(dates) => {
-                setStartDate(dates[0]);
-                setEndDate(dates[1]);
-              }}
+              onChange={(date) => setStartDate(date)}
+              selectsStart
               startDate={startDate}
               endDate={endDate}
-              selectsRange
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-              placeholderText="Select date range"
             />
-            <FaCalendarAlt className="absolute right-3 top-3 text-gray-400" />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="end-date" className="mr-2">
+              End Date:
+            </label>
+            <DatePicker
+              id="end-date"
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+            />
           </div>
 
           <select
-            value={operationType}
             onChange={(e) => setOperationType(e.target.value)}
-            className="p-2 border rounded-lg bg-white focus:ring-2 focus:ring-primary-500"
+            className="bg-white text-secondary w-[200px] px-4 py-2 rounded"
           >
+            <option value="All">Select operation type</option>
             {operationTypes.map((type) => (
               <option key={type} value={type}>
                 {type}
@@ -225,152 +194,145 @@ export function FinancialContributions() {
 
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search by bill code or source"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+            className="bg-white text-secondary px-4 py-2 rounded"
           />
 
           <button
-            onClick={resetFilters}
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center"
+            onClick={() => handleExport("csv")}
+            className="bg-white text-secondary hover:bg-gray-100 px-4 py-2 rounded"
           >
-            <FaSyncAlt className="mr-2" />
-            Reset Filters
+            <FaFileCsv className="inline mr-2" />
+            CSV
           </button>
-        </div>
-
-        <div className="mb-4 flex gap-2">
-          <ExportButton format="csv" onClick={handleExport} />
-          <ExportButton format="xlsx" onClick={handleExport} />
-          <TooltipButton
+          <button
+            onClick={() => handleExport("xlsx")}
+            className="bg-white text-secondary hover:bg-gray-100 px-4 py-2 rounded"
+          >
+            <FaFileExcel className="inline mr-2" />
+            XLSX
+          </button>
+          <button
             onClick={handlePrint}
-            icon={<FaPrint />}
-            tooltip="Print report"
-          />
+            className="bg-white text-secondary hover:bg-gray-100 px-4 py-2 rounded"
+          >
+            <FaPrint className="inline" />
+          </button>
         </div>
 
         {isLoading ? (
           <div className="text-center py-8">
-            <FaSyncAlt className="animate-spin text-4xl text-primary-600" />
-            <p className="mt-2 text-gray-600">Loading contributions...</p>
+            <FaSyncAlt className="animate-spin text-4xl text-primary-600 mx-auto mb-4" />
+            <p className="text-xl text-gray-600">Loading contributions...</p>
           </div>
         ) : (
-          <>
-            <div className="overflow-x-auto rounded-lg shadow-lg">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {[
-                      "No",
-                      "Invoice",
-                      "Source",
-                      "Amount",
-                      "Date",
-                      "Actions",
-                    ].map((header, index) => (
-                      <th
-                        key={header}
-                        className={`p-4 text-left text-gray-600 font-semibold ${
-                          index === 0
-                            ? "rounded-tl-lg"
-                            : index === 5
-                            ? "rounded-tr-lg no-print"
-                            : ""
-                        }`}
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filteredContributions.map((contribution, index) => (
-                    <tr
-                      key={contribution.id}
-                      className="hover:bg-gray-50 transition-colors border-b"
+          <div className="overflow-x-auto rounded-lg shadow-lg">
+            <table className="w-full border-separate border-spacing-y-2">
+              <thead>
+                <tr className="bg-gradient-to-l from-primary-start to-primary-end">
+                  {[
+                    "No",
+                    "Bill Code",
+                    "Source",
+                    "Amount",
+                    "Date",
+                    "Accounted",
+                    "Actions",
+                  ].map((header, index) => (
+                    <th
+                      key={header}
+                      className={`text-center text-white p-4 text-xl font-bold border-gray-200 ${
+                        index === 0
+                          ? "rounded-l-2xl"
+                          : index === 6
+                          ? "rounded-r-2xl"
+                          : ""
+                      }`}
                     >
-                      <td className="p-4">{index + 1}</td>
-                      <td className="p-4 font-mono text-primary-600">
-                        {contribution.invoiceNumber}
-                      </td>
-                      <td className="p-4">
-                        <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
-                          {contribution.source}
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredContributions.map((contribution, index) => (
+                  <tr key={contribution.id} className="bg-gray-100">
+                    <td className="p-4 text-md text-blue-900 text-center rounded-l-lg">
+                      {index + 1}
+                    </td>
+                    <td className="p-4 text-md text-center font-bold">
+                      {contribution.billCode}
+                    </td>
+                    <td className="p-4 text-md text-center">
+                      <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
+                        {contribution.source}
+                      </span>
+                    </td>
+                    <td className="p-4 text-md text-center font-semibold">
+                      ${contribution.amount.toLocaleString()}
+                    </td>
+                    <td className="p-4 text-md text-center text-gray-600">
+                      {format(new Date(contribution.date), "dd MMM yyyy")}
+                    </td>
+                    <td className="p-4 text-md text-center">
+                      {contribution.isAccounted ? (
+                        <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                          Yes
                         </span>
-                      </td>
-                      <td className="p-4 font-semibold">
-                        ${contribution.amount.toLocaleString()}
-                      </td>
-                      <td className="p-4 text-gray-600">
-                        {format(new Date(contribution.date), "dd MMM yyyy")}
-                      </td>
-                      <td className="p-4 flex gap-2 no-print">
+                      ) : (
+                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">
+                          No
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 relative rounded-r-lg text-center">
+                      <div className="w-full items-center justify-center flex gap-6">
                         <TooltipButton
-                          icon={<FaEye className="text-blue-600" />}
+                          icon={<FaEye className="text-primary-end text-xl" />}
                           onClick={() => handleViewDetails(contribution)}
                           tooltip="View details"
+                          className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
                         />
                         <TooltipButton
-                          icon={<FaTrash className="text-red-600" />}
+                          icon={<FaTrash className="text-red-400 text-xl" />}
                           onClick={() => handleDelete(contribution)}
                           tooltip="Delete record"
+                          className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
                         />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-            {filteredContributions.length === 0 && !isLoading && (
-              <div className="mt-8 text-center py-12 bg-gray-50 rounded-lg">
-                <p className="text-gray-500 text-lg">
-                  No records found for the selected criteria
-                </p>
-                <button
-                  onClick={resetFilters}
-                  className="mt-4 text-primary-600 hover:underline"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            )}
-          </>
+        {!isLoading && filteredContributions.length === 0 && (
+          <div className="mt-8 text-center py-12 bg-gray-50 rounded-lg">
+            <p className="text-gray-500 text-lg">
+              No records found for the selected criteria
+            </p>
+            <button
+              onClick={resetFilters}
+              className="mt-4 text-primary-600 hover:underline"
+            >
+              Clear all filters
+            </button>
+          </div>
         )}
       </div>
+
+      <ViewBillDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        billDetails={selectedBill}
+      />
     </AccountantDashBoard>
   );
 }
-
-// Additional components
-const ExportButton = ({ format, onClick }) => (
-  <button
-    onClick={() => onClick(format)}
-    className="flex items-center px-4 py-2 bg-white hover:bg-gray-50 border rounded-lg"
-  >
-    {format === "csv" ? (
-      <FaFileCsv className="mr-2 text-green-600" />
-    ) : (
-      <FaFileExcel className="mr-2 text-green-600" />
-    )}
-    Export {format.toUpperCase()}
-  </button>
-);
-
-const TooltipButton = ({ icon, onClick, tooltip }) => (
-  <>
-    <button
-      onClick={onClick}
-      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-      data-tooltip-id="tooltip"
-      data-tooltip-content={tooltip}
-    >
-      {icon}
-    </button>
-    <Tooltip id="tooltip" />
-  </>
-);
 
 export default FinancialContributions;
