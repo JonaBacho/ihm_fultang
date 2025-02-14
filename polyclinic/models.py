@@ -243,7 +243,7 @@ class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now=True)
     quantity = models.IntegerField(default=1)
     name = models.CharField(max_length=50, null=False, default="")
-    status = models.CharField(max_length=20, default="invalid")
+    status = models.CharField(max_length=20, default="invalid") 
     price = models.FloatField(default=5000)
     expiryDate = models.DateTimeField(auto_now=False)
     description = models.TextField(max_length=200, null=False, default="important")

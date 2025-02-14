@@ -21,92 +21,6 @@ auth_header_param = openapi.Parameter(
     required=True
 )
 
-
-immobilized_actives_prefixes = [str(i) for i in range(20, 29)]
-circulant_actives_prefixes = [str(i) for i in range(30, 50)]
-stable_resource_indexes = [str(i) for i in range(10, 20)]
-treasury_indexes = [str(i) for i in range(50,60)]
-circulant_passives_prefixes = [str(i) for i in range(40, 50)]
-equity_indexes = [str(i) for i in range(10, 16)]
-financial_debt_prefixes = [str(i) for i in range (16, 20)]
-stock_indexes = {str(i) for i in range(30, 40)}
-
-charges_prefixes = ['6']
-products_prefixes = ['7']
-sales_figure_prefixes = ['70', '71', '72', '73']
-sold_goods_prefixes = ['60', '61', '62','63']
-working_charges_prefixes = ['64', '65', '66', '67'] 
-
-depreciation_allocations_prefixes = ['68']
-provision_allocations_prefixes = ['69']
-financial_charges_prefixes = ['67']
-taxes_prefixes = ['89']
-
-operating_cash_inflows_prefixes = ['70', '71', '72', '73']
-operating_cash_outflows_prefixes = ['60', '61', '62', '63', '64', '65', '66']
-
-investment_cash_inflows_prefixes = ['82']
-investment_cash_outflows_prefixes = ['20', '21', '22', '23', '24', '25']
-
-financing_cash_inflows_prefixes = ['16', '17']
-financing_cash_outflows_prefixes = ['16', '17', '46']
-
-dividends_paid_prefixes = ['46']
-net_income_prefixes = ['13']
-
-commitments_received_prefixes = ['90']
-commitments_given_prefixes = ['91']
-
-
-def calculate_balance(prefixes):
-    balance = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
-    for prefix in prefixes:
-        balance[prefix] = {"soldeReel": 0, "soldePrevu": 0}
-        account_states = AccountState.objects.filter(account__number__startswith=prefix)
-        for state in account_states:
-            balance[prefix]["soldeReel"] += state.soldeReel
-            balance[prefix]["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
-    balance["total"] = total
-    return balance
-
-def calculate_treasury(prefixes, type):
-    treasury = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
-    for prefix in prefixes:
-        treasury[prefix] = {"soldeReel": 0, "soldePrevu": 0}
-        if type == "active":
-            account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="credit")
-        else:
-            account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="debit")
-        for state in account_states:
-            treasury[prefix]["soldeReel"] += state.soldeReel
-            treasury[prefix]["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
-    treasury['total'] = total
-    return treasury        
-
-def calculate_circulant_balance(prefixes, type):
-    balance = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
-    for prefix in prefixes:
-        balance[prefix] = {"soldeReel": 0, "soldePrevu": 0}
-        if type == "passive":
-            account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="creances")
-        else:
-            account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="null")
-        for state in account_states:
-            balance[prefix]["soldeReel"] += state.soldeReel
-            balance[prefix]["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
-    balance['total'] = total
-    return balance
-
-
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(
@@ -199,18 +113,18 @@ class BudgetExerciseViewSet(ModelViewSet):
         financial_debt = calculate_circulant_balance(financial_debt_prefixes)
         circulant_passive = calculate_circulant_balance(circulant_passives_prefixes, "passive")
         passive_treasury = calculate_treasury(treasury_indexes, "passive")
-        active = immobilized_active['total'] + circulant_active['total'] + active_treasury['total']
-        passive = equity['total'] + financial_debt['total'] + circulant_passive['total'] + passive_treasury['total']
-        working_capital = equity['total'] + financial_debt['total'] - immobilized_active['total']
-        working_capital_requirement = circulant_passive['total'] - circulant_active['total']
-        treasury = active_treasury['total'] - passive_treasury['total']
-        financial_autonomy_ratio = equity['total'] / passive
-        debt_to_equity_ratio = financial_debt['total'] / equity['total']
-        general_liquidity = circulant_active['total'] / circulant_passive['total']
+        active = immobilized_active['total']['soldePrevu'] + circulant_active['total']['soldePrevu'] + active_treasury['total']['soldePrevu']
+        passive = equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'] + circulant_passive['total']['soldePrevu'] + passive_treasury['total']['soldePrevu']
+        working_capital = equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'] - immobilized_active['total']['soldePrevu']
+        working_capital_requirement = circulant_passive['total']['soldePrevu'] - circulant_active['total']['soldePrevu']
+        treasury = active_treasury['total']['soldePrevu'] - passive_treasury['total']['soldePrevu']
+        financial_autonomy_ratio = equity['total']['soldePrevu'] / passive if passive != 0 else None
+        debt_to_equity_ratio = financial_debt['total']['soldePrevu'] / equity['total']['soldePrevu'] if equity['total']['soldePrevu'] != 0 else None
+        general_liquidity = circulant_active['total']['soldePrevu'] / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
         stock = calculate_balance(stock_indexes)
-        reduced_liquidity = (circulant_active['total'] - stock['total']) / circulant_passive['total']
-        immediate_liquidity = treasury['total'] / circulant_passive['total']
-        solvability_ratio = active / passive
+        reduced_liquidity = (circulant_active['total']['soldePrevu'] - stock['total']['soldePrevu']) / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
+        immediate_liquidity = treasury / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
+        solvability_ratio = active / passive if passive != 0 else None
         return Response(
             {
                 "Actif":{
@@ -220,7 +134,11 @@ class BudgetExerciseViewSet(ModelViewSet):
                     "TotalActif": active
                 },
                 "Passif":{
-                    "RessourcesStables": equity + financial_debt,
+                    # "RessourcesStables": equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'],
+                    "RessourcesStables":{
+                        "Capitaux": equity,
+                        "DettesFinancieres": financial_debt
+                    },
                     "PassifCirculant": circulant_passive,
                     "TresoreriePassive": passive_treasury,
                     "TotalPassif": passive
@@ -255,15 +173,15 @@ class BudgetExerciseViewSet(ModelViewSet):
         products = calculate_balance(products_prefixes)
         sales_figure = calculate_balance(sales_figure_prefixes)
         sold_goods = calculate_balance(sold_goods_prefixes)
-        gross_margin = sales_figure['total'] - sold_goods['total']
+        gross_margin = sales_figure['total']['soldePrevu'] - sold_goods['total']['soldePrevu']
         working_charges = calculate_balance(working_charges_prefixes)
-        gross_operating_surplus = gross_margin - working_charges['total']
+        gross_operating_surplus = gross_margin - working_charges['total']['soldePrevu']
         depreciation_allocations = calculate_balance(depreciation_allocations_prefixes)
         provision_allocations = calculate_balance(provision_allocations_prefixes)
-        working_result = gross_operating_surplus - depreciation_allocations['total'] - provision_allocations['total']
+        working_result = gross_operating_surplus - depreciation_allocations['total']['soldePrevu'] - provision_allocations['total']['soldePrevu']
         financial_charges = calculate_balance(financial_charges_prefixes)
         taxes = calculate_balance(taxes_prefixes)
-        net_result = working_result - financial_charges['total'] - taxes['total']
+        net_result = working_result - financial_charges['total']['soldePrevu'] - taxes['total']['soldePrevu']
         return Response({
                 "Charges": charges, 
                 "Produits": products,
@@ -289,9 +207,9 @@ class BudgetExerciseViewSet(ModelViewSet):
         financing_cash_outflows = calculate_balance(financing_cash_outflows_prefixes)
         investment_cash_inflows = calculate_balance(investment_cash_inflows_prefixes)
         investment_cash_outflows = calculate_balance(investment_cash_outflows_prefixes)
-        operating_treasury_flow = operating_cash_inflows['total'] - operating_cash_outflows['total']
-        financing_treasury_flow = financing_cash_inflows['total'] - financing_cash_outflows['total']
-        investment_treasury_flow = investment_cash_inflows['total'] - investment_cash_outflows['total']
+        operating_treasury_flow = operating_cash_inflows['total']['soldePrevu'] - operating_cash_outflows['total']['soldePrevu']
+        financing_treasury_flow = financing_cash_inflows['total']['soldePrevu'] - financing_cash_outflows['total']['soldePrevu']
+        investment_treasury_flow = investment_cash_inflows['total']['soldePrevu'] - investment_cash_outflows['total']['soldePrevu']
         return Response({
             "ActivitesDExploitation":{
                 "Encaissements": operating_cash_inflows,

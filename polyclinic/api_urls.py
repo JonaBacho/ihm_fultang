@@ -28,6 +28,7 @@ router.register(r'consultation-type', ConsultationTypeViewSet, basename='consult
 router.register(r'department', DepartmentViewSet, basename='department')
 #router.register(r'exam', ExamViewSet, basename='exam')
 router.register(r'exam-result', ExamResultViewSet, basename='exam-result')
+router.register(r'exam', ExamViewSet, basename='exam')
 router.register(r'exam-request', ExamRequestViewSet, basename='exam-request')
 router.register(r'hospital', HospitalisationViewSet, basename='hospital')
 router.register(r'medical-folder', MedicalFolderViewSet, basename='medical-folder')
