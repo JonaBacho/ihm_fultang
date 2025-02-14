@@ -6,8 +6,6 @@ import {AppRoutesPaths} from "./appRouterPaths.js";
 
 
 
-
-
 export function AppRoute()
 {
     const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Authentication/Login.jsx")).LoginPage}));
