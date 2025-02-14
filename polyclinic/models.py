@@ -224,6 +224,8 @@ class ExamRequest(models.Model):
 class ExamResult(models.Model):
     addDate = models.DateTimeField(auto_now=True)
     notes = models.TextField(max_length=10000, blank=True, null=True)
+    examFile = models.FileField(upload_to="exam_results/", blank=True, null=True)
+
 
     idExamRequest = models.ForeignKey("ExamRequest", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
