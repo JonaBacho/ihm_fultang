@@ -45,29 +45,45 @@ export default function MedicationPrescriptionCard({prescriptions, availableMedi
                             <label
                                 className="block text-sm font-medium text-gray-700 mb-2">Medicine</label>
                             <select
-                                value={prescription.medication}
-                                onChange={(e) => updatePrescription(prescription.id, "medication", e.target.value)}
+                                value={prescription.medicament}
+                                onChange={(e) => updatePrescription(prescription.id, "medicament", e.target.value)}
                                 className={applyInputStyle()}
                             >
                                 <option value="">Select a medication</option>
                                 {availableMedications.map((med) => (
-                                    <option key={med.id} value={med.name}>
+                                    <option key={med.id} value={med.id}>
                                         {med.name}
                                     </option>
                                 ))}
                                 <option value={"Other"}>Other Medication</option>
                             </select>
                         </div>
-                        <div>
-                            <label
-                                className="block text-sm font-medium text-gray-700 mb-2">Dosage</label>
-                            <input
-                                type="text"
-                                value={prescription.dosage}
-                                onChange={(e) => updatePrescription(prescription.id, "dosage", e.target.value)}
-                                className={applyInputStyle()}
-                                placeholder="Eg: 1000mg"
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label
+                                    className="block text-sm font-medium text-gray-700 mb-2">Dosage</label>
+                                <input
+                                    type="text"
+                                    value={prescription.dosage}
+                                    onChange={(e) => updatePrescription(prescription.id, "dosage", e.target.value)}
+                                    className={applyInputStyle()}
+                                    placeholder="Eg: 1000mg"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                                <input
+                                    type="text"
+                                    value={prescription.quantity}
+                                    onChange={(e) => updatePrescription(prescription.id, "quantity", e.target.value)}
+                                    className={applyInputStyle()}
+                                    placeholder="Eg: 1000mg"
+                                />
+                            </div>
+
+
                         </div>
                         <div>
                             <label

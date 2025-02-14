@@ -13,8 +13,10 @@ export default  function Loader ({ size , color}){
     }
 
     return (
-        <div className="flex justify-center items-center">
-            <div className={`animate-spin rounded-full border-t-2 border-b-2 border-${color} ${sizeClasses[size]}`}></div>
+        <div className="flex justify-center items-center flex-col">
+            <div
+                className={`animate-spin rounded-full border-t-2 border-b-2 border-${color} ${sizeClasses[size]}`}></div>
+                <p className="text-primary-end text-xl font-semibold animate-bounce mt-5">Loading data ... </p>
         </div>
     )
 }

@@ -17,7 +17,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { DoctorDashboard } from './DoctorComponents/DoctorDashboard.jsx';
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useCalculateAge} from "../../Utils/compute.js";
 import {formatDateOnly} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
@@ -26,28 +26,27 @@ import ExamPrescriptionCard from "./DoctorComponents/ExamPrescriptionCard.jsx";
 import SpecialistPrescriptionCard from "./DoctorComponents/SpecialistPrescriptionCard.jsx";
 import AppointmentPrescriptionCard from "./DoctorComponents/AppointmentPrescriptionCard.jsx";
 import DiagnosticCard from "./DoctorComponents/DiagnosticCard.jsx";
-import axios from "axios";
 import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 
-const availableExams = [
+/*const availableExams = [
     { id: 1, name: "Radiographie pulmonaire", price: 15000 },
     { id: 2, name: "Analyse de sang complète", price: 25000 },
     { id: 3, name: "Scanner thoracique", price: 45000 },
-]
+]*/
 
-const availableMedications = [
+/*const availableMedications = [
     { id: 1, name: "Paracétamol 1000mg" },
     { id: 2, name: "Ibuprofène 400mg" },
     { id: 3, name: "Amoxicilline 500mg" },
-]
+]*/
 
-const availableSpecialists = [
+/*const availableSpecialists = [
     { id: 1, name: "Dr. Martin - Cardiologie" },
     { id: 2, name: "Dr. Dubois - Pneumologie" },
     { id: 3, name: "Dr. Bernard - Neurologie" },
-]
+]*/
 
 
 
@@ -71,12 +70,12 @@ const consultationSteps = [
         label: 'Exams',
         icon: Hospital
     },
-    {
+   /* {
         id:3,
         name: 'specialist prescription',
         label: 'Transfer to a specialist',
         icon: UserPlus
-    },
+    }, */
     {
         id:4,
         name: 'appointment',
@@ -94,23 +93,29 @@ export function DoctorConsultationDetails() {
     const consultation = state?.consultation || {};
     const patientInfo = consultation?.idPatient;
     const medicalPageInfo = consultation?.idMedicalFolderPage;
+    const [availableMedications, setAvailableMedication] = useState([]);
+    const [availableExams, setAvailableExams]  = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+   // const [availableSpecialists, setAvailableSpecilists] = useState([]);
 
 
     const [activeTab, setActiveTab] = useState("diagnostic");
     const [prescriptions, setPrescriptions] = useState([
         {
             id: Date.now(),
-            medication: "",
+            medicament: "",
             dosage: "",
             frequency: "",
             duration: "",
             instructions: "",
+            quantity:"",
         },
     ]);
     const [exams, setExams] = useState([
         {
             id: Date.now(),
-            exam: "",
+            examName: "",
+            idExam:"",
             instructions: "",
             isCustom: false,
         },
@@ -175,11 +180,12 @@ export function DoctorConsultationDetails() {
             ...prescriptions,
             {
                 id: Date.now(),
-                medication: "",
+                medicament: "",
                 dosage: "",
                 frequency: "",
                 duration: "",
                 instructions: "",
+                quantity:"",
             },
         ])
     }
@@ -191,12 +197,14 @@ export function DoctorConsultationDetails() {
     }
 
 
-    function removePrescription (id) {
+    function removePrescription (id)
+    {
         setPrescriptions(prescriptions.filter((prescription) => prescription.id !== id))
     }
 
 
-    function updatePrescription (id, field, value) {
+    function updatePrescription (id, field, value)
+    {
         setPrescriptions(prescriptions.map((prescription) =>
             (
                 prescription.id === id ?
@@ -210,7 +218,8 @@ export function DoctorConsultationDetails() {
     }
 
 
-    function addExam () {
+    function addExam ()
+    {
         setExams([
             ...exams,
             {
@@ -221,6 +230,67 @@ export function DoctorConsultationDetails() {
             },
         ])
     }
+
+    async function loadMedication()
+    {
+        try {
+            const response = await axiosInstance.get("/medicament/");
+            if (response.status === 200)
+            {
+               // console.log(response.data);
+                setAvailableMedication(response.data);
+            }
+
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+
+    }
+
+    async function loadExams()
+    {
+        try
+        {
+            const response = await axiosInstance.get("/medicament/");
+            if (response.status === 200)
+            {
+               // console.log(response.data);
+                setAvailableExams(response.data);
+            }
+
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+  /*  async function loadSpecialist()
+    {
+        try {
+            const response = await axiosInstance.get("/medicament/");
+            if (response.status === 200)
+            {
+               // console.log(response.data);
+                setAvailableSpecilists(response.data);
+            }
+        }
+        catch (error)
+        {
+            console.log(error);
+
+        }
+    }
+   */
+
+
+    useEffect(() => {
+        loadMedication();
+        loadExams();
+        console.log(consultation);
+        console.log("examens ",exams);
+    }, [exams, exams.length, prescriptions, prescriptions.length]);
 
 
     function removeExam (id)  {
@@ -237,42 +307,63 @@ export function DoctorConsultationDetails() {
 
     async function handleSubmit (e) {
         e.preventDefault();
+        setIsLoading(true);
         let medicalFolderPageData =
             {
                 diagnostic: diagnostic,
                 doctorNote: doctorNote,
             }
+
+
         let prescriptionData = {
-            prescriptions: prescriptions,
+
+            prescription_drugs: prescriptions.map((prescription) => Object.fromEntries(Object.entries(prescription).filter(([key]) => key !== "id"))),
             note:'',
+            idConsultation: consultation?.id,
             idPatient: patientInfo?.id,
-            idMedicalFolderPage: medicalPageInfo?.id,
-            idMedicalStaff: consultation?.idMedicalStaffGiver
+            idMedicalStaff: consultation?.idMedicalStaffGiver?.id
+        }
+
+        let examsData = {
+            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => key !== "id" && key !== "isCustom" && exam.idExam !== 'another'))),
+            idConsultation: consultation?.id,
+            idPatient: patientInfo?.id,
+            idMedicalStaff: consultation?.idMedicalStaffGiver?.id
+
         }
 
         try
         {
             if (prescriptions)
             {
-                const prescriptionRequestResponse = await axiosInstance.post("/prescription/", prescriptionData);
-                if (prescriptionRequestResponse.status === 201)
+                /*const prescriptionResponse = await axiosInstance.post("/prescription/", prescriptionData);
+                if (prescriptionResponse.status === 201)
                 {
-
-                }
-
+                    console.log(prescriptionResponse?.data);
+                }*/
             }
             if (exams)
             {
-
+                /*const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);
+                if (examRequestResponse.status === 201)
+                {
+                    console.log(examRequestResponse?.data);
+                }*/
+                console.log(examsData);
             }
-            const response = await axiosInstance.put(`/medical-folder/${medicalPageInfo?.idMedicalFolder}/update-page/${medicalPageInfo?.id}/`, medicalFolderPageData );
-            if (response.status === 200)
+
+           /* const consultationUpdateResponse = await axiosInstance.put(`/medical-folder/${medicalPageInfo?.idMedicalFolder}/update-page/${medicalPageInfo?.id}`, medicalFolderPageData);
+            setIsLoading(false);
+            if (consultationUpdateResponse.status === 200)
             {
+                console.log(consultationUpdateResponse?.data);
+            }*/
 
-
-            }
         }
-        catch (error) {
+
+        catch (error)
+        {
+            setIsLoading(false);
             console.log(error);
         }
 
@@ -413,7 +504,7 @@ export function DoctorConsultationDetails() {
                             {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}/>}
                             {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle}/>}
                             {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle}/>}
-                            {activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>}
+                            {/*activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>*/}
                             {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle}/>}
                             <div className="mt-6 flex justify-end space-x-4">
                                 <button type="submit"

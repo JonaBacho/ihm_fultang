@@ -44,15 +44,14 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                     </Tooltip>
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Exam
-                                Type</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Exam Type</label>
                             <select
                                 value={exam.exam}
                                 onChange={(e) => {
                                     const isCustom = e.target.value === "another"
                                     setExams(exams.map((ex) => (ex.id === exam.id ? {
                                         ...ex,
-                                        exam: e.target.value,
+                                        idExam: e.target.value,
                                         isCustom: isCustom,
                                     } : ex)))
                                 }}
@@ -60,7 +59,7 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                             >
                                 <option value="">Select an exam</option>
                                 {availableExams.map((e) => (
-                                    <option key={e.id} value={e.name}>
+                                    <option key={e.id} value={e.id}>
                                         {e.name} - {e.price} FCFA
                                     </option>
                                 ))}
@@ -74,7 +73,8 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                                     placeholder="Specify the exam"
                                     onChange={(e) => setExams(exams.map((ex) => (ex.id === exam.id ? {
                                         ...ex,
-                                        exam: e.target.value
+                                        examName: e.target.value,
+                                        idExam:'',
                                     } : ex)))}
                                     className={applyInputStyle()}
                                 />

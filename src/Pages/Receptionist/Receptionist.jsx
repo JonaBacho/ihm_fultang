@@ -146,9 +146,8 @@ export function Receptionist()
                 {/*List of registered patients*/}
 
                 {waitData ? (
-                    <div className="h-[500px] w-full flex justify-center items-center flex-col">
+                    <div className="h-[500px] w-full flex justify-center items-center">
                         <Loader size={"medium"} color={"primary-end"}/>
-                        <p className="text-primary-end text-xl font-semibold animate-bounce mt-5">Loading data ... </p>
                     </div>) :
                     (
                         <div className="ml-5 mr-5 ">
