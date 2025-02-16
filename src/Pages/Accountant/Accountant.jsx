@@ -19,14 +19,14 @@ export function Accountant() {
     {
       icon: DollarSign,
       label: "Add Expense",
-      onClick: () => alert("Add Expense"),
+      onClick: () => navigate("/accountant/create-facture"),
     },
     {
       icon: FileText,
       label: "View Reports",
       onClick: () => navigate("/accountant/financial-reports"),
     },
-    { icon: Settings, label: "Settings", onClick: () => alert("Settings") },
+    //{ icon: Settings, label: "Settings", onClick: () => alert("Settings") },
   ];
 
   return (

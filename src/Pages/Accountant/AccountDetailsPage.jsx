@@ -45,6 +45,7 @@ export function AccountDetailsPage() {
       const accountResponse = await axiosInstanceAccountant.get(
         `/acccount-state/${accountId}/`
       );
+      console.log(accountResponse);
       const invoicesResponse = await axiosInstance.get(
         url + `/?account_id=${accountDetail.id}`
       );
