@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Medicament
+from polyclinic.permissions.medicament_permissions import MedicamentPermissions
 from polyclinic.serializers.medicament_serializers import MedicamentSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
@@ -93,7 +94,7 @@ auth_header_param = openapi.Parameter(
 )
 class MedicamentViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MedicamentPermissions]
 
     def get_queryset(self):
         queryset = Medicament.objects.all()
