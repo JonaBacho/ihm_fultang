@@ -244,7 +244,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=True, methods=['get'])
     def get_for_account(self, request):
         account_id = request.query_params.get('account_id')
 
@@ -353,7 +353,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=True, methods=['get'])
     def get_by_operation(self, request):
         operation_id = request.query_params.get('operation_id')
 
@@ -390,7 +390,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=True, methods=['get'])
     def get_by_medical_operator(self, request):
         medical_operator_id = request.query_params.get('medical_operator_id')
 
