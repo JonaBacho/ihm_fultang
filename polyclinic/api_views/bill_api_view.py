@@ -423,4 +423,4 @@ class BillViewSet(ModelViewSet):
     def list_with_source(self, request):
         bills = Bill.objects.all()
         serializer = BillSerializer(bills, many=True)
-        return Response(serializer, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
