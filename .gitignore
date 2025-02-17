@@ -10,3 +10,5 @@ db.sqlite3
 mon_env/
 .env
 media/
+.qodo/
+.vscode/
