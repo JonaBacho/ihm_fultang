@@ -38,17 +38,17 @@ commitments_given_prefixes = ['91']
 
 def calculate_balance(prefixes):
     balance = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
+    total = 0
     items = []
     for prefix in prefixes:
-        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "soldeReel": 0, "soldePrevu": 0}
+        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "amount":0}
         # balance[prefix] = {"soldeReel": 0, "soldePrevu": 0}
         account_states = AccountState.objects.filter(account__number__startswith=prefix)
         for state in account_states:
-            item["soldeReel"] += state.soldeReel
-            item["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
+            item["amount"] += state.soldePrevu
+            # item["soldePrevu"] += state.soldePrevu
+            # total['soldeReel'] += state.soldeReel
+            total += state.soldePrevu
         items.append(item)
     balance["items"] = items
     balance["total"] = total
@@ -56,126 +56,128 @@ def calculate_balance(prefixes):
 
 def calculate_treasury(prefixes, type):
     treasury = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
+    total = 0
     items = []
     for prefix in prefixes:
-        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "soldeReel": 0, "soldePrevu": 0}
+        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Compte incomu"), "amount": 0}
         # treasury[prefix] = {"soldeReel": 0, "soldePrevu": 0}
         if type == "active":
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="credit")
         else:
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="debit")
         for state in account_states:
-            item["soldeReel"] += state.soldeReel
-            item["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
+            # item["amount"] += state.soldeReel
+            item["amount"] += state.soldePrevu
+            # total['soldeReel'] += state.soldeReel
+            total += state.soldePrevu
         items.append(item)
+    treasury['items'] = items
     treasury['total'] = total
     return treasury        
 
 def calculate_circulant_balance(prefixes, type=None):
     balance = {}
-    total = {"soldeReel": 0, "soldePrevu": 0}
+    total = 0
     items = []
     for prefix in prefixes:
-        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "soldeReel": 0, "soldePrevu": 0}
+        item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "amount": 0}
         if type == "passive":
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="creances")
         else:
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="null")
         for state in account_states:
-            item["soldeReel"] += state.soldeReel
-            item["soldePrevu"] += state.soldePrevu
-            total['soldeReel'] += state.soldeReel
-            total['soldePrevu'] += state.soldePrevu
+            # item["soldeReel"] += state.soldeReel
+            item["amount"] += state.soldePrevu
+            # total['soldeReel'] += state.soldeReel
+            total['amount'] += state.soldePrevu
         items.append(item)
+    balance['items'] = items
     balance['total'] = total
     return balance
 
 ACCOUNTS_MAPPING = {
     "10": "Capital",
-    "11": "Primes d’émission, de fusion, d’apport",
-    "12": "Réserves",
-    "13": "Report à nouveau",
-    "14": "Résultat net de l'exercice",
-    "15": "Subventions, provisions et autres fonds propres",
-    "16": "Emprunts et dettes assimilées",
-    "17": "Dettes de location acquisition",
-    "18": "Comptes de liaison des établissements et sociétés en participation",
-    "19": "Provisions pour risques et charges",
+    "11": "Share premiums, merger premiums, contribution premiums",
+    "12": "Reserves",
+    "13": "Retained earnings",
+    "14": "Net income for the year",
+    "15": "Grants, provisions, and other equity funds",
+    "16": "Borrowings and similar debts",
+    "17": "Lease liabilities",
+    "18": "Liaison accounts for branches and joint ventures",
+    "19": "Provisions for risks and charges",
 
-    "20": "Immobilisations incorporelles",
-    "21": "Immobilisations corporelles",
-    "22": "Immobilisations financières",
-    "23": "Immobilisations en cours",
-    "24": "Immobilisations affectées aux activités spécifiques",
-    "25": "Amortissements des immobilisations",
-    "26": "Provisions pour dépréciation des immobilisations",
+    "20": "Intangible assets",
+    "21": "Tangible assets",
+    "22": "Financial assets",
+    "23": "Assets under construction",
+    "24": "Assets allocated to specific activities",
+    "25": "Depreciation of assets",
+    "26": "Provisions for impairment of assets",
 
-    "30": "Matières premières et fournitures",
-    "31": "Autres approvisionnements",
-    "32": "En-cours de production de biens",
-    "33": "En-cours de production de services",
-    "34": "Produits intermédiaires et résiduels",
-    "35": "Marchandises",
-    "36": "Provisions pour dépréciation des stocks",
+    "30": "Raw materials and supplies",
+    "31": "Other supplies",
+    "32": "Work in progress for goods",
+    "33": "Work in progress for services",
+    "34": "Intermediate and residual products",
+    "35": "Merchandise",
+    "36": "Provisions for impairment of inventory",
 
-    "40": "Fournisseurs et comptes rattachés",
-    "41": "Clients et comptes rattachés",
-    "42": "Personnel et comptes rattachés",
-    "43": "Organismes sociaux",
-    "44": "État et collectivités publiques",
-    "45": "Associés, comptes courants",
-    "46": "Débiteurs et créditeurs divers",
-    "47": "Comptes transitoires ou d’attente",
-    "48": "Provisions pour dépréciation des comptes de tiers",
-    "49": "Engagements par signature",
+    "40": "Suppliers and related accounts",
+    "41": "Customers and related accounts",
+    "42": "Personnel and related accounts",
+    "43": "Social security organizations",
+    "44": "State and public authorities",
+    "45": "Shareholders, current accounts",
+    "46": "Sundry debtors and creditors",
+    "47": "Suspense or clearing accounts",
+    "48": "Provisions for impairment of third-party accounts",
+    "49": "Commitments by signature",
 
-    "50": "Valeurs mobilières de placement",
-    "51": "Banques et établissements financiers",
-    "52": "Caisse",
-    "53": "Instruments de trésorerie",
-    "54": "Autres comptes financiers",
-    "55": "Virements internes",
-    "56": "Effets à payer",
-    "57": "Effets à recevoir",
-    "58": "Régularisation de trésorerie",
-    "59": "Provisions pour dépréciation des comptes financiers",
+    "50": "Marketable securities",
+    "51": "Banks and financial institutions",
+    "52": "Cash",
+    "53": "Treasury instruments",
+    "54": "Other financial accounts",
+    "55": "Internal transfers",
+    "56": "Bills payable",
+    "57": "Bills receivable",
+    "58": "Treasury adjustments",
+    "59": "Provisions for impairment of financial accounts",
 
-    "60": "Achats",
-    "61": "Services extérieurs",
-    "62": "Autres charges externes",
-    "63": "Impôts et taxes",
-    "64": "Charges de personnel",
-    "65": "Autres charges de gestion courante",
-    "66": "Charges financières",
-    "67": "Charges exceptionnelles",
-    "68": "Dotations aux amortissements et provisions",
-    "69": "Participation des travailleurs, impôts sur les bénéfices et assimilés",
+    "60": "Purchases",
+    "61": "External services",
+    "62": "Other external expenses",
+    "63": "Taxes and duties",
+    "64": "Personnel expenses",
+    "65": "Other operating expenses",
+    "66": "Financial expenses",
+    "67": "Exceptional expenses",
+    "68": "Depreciation and provisions",
+    "69": "Employee profit-sharing, income taxes, and similar items",
 
-    "70": "Ventes de marchandises, produits finis et services",
-    "71": "Production stockée",
-    "72": "Production immobilisée",
-    "73": "Subventions d'exploitation",
-    "74": "Autres produits de gestion courante",
-    "75": "Produits financiers",
-    "76": "Produits exceptionnels",
-    "77": "Reprises sur amortissements et provisions",
-    "78": "Transferts de charges",
-    "79": "Dotations exceptionnelles",
+    "70": "Sales of goods, finished products, and services",
+    "71": "Stocked production",
+    "72": "Capitalized production",
+    "73": "Operating grants",
+    "74": "Other operating income",
+    "75": "Financial income",
+    "76": "Exceptional income",
+    "77": "Reversals of depreciation and provisions",
+    "78": "Transfers of charges",
+    "79": "Exceptional provisions",
 
-    "80": "Comptes spéciaux",
-    "81": "Résultats analytiques",
-    "82": "Résultats analytiques par fonction",
-    "83": "Comptes d’engagement",
-    "84": "Comptes de variation de patrimoine",
-    "85": "Comptes de contrepartie des engagements",
-    "86": "Comptes de répartition",
-    "87": "Comptes d’ordre",
-    "88": "Comptes des opérations de clôture et de réouverture",
-    "89": "Comptes d’affectation des résultats",
+    "80": "Special accounts",
+    "81": "Analytical results",
+    "82": "Analytical results by function",
+    "83": "Commitment accounts",
+    "84": "Heritage variation accounts",
+    "85": "Counterpart accounts for commitments",
+    "86": "Allocation accounts",
+    "87": "Memorandum accounts",
+    "88": "Closing and reopening accounts",
+    "89": "Result allocation accounts",
 
-    "90": "Engagements donnés",
-    "91": "Engagements reçus"
+    "90": "Commitments given",
+    "91": "Commitments received"
 }
