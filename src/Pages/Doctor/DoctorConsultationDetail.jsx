@@ -9,7 +9,6 @@ import {
     AlertTriangle,
     PillIcon as Pills,
     Hospital,
-    UserPlus,
     CalendarCheck,
     User, Calendar, MapPin, Phone, Printer, ArrowLeft
 } from 'lucide-react';
@@ -27,26 +26,10 @@ import SpecialistPrescriptionCard from "./DoctorComponents/SpecialistPrescriptio
 import AppointmentPrescriptionCard from "./DoctorComponents/AppointmentPrescriptionCard.jsx";
 import DiagnosticCard from "./DoctorComponents/DiagnosticCard.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
+import Wait from "../Modals/wait.jsx";
+import {SuccessModal} from "../Modals/SuccessModal.jsx";
+import {ErrorModal} from "../Modals/ErrorModal.jsx";
 
-
-
-/*const availableExams = [
-    { id: 1, name: "Radiographie pulmonaire", price: 15000 },
-    { id: 2, name: "Analyse de sang complète", price: 25000 },
-    { id: 3, name: "Scanner thoracique", price: 45000 },
-]*/
-
-/*const availableMedications = [
-    { id: 1, name: "Paracétamol 1000mg" },
-    { id: 2, name: "Ibuprofène 400mg" },
-    { id: 3, name: "Amoxicilline 500mg" },
-]*/
-
-/*const availableSpecialists = [
-    { id: 1, name: "Dr. Martin - Cardiologie" },
-    { id: 2, name: "Dr. Dubois - Pneumologie" },
-    { id: 3, name: "Dr. Bernard - Neurologie" },
-]*/
 
 
 
@@ -95,7 +78,18 @@ export function DoctorConsultationDetails() {
     const medicalPageInfo = consultation?.idMedicalFolderPage;
     const [availableMedications, setAvailableMedication] = useState([]);
     const [availableExams, setAvailableExams]  = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+   // const [isLoading, setIsLoading] = useState(false);
+    const [isUpdatingConsultation, setIsUpdatingConsultation] = useState(false);
+    const [isPrescribing, setIsPrescribing] = useState(false);
+    const [isPrescribingExam, setIsPrescribingExams] = useState(false);
+    const [isEndingConsultation, setIsEndingConsultation] = useState(false);
+    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+
+
    // const [availableSpecialists, setAvailableSpecilists] = useState([]);
 
 
@@ -116,8 +110,11 @@ export function DoctorConsultationDetails() {
             id: Date.now(),
             examName: "",
             idExam:"",
-            instructions: "",
+            notes: "",
             isCustom: false,
+            idConsultation: consultation?.id,
+            idPatient: patientInfo?.id,
+            idMedicalStaff: consultation?.idMedicalStaffGiver?.id
         },
     ]);
     const [diagnostic, setDiagnostic] = useState("");
@@ -174,7 +171,6 @@ export function DoctorConsultationDetails() {
 
 
 
-
     function addPrescription (){
         setPrescriptions([
             ...prescriptions,
@@ -190,6 +186,7 @@ export function DoctorConsultationDetails() {
         ])
     }
 
+
     function getConsultationStepsStyles (isActive)  {
         return isActive
             ? 'border-b-4 border-primary-end text-primary-end font-bold'
@@ -201,6 +198,7 @@ export function DoctorConsultationDetails() {
     {
         setPrescriptions(prescriptions.filter((prescription) => prescription.id !== id))
     }
+
 
 
     function updatePrescription (id, field, value)
@@ -224,12 +222,16 @@ export function DoctorConsultationDetails() {
             ...exams,
             {
                 id: Date.now(),
-                exam: "",
-                instructions: "",
+                examName: "",
+                notes: "",
                 isCustom: false,
+                idConsultation: consultation?.id,
+                idPatient: patientInfo?.id,
+                idMedicalStaff: consultation?.idMedicalStaffGiver?.id
             },
         ])
     }
+
 
     async function loadMedication()
     {
@@ -249,14 +251,15 @@ export function DoctorConsultationDetails() {
 
     }
 
+
     async function loadExams()
     {
         try
         {
-            const response = await axiosInstance.get("/medicament/");
+            const response = await axiosInstance.get("/exam/");
             if (response.status === 200)
             {
-                console.log("exams ", response.data);
+                //console.log("exams ", response.data);
                 setAvailableExams(response.data);
             }
 
@@ -265,6 +268,9 @@ export function DoctorConsultationDetails() {
             console.log(error);
         }
     }
+
+
+
 
   /*  async function loadSpecialist()
     {
@@ -288,9 +294,7 @@ export function DoctorConsultationDetails() {
     useEffect(() => {
         loadMedication();
         loadExams();
-        //console.log(consultation);
-        //console.log("examens ",exams);
-    }, [exams, exams.length, prescriptions, prescriptions.length]);
+    }, []);
 
 
     function removeExam (id)  {
@@ -305,16 +309,43 @@ export function DoctorConsultationDetails() {
 
 
 
-    async function handleSubmit (e) {
+
+
+
+
+    async function updateConsultation(e)
+    {
         e.preventDefault();
-        setIsLoading(true);
+        setIsUpdatingConsultation(true);
         let medicalFolderPageData =
             {
                 diagnostic: diagnostic,
                 doctorNote: doctorNote,
             }
+        try
+        {
+            const consultationUpdateResponse = await axiosInstance.put(`/medical-folder/${medicalPageInfo?.idMedicalFolder}/update-page/${medicalPageInfo?.id}/`, medicalFolderPageData);
+            setIsUpdatingConsultation(false);
+            if (consultationUpdateResponse.status === 200)
+            {
+                console.log(consultationUpdateResponse?.data);
+            }
+        }
+        catch (error)
+        {
+            setIsUpdatingConsultation(false);
+            console.log(error);
+        }
+
+    }
 
 
+
+
+    async function handlePrescribeMedicament(e)
+    {
+        e.preventDefault();
+        setIsPrescribing(true);
         let prescriptionData = {
 
             prescription_drugs: prescriptions.map((prescription) => Object.fromEntries(Object.entries(prescription).filter(([key]) => key !== "id"))),
@@ -324,62 +355,96 @@ export function DoctorConsultationDetails() {
             idMedicalStaff: consultation?.idMedicalStaffGiver?.id
         }
 
-        let examsData = {
-            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
-            idConsultation: consultation?.id,
-            idPatient: patientInfo?.id,
-            idMedicalStaff: consultation?.idMedicalStaffGiver?.id
-
-        }
-
         try
         {
-            if (prescriptions)
+            const prescriptionResponse = await axiosInstance.post("/prescription/", prescriptionData);
+            setIsPrescribing(false);
+            if (prescriptionResponse.status === 201)
             {
-                /*const prescriptionResponse = await axiosInstance.post("/prescription/", prescriptionData);
-                if (prescriptionResponse.status === 201)
-                {
-                    console.log(prescriptionResponse?.data);
-                }*/
+                console.log(prescriptionResponse?.data);
             }
-            if (exams)
-            {
-                /*const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);
-                if (examRequestResponse.status === 201)
-                {
-                    console.log(examRequestResponse?.data);
-                }*/
-                console.log(examsData);
-            }
-
-           /* const consultationUpdateResponse = await axiosInstance.put(`/medical-folder/${medicalPageInfo?.idMedicalFolder}/update-page/${medicalPageInfo?.id}`, medicalFolderPageData);
-            setIsLoading(false);
-            if (consultationUpdateResponse.status === 200)
-            {
-                console.log(consultationUpdateResponse?.data);
-            }*/
-
         }
-
         catch (error)
         {
-            setIsLoading(false);
+            setIsPrescribing(false);
             console.log(error);
+            
         }
 
+        console.log(prescriptionData);
+    }
 
 
-        console.log("Soumission de la consultation:", {
-            diagnostic,
-            doctorNote,
-            prescriptions,
-            exams,
-        })
+    async function endConsultation()
+    {
+        setIsEndingConsultation(true);
+        let updatedData =
+            {
+                state: 'InProgress'
+            }
+        try
+        {
+            const response = await axiosInstance.patch(`/consultation/${consultation?.id}/`, updatedData);
+            setIsEndingConsultation(false);
+            if (response.status === 200)
+            {
+                setSuccessMessage("")
+                setErrorMessage("");
+                setCanOpenErrorMessageModal(false);
+                setCanOpenSuccessModal(true);
+                console.log(response?.data);
+            }
+        }
+        catch (error)
+        {
+            setIsEndingConsultation(false);
+            setSuccessMessage("");
+            setErrorMessage(`Something went wrong, when ending consultation with ${patientInfo?.firstName + patientInfo?.lastName}, please try again!`);
+            setCanOpenSuccessModal(false);
+            setCanOpenErrorMessageModal(true);
+            console.log(error);
+        }
     }
 
 
 
+
+    async function handlePrescribeExams(e)
+    {
+        e.preventDefault();
+        setIsPrescribingExams(true);
+        let examsData = {
+            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
+        }
+        try
+        {
+            const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);
+            setIsPrescribingExams(false);
+            if (examRequestResponse.status === 201)
+            {
+                console.log(examRequestResponse?.data);
+            }
+            console.log(examsData);
+        }
+        catch (error)
+        {
+            setIsPrescribingExams(false);
+            console.log(error);
+        }
+    }
+
+
+    function closeConsultation()
+    {
+        navigate(-1);
+    }
+
+
+
+
     const navigate = useNavigate();
+
+
 
 
     return (
@@ -500,28 +565,20 @@ export function DoctorConsultationDetails() {
                                 </button>
                             ))}
                         </div>
-                        <form onSubmit={handleSubmit}>
-                            {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}/>}
-                            {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle}/>}
-                            {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle}/>}
+                        <div /*onSubmit={handleSubmit}*/>
+                            {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}  handleConsult={updateConsultation}  endConsultation={endConsultation}  isUpdatingConsultation={isUpdatingConsultation}   />}
+                            {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle} handlePrescribe={handlePrescribeMedicament} endConsultation={endConsultation} isPrescribing = {isPrescribing}/>}
+                            {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle} handlePrescribeExam={handlePrescribeExams} endConsultation={endConsultation} isPrescribingExam={isPrescribingExam}/>}
                             {/*activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>*/}
                             {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle}/>}
-                            <div className="mt-6 flex justify-end space-x-4">
-                                <button type="submit"
-                                        className="px-4 py-2 bg-primary-end hover:bg-primary-start transition-all duration-300 text-white font-bold rounded-lg">
-                                    End consultation
-                                </button>
-                                <button
-                                    type="button"
-                                    className="px-4 py-2 border rounded-lg border-red-300 bg-red-500 transition-all duration-500  text-white font-bold hover:bg-red-700"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {isEndingConsultation && <Wait/>}
+            <SuccessModal isOpen={canOpenSuccessModal} canOpenSuccessModal={setSuccessMessage} message={successMessage} makeAction={closeConsultation}/>
+            <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={setCanOpenErrorMessageModal} message={errorMessage}/>
         </DoctorDashboard>
     );
 }
