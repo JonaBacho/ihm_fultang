@@ -212,7 +212,7 @@ class ExamRequest(models.Model):
     patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
-    idExam = models.ForeignKey("Exam", on_delete=models.CASCADE, null=True)
+    idExam = models.ForeignKey("Exam", on_delete=models.SET_NULL, null=True)
     idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=True)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)

@@ -5,3 +5,9 @@ class ExamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exam
         fields = '__all__'
+
+
+class ExamCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exam
+        exclude = ['id']

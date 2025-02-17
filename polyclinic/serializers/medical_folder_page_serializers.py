@@ -12,7 +12,7 @@ from polyclinic.serializers.prescription_serializers import PrescriptionSerializ
 class MedicalFolderPageSerializer(serializers.ModelSerializer):
     parameters = ParametersSerializer(required=False, many=False)
     prescription = PrescriptionSerializer(required=False)
-    examRequest = ExamRequestSerializer(required=False)
+    examRequest = ExamRequestSerializer(required=False, many=True)
 
 
     class Meta:
