@@ -256,7 +256,7 @@ export function DoctorConsultationDetails() {
             const response = await axiosInstance.get("/medicament/");
             if (response.status === 200)
             {
-               // console.log(response.data);
+                console.log("exams ", response.data);
                 setAvailableExams(response.data);
             }
 
@@ -288,8 +288,8 @@ export function DoctorConsultationDetails() {
     useEffect(() => {
         loadMedication();
         loadExams();
-        console.log(consultation);
-        console.log("examens ",exams);
+        //console.log(consultation);
+        //console.log("examens ",exams);
     }, [exams, exams.length, prescriptions, prescriptions.length]);
 
 
@@ -325,7 +325,7 @@ export function DoctorConsultationDetails() {
         }
 
         let examsData = {
-            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => key !== "id" && key !== "isCustom" && exam.idExam !== 'another'))),
+            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
             idConsultation: consultation?.id,
             idPatient: patientInfo?.id,
             idMedicalStaff: consultation?.idMedicalStaffGiver?.id
