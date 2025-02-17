@@ -8,7 +8,6 @@ __pycache__
 .env
 db.sqlite3
 mon_env/
-.env
 media/
 .qodo/
 .vscode/
