@@ -120,7 +120,7 @@ class BillViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         bill = serializer.save()
-        
+        print(bill)
         operation = bill.operation
         if not operation:
             raise ValidationError(
@@ -138,7 +138,13 @@ class BillViewSet(ModelViewSet):
             start__lte=current_date,
             end__gte=current_date
         )
-
+        
+        if budget_exercises is None:
+            raise ValueError(
+                {"error":"Aucune opération financière n'a été trouvée"}
+            )
+        
+        account_state = None
         if str(account.number).startswith(('5', '4')):
             status_param = self.request.query_params.get('status')
             if status_param:
@@ -146,28 +152,27 @@ class BillViewSet(ModelViewSet):
                     account=account,
                     budgetExercise__in=budget_exercises,
                 ).first()
-            else:
-                account_state = AccountState.objects.filter(
-                    account=account,
-                    budgetExercise__in=budget_exercises
-                ).first()
+        else:
+            account_state = AccountState.objects.filter(
+                account=account,
+                budgetExercise__in=budget_exercises
+            ).first()       
 
-            if not account_state:
-                raise ValidationError(
-                    {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
-                )
-
-            account_state.soldePrevu += bill.amount
-            account_state.save()
+        if account_state is None:
+            raise ValidationError(
+                {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
+            )
+        account_state.soldePrevu += bill.amount
+        account_state.save()
             
-            # Return the account state in JSON format
-            account_state_data = {
-                "account": account_state.account.id,
-                "budgetExercise": account_state.budgetExercise.id,
-                "soldePrevu": account_state.soldePrevu,
-                "soldeReel": account_state.soldeReel,
-            }
-            return Response(account_state_data, status=status.HTTP_201_CREATED)
+        account_state_data = {
+            "account": account_state.account.id,
+            "budgetExercise": account_state.budgetExercise.id,
+            "soldePrevu": account_state.soldePrevu,
+            "soldeReel": account_state.soldeReel,
+            "montant": bill.amount
+        }
+        return Response(account_state_data, status=status.HTTP_201_CREATED)
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
