@@ -408,16 +408,5 @@ class BillViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def list_with_source(self, request):
         bills = Bill.objects.all()
-        response_data = []
-
-        for bill in bills:
-            bill_data = self.get_serializer(bill).data
-            medical_operator = bill.operator
-            if medical_operator:
-                role = medical_operator.role
-                bill_data['source'] = role
-            else:
-                bill_data['source'] = 'inconnu'
-            response_data.append(bill_data)
-
-        return Response(response_data, status=status.HTTP_200_OK)
+        serializer = BillSerializer(bills, many=True)
+        return Response(serializer, status=status.HTTP_200_OK)

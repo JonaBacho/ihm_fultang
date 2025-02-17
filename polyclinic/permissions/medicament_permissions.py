@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-class ExamPermissions(permissions.BasePermission):
+class MedicamentPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         if view.action in ["list", "retrieve", "partial_update"]:

@@ -1,14 +1,27 @@
 from django.utils.timezone import now
 from rest_framework import serializers
+
+from accounting.serializers import FinancialOperationSerializer
+from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 from polyclinic.models import Bill, BillItem, Patient
-from polyclinic.serializers.bill_items_serializers import BillItemCreateSerializer
+from polyclinic.serializers.bill_items_serializers import BillItemCreateSerializer, BillItemSerializer
 from polyclinic.services.bill_service import BillService
 
-
 class BillSerializer(serializers.ModelSerializer):
+    operator = MedicalStaffSerializer(read_only=True)
+    operation = FinancialOperationSerializer(read_only=True)
+    bill_items = serializers.SerializerMethodField()
+
     class Meta:
         model = Bill
-        fields = '__all__'
+        fields = [
+            'billCode', 'date', 'amount', 'operation', 'isAccounted', 'operator', 'patient', 'bill_items'
+        ]
+
+    def get_bill_items(self, obj):
+        # Récupérer tous les BillItems associés à ce Bill
+        bill_items = BillItem.objects.filter(bill=obj)
+        return BillItemSerializer(bill_items, many=True).data
 
 class BillCreateSerializer(serializers.ModelSerializer):
     bill_items = BillItemCreateSerializer(many=True, required=False)
