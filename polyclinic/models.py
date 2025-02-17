@@ -207,13 +207,13 @@ class Exam(models.Model):
 
 class ExamRequest(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    examDetails = models.CharField(max_length=50, null=True)
+    examName = models.CharField(max_length=50, null=True)
     examStatus = models.CharField(max_length=20, default="invalid")
     patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
-    idExam = models.ForeignKey("Exam", on_delete=models.CASCADE, null=False)
-    idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
+    idExam = models.ForeignKey("Exam", on_delete=models.CASCADE, null=True)
+    idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=True)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
@@ -224,6 +224,8 @@ class ExamRequest(models.Model):
 class ExamResult(models.Model):
     addDate = models.DateTimeField(auto_now=True)
     notes = models.TextField(max_length=10000, blank=True, null=True)
+    examFile = models.FileField(upload_to="exam_results/", blank=True, null=True)
+
 
     idExamRequest = models.ForeignKey("ExamRequest", on_delete=models.CASCADE, null=False)
     idMedicalFolderPage = models.ForeignKey("MedicalFolderPage", on_delete=models.CASCADE, null=False)
@@ -243,7 +245,7 @@ class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now=True)
     quantity = models.IntegerField(default=1)
     name = models.CharField(max_length=50, null=False, default="")
-    status = models.CharField(max_length=20, default="invalid")
+    status = models.CharField(max_length=20, default="invalid") 
     price = models.FloatField(default=5000)
     expiryDate = models.DateTimeField(auto_now=False)
     description = models.TextField(max_length=200, null=False, default="important")

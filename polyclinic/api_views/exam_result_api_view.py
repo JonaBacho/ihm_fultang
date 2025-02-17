@@ -8,6 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import FormParser, MultiPartParser
 
 tags = ["exam-result"]
 auth_header_param = openapi.Parameter(
@@ -97,6 +98,7 @@ class ExamResultViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated, ExamResultPermissions]
     pagination_class = CustomPagination
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         queryset = ExamResult.objects.all()
@@ -105,10 +107,19 @@ class ExamResultViewSet(ModelViewSet):
     def get_serializer_class(self):
         return ExamResultSerializer
 
+    # def perform_create(self, serializer):
+    #     if 'id' in serializer.validated_data:
+    #         serializer.validated_data.pop('id')
+    #     serializer.save()
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        serializer.save()
+
+        file_obj = self.request.FILES.get('examFile')
+        if file_obj:
+            serializer.save(examFile=file_obj)
+        else:
+            serializer.save()
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
