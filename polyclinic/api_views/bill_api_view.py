@@ -159,6 +159,15 @@ class BillViewSet(ModelViewSet):
 
             account_state.soldePrevu += bill.amount
             account_state.save()
+            
+            # Return the account state in JSON format
+            account_state_data = {
+                "account": account_state.account.id,
+                "budgetExercise": account_state.budgetExercise.id,
+                "soldePrevu": account_state.soldePrevu,
+                "soldeReel": account_state.soldeReel,
+            }
+            return Response(account_state_data, status=status.HTTP_201_CREATED)
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
