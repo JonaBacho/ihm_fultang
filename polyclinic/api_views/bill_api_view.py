@@ -244,7 +244,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=True, methods=['get'])
+    @action(detail=False, methods=['get'])
     def get_for_account(self, request):
         account_id = request.query_params.get('account_id')
 
