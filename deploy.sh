@@ -9,6 +9,7 @@ else
 fi
 
 sudo docker compose -f ./docker-compose.yml down
-echo "$PERSONAL_ACCESS_TOKEN" | docker login ghcr.io --username "$NAMESPACE" --password-stdin
+echo $PERSONAL_ACCESS_TOKEN | docker login ghcr.io -u $NAMESPACE --password-stdin
+#docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
 sudo docker pull $FULTANG_IMAGE
 sudo docker compose -f ./docker-compose.yml up -d
