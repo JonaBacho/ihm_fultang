@@ -207,7 +207,7 @@ class Exam(models.Model):
 
 class ExamRequest(models.Model):
     addDate = models.DateTimeField(auto_now=True)
-    examName = models.CharField(max_length=50, null=True)
+    examName = models.CharField(max_length=50, null=True, blank=True)
     examStatus = models.CharField(max_length=20, default="invalid")
     patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
