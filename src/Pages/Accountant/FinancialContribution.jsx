@@ -38,6 +38,7 @@ export function FinancialContributions() {
     async function fetchData() {
       try {
         const response = await axiosInstance.get(`/bill/list_with_source/`);
+        console.log(response);
         setContributions(response.data);
         setFilteredContributions(response.data);
         setIsLoading(false);
@@ -61,12 +62,12 @@ export function FinancialContributions() {
       const matchesDate =
         contributionDate >= startDate && contributionDate <= endDate;
       const matchesType =
-        operationType === "All" || contribution.source === operationType;
+        operationType === "All" || contribution.operator.role === operationType;
       const matchesSearch =
         contribution.billCode
           .toLowerCase()
           .includes(debouncedSearch.toLowerCase()) ||
-        contribution.source
+        contribution.operator.role
           .toLowerCase()
           .includes(debouncedSearch.toLowerCase());
 
@@ -80,7 +81,7 @@ export function FinancialContributions() {
   const handleExport = (format) => {
     const data = filteredContributions.map((item) => ({
       "Bill Code": item.billCode,
-      Source: item.source,
+      Source: item.operator.role,
       Amount: item.amount,
       Date: format(new Date(item.date), "PPP"),
       Accounted: item.isAccounted ? "Yes" : "No",
@@ -260,7 +261,7 @@ export function FinancialContributions() {
 
               <tbody>
                 {filteredContributions.map((contribution, index) => (
-                  <tr key={contribution.id} className="bg-gray-100">
+                  <tr key={index} className="bg-gray-100">
                     <td className="p-4 text-md text-blue-900 text-center rounded-l-lg">
                       {index + 1}
                     </td>
@@ -270,7 +271,7 @@ export function FinancialContributions() {
                     */}
                     <td className="p-4 text-md text-center">
                       <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
-                        {contribution.source}
+                        {contribution.operator.role}
                       </span>
                     </td>
                     <td className="p-4 text-md text-center font-semibold">

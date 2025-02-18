@@ -55,12 +55,16 @@ export function ViewBillDetailsModal({ isOpen, onClose, billDetails }) {
               <DetailItem
                 icon={<FaUser />}
                 label="Operation"
-                value={billDetails.operation.toString()}
+                value={billDetails.operation.name}
               />
               <DetailItem
                 icon={<FaUser />}
                 label="Operator"
-                value={billDetails.operator.toString()}
+                value={
+                  billDetails.operator.first_name +
+                  " " +
+                  billDetails.operator.last_name
+                }
               />
               <DetailItem
                 icon={<FaUser />}
@@ -72,7 +76,7 @@ export function ViewBillDetailsModal({ isOpen, onClose, billDetails }) {
               <DetailItem
                 icon={<FaUser />}
                 label="Source"
-                value={billDetails.source}
+                value={billDetails.operator.role}
               />
             </div>
           </div>

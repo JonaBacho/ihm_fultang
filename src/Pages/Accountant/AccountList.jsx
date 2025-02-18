@@ -272,7 +272,7 @@ export function AccountList() {
           <Tooltip placement={"top"} title={"Add New Account"}>
             <button
               onClick={() => setCanOpenAddAccountModal(true)}
-              className="fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300"
+              className="fixed bottom-5 right-5 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300 flex items-center justify-center"
             >
               <FaPlus />
             </button>
