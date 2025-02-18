@@ -84,4 +84,5 @@ jobs:
             sudo chown ${{ secrets.REMOTE_USER }}:${{ secrets.REMOTE_USER }} deploy.sh
             sudo chmod +x deploy.sh
             sudo chmod +x ./deploy.sh
+            sudo ./deploy.sh
           ENDSSH
