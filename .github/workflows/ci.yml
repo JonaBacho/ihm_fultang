@@ -77,12 +77,13 @@ jobs:
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-          scp  -o StrictHostKeyChecking=no -r ./.env ./fultang ./polyclinic ./Dockerfile ./manage.py ./requirements.txt ./docker-compose.yml ./deploy.sh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }}:/home/${{ secrets.REMOTE_USER }}/ihm
+          scp  -o StrictHostKeyChecking=no -r ./.env ./fultang ./polyclinic ./Dockerfile ./manage.py ./requirements.txt ./docker-compose.yml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }}:/home/${{ secrets.REMOTE_USER }}/ihm
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
             cd /home/${{ secrets.REMOTE_USER }}/ihm
             source .env
-            sudo chown ${{ secrets.REMOTE_USER }}:${{ secrets.REMOTE_USER }} deploy.sh
-            sudo chmod +x deploy.sh
-            sudo chmod +x ./deploy.sh
-            sudo ./deploy.sh
+            sudo docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
+            sudo docker compose -f ./docker-compose.yml down
+            sudo docker rmi -f $IMAGE_NAME
+            sudo docker pull $FULTANG_IMAGE
+            sudo docker compose -f ./docker-compose.yml up -d
           ENDSSH
