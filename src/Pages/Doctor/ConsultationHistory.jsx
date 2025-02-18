@@ -1,12 +1,12 @@
 import { useState } from "react"
 import { Search, Calendar, Eye, User, Clock, DollarSign } from "lucide-react"
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useCalculateAge} from "../../Utils/compute.js";
 import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
 import {getStateStyles} from "./lib/applyStyleFunction.js";
 import {useNavigate} from "react-router-dom";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 
 // Données simulées
@@ -95,7 +95,7 @@ export function ConsultationHistory() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="mx-auto p-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">History of Consultations</h1>
@@ -205,7 +205,7 @@ export function ConsultationHistory() {
                 </div>
             </div>
         </div>
-    </DoctorDashboard>
+    </CustomDashboard>
     )
 }
 

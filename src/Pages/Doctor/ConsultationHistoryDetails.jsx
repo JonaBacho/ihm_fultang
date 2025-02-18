@@ -10,13 +10,13 @@ import {
     Stethoscope,
     ClipboardList, Heart, AlertTriangle, MapPin, Phone, ArrowLeft, Printer, Clock,
 } from "lucide-react"
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useCalculateAge} from "../../Utils/compute.js";
 import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 export  function ConsultationHistoryDetails() {
 
@@ -83,7 +83,7 @@ export  function ConsultationHistoryDetails() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
         <div className="space-y-6">
 
@@ -297,7 +297,7 @@ export  function ConsultationHistoryDetails() {
                 </div>
             </div>
         </div>
-        </DoctorDashboard>
+        </CustomDashboard>
     )
 }
 

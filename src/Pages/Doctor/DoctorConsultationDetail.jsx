@@ -13,7 +13,6 @@ import {
     User, Calendar, MapPin, Phone, Printer, ArrowLeft
 } from 'lucide-react';
 import {useLocation, useNavigate} from "react-router-dom";
-import { DoctorDashboard } from './DoctorComponents/DoctorDashboard.jsx';
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
 import {useEffect, useState} from "react";
@@ -29,6 +28,7 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 import Wait from "../Modals/wait.jsx";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 
 
@@ -449,7 +449,7 @@ export function DoctorConsultationDetails() {
 
     return (
 
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             < DoctorNavBar/>
             <div className="flex flex-col min-h-screen p-8 ">
 
@@ -579,7 +579,7 @@ export function DoctorConsultationDetails() {
             {isEndingConsultation && <Wait/>}
             <SuccessModal isOpen={canOpenSuccessModal} canOpenSuccessModal={setSuccessMessage} message={successMessage} makeAction={closeConsultation}/>
             <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={setCanOpenErrorMessageModal} message={errorMessage}/>
-        </DoctorDashboard>
+        </CustomDashboard>
     );
 }
 

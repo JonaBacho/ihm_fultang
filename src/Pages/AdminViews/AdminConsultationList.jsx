@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { Search, Calendar, Filter, ChevronDown, ChevronUp,  Clock,  Stethoscope} from 'lucide-react';
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import {Tooltip} from "antd";
@@ -82,7 +82,7 @@ export function AdminConsultationList() {
 
     return (
 
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="flex flex-col min-h-screen p-6">
                         <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white mb-5">
@@ -209,7 +209,7 @@ export function AdminConsultationList() {
                             </div>
                         </div>
                     </div>
-        </AdminDashBoard>
+        </CustomDashboard>
     );
 }
 

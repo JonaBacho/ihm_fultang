@@ -16,9 +16,9 @@ import {
   ArrowLeft,
 } from "lucide-react"
 import { FaSearch, FaUser, FaChevronRight } from "react-icons/fa"
-import { DoctorDashboard } from "../DoctorComponents/DoctorDashboard.jsx"
 import { DoctorNavBar } from "../DoctorComponents/DoctorNavBar.jsx"
 import { doctorNavLink } from "../lib/doctorNavLink.js"
+import {CustomDashboard} from "../../../GlobalComponents/CustomDashboard.jsx";
 
 const patients = [
   { id: 1, name: "Jean Dupont", age: 45, email: "jean@email.com", phone: "0123456789" },
@@ -315,10 +315,10 @@ export const AppointmentForm2 = () => {
 
 export function DoctorAppointementPage() {
   return (
-    <DoctorDashboard linkList={doctorNavLink} requiredRole="Doctor">
+    <CustomDashboard linkList={doctorNavLink} requiredRole="Doctor">
       <DoctorNavBar />
       <AppointmentForm2 />
-    </DoctorDashboard>
+    </CustomDashboard>
   )
 }
 

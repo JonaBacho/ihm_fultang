@@ -1,6 +1,6 @@
 import{ useState } from 'react';
 import {BedDouble, DollarSign, Users, CheckCircle, X} from 'lucide-react';
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import PropTypes from "prop-types";
@@ -77,7 +77,7 @@ export function AddHospitalRoomModal({isOpen, onClose, setSuccessMessage, setCan
 
     if (!isOpen) return;
     return (
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
                 <div className="bg-white rounded-xl shadow-xl w-[800px] ">
@@ -204,7 +204,7 @@ export function AddHospitalRoomModal({isOpen, onClose, setSuccessMessage, setCan
                     </div>
                 </div>
             </div>
-        </AdminDashBoard>
+        </CustomDashboard>
 
     );
 }

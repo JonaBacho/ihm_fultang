@@ -5,7 +5,7 @@ import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import Wait from "../Modals/wait.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {ConfirmationModal} from "../Modals/ConfirmAction.Modal.jsx";
@@ -145,7 +145,7 @@ export function AdminMedicalStaffList()
 
 
     return (
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="mt-5 flex flex-col relative">
 
@@ -272,6 +272,6 @@ export function AdminMedicalStaffList()
                     <ConfirmationModal isOpen={canOpenConfirmActionModal} onClose={() => setCanOpenConfirmActionModal(false)} onConfirm={async () => await deleteMedicalStaff(medicalStaffToDelete.id)} title={"Delete Medical Staff"} message={`Are you sure you want to delete the ${medicalStaffToDelete.role + " "} ${medicalStaffToDelete.first_name + " " + medicalStaffToDelete.last_name} ?`}/>
                 </div>
             </div>
-        </AdminDashBoard>
+        </CustomDashboard>
     )
 }

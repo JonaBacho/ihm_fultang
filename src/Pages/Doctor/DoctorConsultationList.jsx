@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react"
 import { Search, Calendar} from "lucide-react"
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import ConsultationCard from "./DoctorComponents/ConsultationCard.jsx";
@@ -8,6 +7,7 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import Loader from "../../GlobalComponents/Loader.jsx";
 import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 
 
@@ -75,8 +75,7 @@ export  function DoctorConsultationList() {
 
 
     return (
-
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="mx-auto p-6">
                 <div className="mb-8">
@@ -134,7 +133,7 @@ export  function DoctorConsultationList() {
                     )
                 }
             </div>
-        </DoctorDashboard>
+        </CustomDashboard>
     )
 }
 

@@ -2,6 +2,8 @@ import {Link, Navigate, useLocation} from "react-router-dom";
 import PropTypes from "prop-types";
 import {AccessDenied} from "./AccessDenied.jsx";
 import {useAuthentication} from "../Utils/Provider.jsx";
+import {useEffect, useState} from "react";
+import {Loading} from "./Loading.jsx";
 
 export function DashBoard ({children,linkList, requiredRole})
 {
@@ -14,7 +16,23 @@ export function DashBoard ({children,linkList, requiredRole})
     const location = useLocation();
     const activeLink = location.pathname;
     const {isAuthenticated, hasRole} = useAuthentication();
+    const [isLoading, setIsLoading] = useState(true);
 
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            setIsLoading(false);
+        };
+        checkAuth();
+    }, []);
+
+
+
+
+      if (isLoading) {
+        return <Loading/>
+      }
 
       if (!isAuthenticated()) {
           return <Navigate to="/login" />;
