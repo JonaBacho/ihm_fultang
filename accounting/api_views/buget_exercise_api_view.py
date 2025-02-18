@@ -113,49 +113,106 @@ class BudgetExerciseViewSet(ModelViewSet):
         financial_debt = calculate_circulant_balance(financial_debt_prefixes)
         circulant_passive = calculate_circulant_balance(circulant_passives_prefixes, "passive")
         passive_treasury = calculate_treasury(treasury_indexes, "passive")
-        active = immobilized_active['total']['soldePrevu'] + circulant_active['total']['soldePrevu'] + active_treasury['total']['soldePrevu']
-        passive = equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'] + circulant_passive['total']['soldePrevu'] + passive_treasury['total']['soldePrevu']
-        working_capital = equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'] - immobilized_active['total']['soldePrevu']
-        working_capital_requirement = circulant_passive['total']['soldePrevu'] - circulant_active['total']['soldePrevu']
-        treasury = active_treasury['total']['soldePrevu'] - passive_treasury['total']['soldePrevu']
-        financial_autonomy_ratio = equity['total']['soldePrevu'] / passive if passive != 0 else None
-        debt_to_equity_ratio = financial_debt['total']['soldePrevu'] / equity['total']['soldePrevu'] if equity['total']['soldePrevu'] != 0 else None
-        general_liquidity = circulant_active['total']['soldePrevu'] / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
+        active = immobilized_active['total'] + circulant_active['total'] + active_treasury['total']
+        passive = equity['total'] + financial_debt['total'] + circulant_passive['total'] + passive_treasury['total']
+        working_capital = equity['total'] + financial_debt['total'] - immobilized_active['total']
+        working_capital_requirement = circulant_passive['total'] - circulant_active['total']
+        treasury = active_treasury['total'] - passive_treasury['total']
+        financial_autonomy_ratio = equity['total'] / passive if passive != 0 else None
+        debt_to_equity_ratio = financial_debt['total'] / equity['total'] if equity['total'] != 0 else None
+        general_liquidity = circulant_active['total'] / circulant_passive['total'] if circulant_passive['total'] != 0 else None
         stock = calculate_balance(stock_indexes)
-        reduced_liquidity = (circulant_active['total']['soldePrevu'] - stock['total']['soldePrevu']) / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
-        immediate_liquidity = treasury / circulant_passive['total']['soldePrevu'] if circulant_passive['total']['soldePrevu'] != 0 else None
+        reduced_liquidity = (circulant_active['total'] - stock['total']) / circulant_passive['total'] if circulant_passive['total'] != 0 else None
+        immediate_liquidity = treasury / circulant_passive['total'] if circulant_passive['total'] != 0 else None
         solvability_ratio = active / passive if passive != 0 else None
+       
         return Response(
             {
-                "Actif":{
-                    "Immobilisations": immobilized_active,
-                    "ActifCirculant": circulant_active,
-                    "TresorerieActive": active_treasury,
-                    "TotalActif": active
-                },
-                "Passif":{
-                    # "RessourcesStables": equity['total']['soldePrevu'] + financial_debt['total']['soldePrevu'],
-                    "RessourcesStables":{
-                        "Capitaux": equity,
-                        "DettesFinancieres": financial_debt
+                "data": [
+                    {
+                        "category":"IMMOBILIZED ACTIVE",
+                        "items":immobilized_active['items'],
+                        "total":immobilized_active['total']
                     },
-                    "PassifCirculant": circulant_passive,
-                    "TresoreriePassive": passive_treasury,
-                    "TotalPassif": passive
-                },
-                "FondsDeRoulement": working_capital,
-                "BesoinEnFondsDeRoulement": working_capital_requirement,
-                "TresorerieNette": treasury,
-                "RatiosDeStructure":{
-                    "RatioDAutonomie financiere": financial_autonomy_ratio,
-                    "RatioDEndettement": debt_to_equity_ratio
-                },
-                "RatiosDeLiquidite":{
-                    "LiquiditeGenerale": general_liquidity,
-                    "LiquiditeReduite": reduced_liquidity,
-                    "LiquiditeImmediate": immediate_liquidity
-                },
-                "RatioDeSolvabilite": solvability_ratio
+                    {
+                        "category":"CIRCULANT ACTIVE",
+                        "items":circulant_active['items'],
+                        "total":circulant_active['total']                        
+                    },
+                    {
+                        "category":"ACTIVE TREASURY",
+                        "items":active_treasury['items'],
+                        "total":active_treasury['total']
+                    },
+                    {
+                        "category":"EQUITY",
+                        "items":equity['items'],
+                        "total":equity['total']
+                    },
+                    {
+                        "category":"FINANCIAL DEBT",
+                        "items":financial_debt['items'],
+                        "total":financial_debt['total']
+                    },
+                    {
+                        "category":"CIRCULANT PASSIVE",
+                        "items":circulant_passive['items'],
+                        "total":circulant_passive['total']
+                    },
+                    {
+                        "category":"PASSIVE TREASURY",
+                        "items":passive_treasury['items'],
+                        "total":passive_treasury['total']
+                    },
+                    {
+                        "data":[
+                            {
+                                "item":"Total active",
+                                "value":active
+                            },
+                            {
+                                "item":"Total passive",
+                                "value":passive
+                            },
+                            {
+                                "item":"Working capital",
+                                "value":working_capital
+                            },
+                            {
+                                "item":"Working Capital Requirement",
+                                "value":working_capital_requirement
+                            },
+                            {
+                                "item":"Treasury",
+                                "value":treasury
+                            },
+                            {
+                                "item":"Financial Auntonmy Ratio",
+                                "value":financial_autonomy_ratio
+                            },
+                            {
+                                "item":"Debt to Equity Ratio",
+                                "value":debt_to_equity_ratio
+                            },
+                            {
+                                "item":"General Liquidity",
+                                "value":general_liquidity
+                            },
+                            {
+                                "item":"Reduced Liquidity",
+                                "value":reduced_liquidity
+                            },
+                            {
+                                "item":"Immediate Liquidity",
+                                "value":immediate_liquidity
+                            },
+                            {
+                                "item":"Solvability Ratio",
+                                "value":solvability_ratio
+                            }
+                        ]
+                    }
+                ]
             }
         )
     
@@ -173,15 +230,15 @@ class BudgetExerciseViewSet(ModelViewSet):
         products = calculate_balance(products_prefixes)
         sales_figure = calculate_balance(sales_figure_prefixes)
         sold_goods = calculate_balance(sold_goods_prefixes)
-        gross_margin = sales_figure['total']['soldePrevu'] - sold_goods['total']['soldePrevu']
+        gross_margin = sales_figure['total'] - sold_goods['total']
         working_charges = calculate_balance(working_charges_prefixes)
-        gross_operating_surplus = gross_margin - working_charges['total']['soldePrevu']
+        gross_operating_surplus = gross_margin - working_charges['total']
         depreciation_allocations = calculate_balance(depreciation_allocations_prefixes)
         provision_allocations = calculate_balance(provision_allocations_prefixes)
-        working_result = gross_operating_surplus - depreciation_allocations['total']['soldePrevu'] - provision_allocations['total']['soldePrevu']
+        working_result = gross_operating_surplus - depreciation_allocations['total'] - provision_allocations['total']
         financial_charges = calculate_balance(financial_charges_prefixes)
         taxes = calculate_balance(taxes_prefixes)
-        net_result = working_result - financial_charges['total']['soldePrevu'] - taxes['total']['soldePrevu']
+        net_result = working_result - financial_charges['total'] - taxes['total']
         return Response({
                 "Charges": charges, 
                 "Produits": products,
@@ -207,9 +264,9 @@ class BudgetExerciseViewSet(ModelViewSet):
         financing_cash_outflows = calculate_balance(financing_cash_outflows_prefixes)
         investment_cash_inflows = calculate_balance(investment_cash_inflows_prefixes)
         investment_cash_outflows = calculate_balance(investment_cash_outflows_prefixes)
-        operating_treasury_flow = operating_cash_inflows['total']['soldePrevu'] - operating_cash_outflows['total']['soldePrevu']
-        financing_treasury_flow = financing_cash_inflows['total']['soldePrevu'] - financing_cash_outflows['total']['soldePrevu']
-        investment_treasury_flow = investment_cash_inflows['total']['soldePrevu'] - investment_cash_outflows['total']['soldePrevu']
+        operating_treasury_flow = operating_cash_inflows['total'] - operating_cash_outflows['total']
+        financing_treasury_flow = financing_cash_inflows['total'] - financing_cash_outflows['total']
+        investment_treasury_flow = investment_cash_inflows['total'] - investment_cash_outflows['total']
         return Response({
             "ActivitesDExploitation":{
                 "Encaissements": operating_cash_inflows,
