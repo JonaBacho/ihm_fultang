@@ -87,6 +87,7 @@ export function DoctorConsultationDetails() {
     const [successMessage, setSuccessMessage] = useState("");
     const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [transactionErrorMessage, setTransactionErrorMessage] = useState("");
 
 
 
@@ -328,12 +329,16 @@ export function DoctorConsultationDetails() {
             setIsUpdatingConsultation(false);
             if (consultationUpdateResponse.status === 200)
             {
-                console.log(consultationUpdateResponse?.data);
+                console.log("updated consultation with diagnostic and notes: ", consultationUpdateResponse?.data);
+                setTransactionErrorMessage("");
+                setDiagnostic("");
+                setDoctorNote("");
             }
         }
         catch (error)
         {
             setIsUpdatingConsultation(false);
+            setTransactionErrorMessage("Something went wrong when updating the consultation with your diagnostic and notes, please try again!");
             console.log(error);
         }
 
@@ -361,12 +366,26 @@ export function DoctorConsultationDetails() {
             setIsPrescribing(false);
             if (prescriptionResponse.status === 201)
             {
-                console.log(prescriptionResponse?.data);
+                console.log("created prescription ",prescriptionResponse?.data);
+                setTransactionErrorMessage("");
+                setPrescriptions([
+                    ...prescriptions,
+                    {
+                        id: Date.now(),
+                        medicament: "",
+                        dosage: "",
+                        frequency: "",
+                        duration: "",
+                        instructions: "",
+                        quantity:"",
+                    },
+                ])
             }
         }
         catch (error)
         {
             setIsPrescribing(false);
+            setTransactionErrorMessage("something when wrong when prescribing medications, please retry")
             console.log(error);
             
         }
@@ -414,7 +433,7 @@ export function DoctorConsultationDetails() {
         e.preventDefault();
         setIsPrescribingExams(true);
         let examsData = {
-            examsList : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
+            exams_list : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
         }
         try
         {
@@ -422,13 +441,14 @@ export function DoctorConsultationDetails() {
             setIsPrescribingExams(false);
             if (examRequestResponse.status === 201)
             {
+                setTransactionErrorMessage("");
                 console.log(examRequestResponse?.data);
             }
-            console.log(examsData);
         }
         catch (error)
         {
             setIsPrescribingExams(false);
+            setTransactionErrorMessage("Something when wrong  with the sever when prescribing exams, please retry !!");
             console.log(error);
         }
     }
@@ -566,6 +586,7 @@ export function DoctorConsultationDetails() {
                             ))}
                         </div>
                         <div /*onSubmit={handleSubmit}*/>
+                            {transactionErrorMessage && <p className="text-red-500  font-semibold text-md ml-5 mt-2 mb-2">{transactionErrorMessage}</p>}
                             {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}  handleConsult={updateConsultation}  endConsultation={endConsultation}  isUpdatingConsultation={isUpdatingConsultation}   />}
                             {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle} handlePrescribe={handlePrescribeMedicament} endConsultation={endConsultation} isPrescribing = {isPrescribing}/>}
                             {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle} handlePrescribeExam={handlePrescribeExams} endConsultation={endConsultation} isPrescribingExam={isPrescribingExam}/>}

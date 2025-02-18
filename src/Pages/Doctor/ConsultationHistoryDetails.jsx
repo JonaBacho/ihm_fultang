@@ -28,7 +28,7 @@ export  function ConsultationHistoryDetails() {
     const patientParameters = consultation?.idMedicalFolderPage;
 
     const {calculateAge} = useCalculateAge();
-    const { value: ageValue, unit: ageUnit } = calculateAge('2000-01-01');
+    const { value: ageValue, unit: ageUnit } = calculateAge(patientInfos?.birthDate);
 
 
     const MedicalParametersInfos = [

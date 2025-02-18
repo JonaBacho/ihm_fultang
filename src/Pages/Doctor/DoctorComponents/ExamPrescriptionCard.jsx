@@ -22,7 +22,7 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
 
     return (
         <form className="space-y-3" onSubmit={handlePrescribeExam}>
-            <div className="flex ml-7 gap-2">
+            {/*<div className="flex ml-7 gap-2">
                 <div
                     className="w-7 h-7 flex justify-center items-center rounded-full border border-orange-500">
                     <FaInfo className="w-5 h-5 text-orange-500"/>
@@ -30,7 +30,7 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                 <p className="mt-1.5 text-[15px] italic font-semibold text-orange-500">
                     {"This section is dedicated to prescribing the patient's medical examinations.Please indicate the analyses, imaging or other investigations necessary fora precise diagnosis."}
                 </p>
-            </div>
+            </div> */}
             {exams.map((exam, index) => (
                 <div key={exam.id || index} className="bg-gray-100 p-4 rounded-lg relative">
                     <Tooltip placement={"top"} title={"Remove Exam"}>
