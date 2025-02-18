@@ -3,7 +3,7 @@ import {Tooltip} from "antd";
 import {MinusCircle, PlusCircle} from "lucide-react";
 import PropTypes from "prop-types";
 
-export default function ExamPrescriptionCard({exams, availableExams, setExams, removeExam, addExam, applyInputStyle})
+export default function ExamPrescriptionCard({exams, availableExams, setExams, removeExam, addExam, applyInputStyle, handlePrescribeExam,  endConsultation, isPrescribingExam})
 {
 
     ExamPrescriptionCard.propTypes = {
@@ -12,16 +12,16 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
         setExams: PropTypes.func.isRequired,
         removeExam: PropTypes.func.isRequired,
         addExam: PropTypes.func.isRequired,
-        applyInputStyle: PropTypes.func.isRequired
+        applyInputStyle: PropTypes.func.isRequired,
+        handlePrescribeExam: PropTypes.func.isRequired,
+        endConsultation: PropTypes.func.isRequired,
+        isPrescribingExam: PropTypes.bool.isRequired
     };
 
 
 
-
-
-
     return (
-        <div className="space-y-6">
+        <form className="space-y-3" onSubmit={handlePrescribeExam}>
             <div className="flex ml-7 gap-2">
                 <div
                     className="w-7 h-7 flex justify-center items-center rounded-full border border-orange-500">
@@ -44,15 +44,14 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                     </Tooltip>
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Exam
-                                Type</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Exam Type</label>
                             <select
-                                value={exam.exam}
+                                required
                                 onChange={(e) => {
                                     const isCustom = e.target.value === "another"
                                     setExams(exams.map((ex) => (ex.id === exam.id ? {
                                         ...ex,
-                                        exam: e.target.value,
+                                        idExam: e.target.value,
                                         isCustom: isCustom,
                                     } : ex)))
                                 }}
@@ -60,8 +59,8 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                             >
                                 <option value="">Select an exam</option>
                                 {availableExams.map((e) => (
-                                    <option key={e.id} value={e.name}>
-                                        {e.name} - {e.price} FCFA
+                                    <option key={e.id} value={e.id}>
+                                        {e.examName} - {e.examCost} FCFA
                                     </option>
                                 ))}
                                 <option value={"another"}>Another Exam</option>
@@ -70,11 +69,13 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                         {exam.isCustom && (
                             <div className="col-span-2">
                                 <input
+                                    required
                                     type="text"
                                     placeholder="Specify the exam"
                                     onChange={(e) => setExams(exams.map((ex) => (ex.id === exam.id ? {
                                         ...ex,
-                                        exam: e.target.value
+                                        examName: e.target.value,
+                                        idExam: '',
                                     } : ex)))}
                                     className={applyInputStyle()}
                                 />
@@ -84,15 +85,16 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                             <label
                                 className="block text-sm font-medium text-gray-700 mb-2">Instructions</label>
                             <textarea
-                                value={exam.instructions}
+                                value={exam.notes}
                                 onChange={(e) =>
                                     setExams(
                                         exams.map((ex) => (ex.id === exam.id ? {
                                             ...ex,
-                                            instructions: e.target.value
+                                            notes: e.target.value
                                         } : ex)),
                                     )
                                 }
+                                required
                                 className={applyInputStyle()}
                                 placeholder="Special instructions for the exam"
                                 rows={2}
@@ -106,6 +108,20 @@ export default function ExamPrescriptionCard({exams, availableExams, setExams, r
                 <PlusCircle className="h-7 w-7 mr-2"/>
                 Add an exam
             </button>
-        </div>
+
+            <div className="flex justify-end gap-4">
+                <button disabled={isPrescribingExam} type="submit"
+                        className="bg-primary-end hover:bg-primary-start text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isPrescribingExam ? "Processing..." : "Submit"}
+                </button>
+
+                <button type={"button"}
+                        onClick={endConsultation}
+                        className="px-4 py-2 bg-primary-end hover:bg-primary-start transition-all duration-300 text-white font-bold rounded-lg"
+                >
+                    End consultation
+                </button>
+            </div>
+        </form>
     )
 }

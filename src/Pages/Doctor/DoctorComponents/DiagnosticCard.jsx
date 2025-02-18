@@ -1,18 +1,21 @@
 import PropTypes from "prop-types";
 
-export default function DiagnosticCard({applyInputStyle, setDiagnostic, setDoctorNotes, diagnostic, doctorNotes}) {
+export default function DiagnosticCard({applyInputStyle, setDiagnostic, setDoctorNotes, diagnostic, doctorNotes, handleConsult, endConsultation, isUpdatingConsultation}) {
 
     DiagnosticCard.propTypes = {
         applyInputStyle: PropTypes.func.isRequired,
         setDiagnostic: PropTypes.func.isRequired,
         setDoctorNotes: PropTypes.func.isRequired,
         diagnostic: PropTypes.string.isRequired,
-        doctorNotes: PropTypes.string.isRequired
+        doctorNotes: PropTypes.string.isRequired,
+        handleConsult: PropTypes.func.isRequired,
+        endConsultation: PropTypes.func.isRequired,
+        isUpdatingConsultation: PropTypes.bool.isRequired
     }
 
 
     return (
-        <div className="space-y-6 bg-gray-100 rounded-lg p-6">
+        <form className="space-y-3 bg-gray-100 rounded-lg p-6" onSubmit={handleConsult}>
             <div>
                 <label
                     className="block text-sm font-medium text-gray-700 mb-2">Diagnostic</label>
@@ -37,6 +40,20 @@ export default function DiagnosticCard({applyInputStyle, setDiagnostic, setDocto
                     placeholder="Please add your observations, notes and recommendations here"
                 />
             </div>
-        </div>
+            <div className="flex justify-end gap-4">
+                <button disabled={isUpdatingConsultation}
+                        type="submit"
+                        className="bg-primary-end hover:bg-primary-start text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                 {isUpdatingConsultation ? "Updating..." : "Submit"}
+                </button>
+
+                <button type={"button"}
+                        onClick={endConsultation}
+                        className="px-4 py-2 bg-primary-end hover:bg-primary-start transition-all duration-300 text-white font-bold rounded-lg"
+                >
+                    End consultation
+                </button>
+            </div>
+        </form>
     )
 }

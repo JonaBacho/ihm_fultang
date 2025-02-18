@@ -75,19 +75,19 @@ export function Doctor() {
                         <QuickActionButton
                             icon={UserPlus}
                             label="Manage Patient"
-                            onClick={() => navigate(AppRouterPaths.doctorPatientListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorPatientList)}
                         />
 
                         <QuickActionButton
                             icon={Calendar}
                             label="View Appointments List"
-                            onClick={() => navigate(AppRouterPaths.doctorAppointmentsListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorAppointment)}
                         />
 
                         <QuickActionButton
                             icon={FileSpreadsheet}
                             label="View Consultations List"
-                            onClick={() => navigate(AppRouterPaths.doctorConsultationsListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorConsultationList)}
                         />
 
 
