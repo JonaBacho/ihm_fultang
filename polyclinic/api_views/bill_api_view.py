@@ -243,7 +243,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'], permission_classes=permission_classes)
+    @action(detail=False, methods=['get'], permission_classes=permission_classes, pagination_class=pagination_class)
     def get_for_account(self, request):
         account_id = request.query_params.get('account_id')
 
@@ -282,7 +282,7 @@ class BillViewSet(ModelViewSet):
         tags=["bill"]
     )
     @action(detail=True, methods=['patch'], permission_classes=permission_classes)
-    def account(self, request):
+    def account(self, request, pk):
         bill = self.get_object()
         if bill is None:
             return Response({"details": "La facture est absente"}, status=status.HTTP_404_NOT_FOUND)

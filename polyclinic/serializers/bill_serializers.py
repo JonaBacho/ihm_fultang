@@ -23,6 +23,7 @@ class BillSerializer(serializers.ModelSerializer):
         bill_items = BillItem.objects.filter(bill=obj)
         return BillItemSerializer(bill_items, many=True).data
 
+
 class BillCreateSerializer(serializers.ModelSerializer):
     bill_items = BillItemCreateSerializer(many=True, required=False)
 
