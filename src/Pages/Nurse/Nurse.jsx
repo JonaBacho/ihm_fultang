@@ -10,6 +10,8 @@ import {useEffect, useState} from "react";
 import axiosInstance from "../../Utils/axiosInstance.js";
 import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
+import Loader from "../../GlobalComponents/Loader.jsx";
+import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
 
 
 
@@ -30,15 +32,19 @@ export function Nurse()
     const [canOpenViewPatientDetailsModal, setCanOpenViewPatientDetailsModal] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState({});
     const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
+    const [errorStatus, setErrorStatus] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
 
 
     async function fetchPatientList()
     {
+        setIsLoading(true);
         try
         {
             const response = await axiosInstance.get("/patient/");
+            setIsLoading(false);
             if (response.status === 200)
             {
                 console.log(response.data);
@@ -46,14 +52,17 @@ export function Nurse()
                 setNumberOfPatients(response.data.count);
                 setNexUrlForRenderPatientList(response.data.next);
                 setPreviousUrlForRenderPatientList(response.data.previous);
+                setErrorStatus(null);
                 setErrorMessage("");
                 setCanOpenErrorModal(false);
             }
         }
         catch (error)
         {
+            setIsLoading(false);
             console.log(error);
             setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
+            setErrorStatus(error.status)
             setCanOpenErrorModal(true);
         }
     }
@@ -62,8 +71,10 @@ export function Nurse()
     async function fetchNextOrPreviousPatientList (url) {
         if(url)
         {
+            setIsLoading(true);
             try {
                 const response = await axiosInstance.get(url);
+                setIsLoading(false);
                 if (response.status === 200)
                 {
                     //console.log(response)
@@ -75,6 +86,7 @@ export function Nurse()
                     setCanOpenErrorModal(false);
                 }
             } catch (error) {
+                setIsLoading(false);
                 console.log(error);
                 setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
                 setCanOpenErrorModal(true);
@@ -138,8 +150,8 @@ export function Nurse()
                         {/*Search bar content */}
                         <div className="flex justify-between mt-3">
                             <div className="flex flex-col ml-5">
-                                <p className="font-bold text-2xl">Reception</p>
-                                <p>List of patients</p>
+                                <p className="font-bold text-4xl mt-1">Reception</p>
+                                <p className="font-medium text-xl mt-0.5">List of patients</p>
                             </div>
                             <div className="flex mr-5">
                                 <div className="flex w-[300px] h-10 border-2 border-secondary rounded-lg">
@@ -156,39 +168,58 @@ export function Nurse()
                         </div>
 
                         {/*List of patients content */}
-                        <div className="ml-5 mr-5 mt-2 border-2  rounded-lg shadow-lg  p-2">
-                            <PatientList patients={patientList} setCanOpenViewPatientDetailModal={setCanOpenViewPatientDetailsModal} setSelectedPatient={setSelectedPatient}/>
-                        </div>
-
-
-                        {/* Pagination content */}
-                        <div className="justify-center  flex mt-6 mb-4">
-                            <div className="flex gap-4">
-                                <Tooltip placement={"left"} title={"previous slide"}>
-                                    <button
-                                        onClick={async ()=>{ await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")}}
-                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                        <FaArrowLeft/>
-                                    </button>
-                                </Tooltip>
-                                <p className="text-secondary text-xl font-bold mt-6">{`Page ${actualPageNumber} of ${computeNumberOfSlideToRender()}` }</p>
-                                <Tooltip placement={"right"} title={"next slide"}>
-                                <button
-                                        onClick={async ()=>{ await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
-                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                        <FaArrowRight/>
-                                    </button>
-                                </Tooltip>
+                        {isLoading ? (
+                            <div className="h-[500px] w-full flex justify-center items-center">
+                                <Loader size={"medium"} color={"primary-end"}/>
                             </div>
-                        </div>
+                        )
+                        : ( errorStatus ? <ServerErrorPage errorStatus={errorStatus} message={errorMessage}/> :
+                            (<>
+                                <div className="ml-5 mr-5 mt-2 border-2  rounded-lg shadow-lg  p-2">
+                                    <PatientList patients={patientList}
+                                                 setCanOpenViewPatientDetailModal={setCanOpenViewPatientDetailsModal}
+                                                 setSelectedPatient={setSelectedPatient}/>
+                                </div>
 
+                                {/* Pagination content */}
+                                <div className="justify-center  flex mt-6 mb-4">
+                                    <div className="flex gap-4">
+                                        <Tooltip placement={"left"} title={"previous slide"}>
+                                            <button
+                                                onClick={async () => {
+                                                    await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")
+                                                }}
+                                                className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                <FaArrowLeft/>
+                                            </button>
+                                        </Tooltip>
+                                        <p className="text-secondary text-xl font-bold mt-6">{`Page ${actualPageNumber} of ${computeNumberOfSlideToRender()}`}</p>
+                                        <Tooltip placement={"right"} title={"next slide"}>
+                                            <button
+                                                onClick={async () => {
+                                                    await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")
+                                                }}
+                                                className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                <FaArrowRight/>
+                                            </button>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            </>
+                        )
+                        )}
                     </div>
                 </NurseNavBar>
 
 
                 {/*Modal Content*/}
-                <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient} onClose={()=>{setCanOpenViewPatientDetailsModal(false)}}/>
-                <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
+                <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient}
+                                         onClose={() => {
+                                             setCanOpenViewPatientDetailsModal(false)
+                                         }}/>
+                {/* <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={() => {
+                    setCanOpenErrorModal(false)
+                }} message={errorMessage}/>*/}
             </DashBoard>
         </>
     )

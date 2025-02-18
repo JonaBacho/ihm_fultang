@@ -8,8 +8,8 @@ import { BsExclamationTriangle } from "react-icons/bs"
 import { IoMedkit } from "react-icons/io5"
 import { GiStethoscope } from "react-icons/gi"
 import { doctorNavLink } from "../lib/doctorNavLink.js"
-import { DoctorDashboard } from "../DoctorComponents/DoctorDashboard.jsx"
 import {DoctorNavBar} from "../DoctorComponents/DoctorNavBar.jsx"
+import {CustomDashboard} from "../../../GlobalComponents/CustomDashboard.jsx";
 
 
 const patients = [
@@ -517,10 +517,10 @@ export const MedicalRecord2 = () => {
 
 export  function DoctorAddConsultation() {
   return (
-    <DoctorDashboard linkList={doctorNavLink} requiredRole="Doctor">
+    <CustomDashboard linkList={doctorNavLink} requiredRole="Doctor">
         <DoctorNavBar/>
       <MedicalRecord2></MedicalRecord2>
-    </DoctorDashboard>
+    </>
   )
 }
 

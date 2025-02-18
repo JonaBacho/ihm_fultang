@@ -1,6 +1,6 @@
 import { ArrowLeft, User, Stethoscope, Calendar, Weight,RulerIcon, CreditCard, Thermometer, Activity, Heart,  Pill, FileText,  Printer } from 'lucide-react';
 import {useNavigate} from "react-router-dom";
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import {FaHistory, FaPills} from "react-icons/fa";
@@ -42,7 +42,7 @@ export function ConsultationDetails() {
     const navigate = useNavigate();
     return (
 
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="flex flex-col min-h-screen p-4 ">
                 <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white mb-5">
@@ -256,7 +256,7 @@ export function ConsultationDetails() {
                     </div>
                 </div>
             </div>
-        </AdminDashBoard>
+        </CustomDashboard>
     );
 }
 

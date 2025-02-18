@@ -38,6 +38,7 @@ export function FinancialContributions() {
     async function fetchData() {
       try {
         const response = await axiosInstance.get(`/bill/list_with_source/`);
+        console.log(response);
         setContributions(response.data);
         setFilteredContributions(response.data);
         setIsLoading(false);
@@ -61,12 +62,12 @@ export function FinancialContributions() {
       const matchesDate =
         contributionDate >= startDate && contributionDate <= endDate;
       const matchesType =
-        operationType === "All" || contribution.source === operationType;
+        operationType === "All" || contribution.operator.role === operationType;
       const matchesSearch =
         contribution.billCode
           .toLowerCase()
           .includes(debouncedSearch.toLowerCase()) ||
-        contribution.source
+        contribution.operator.role
           .toLowerCase()
           .includes(debouncedSearch.toLowerCase());
 
@@ -80,7 +81,7 @@ export function FinancialContributions() {
   const handleExport = (format) => {
     const data = filteredContributions.map((item) => ({
       "Bill Code": item.billCode,
-      Source: item.source,
+      Source: item.operator.role,
       Amount: item.amount,
       Date: format(new Date(item.date), "PPP"),
       Accounted: item.isAccounted ? "Yes" : "No",
@@ -191,7 +192,7 @@ export function FinancialContributions() {
               </option>
             ))}
           </select>
-
+          {/* 
           <input
             type="text"
             placeholder="Search by bill code or source"
@@ -199,7 +200,7 @@ export function FinancialContributions() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="bg-white text-secondary px-4 py-2 rounded"
           />
-
+          
           <button
             onClick={() => handleExport("csv")}
             className="bg-white text-secondary hover:bg-gray-100 px-4 py-2 rounded"
@@ -220,6 +221,7 @@ export function FinancialContributions() {
           >
             <FaPrint className="inline" />
           </button>
+          */}
         </div>
 
         {isLoading ? (
@@ -234,7 +236,7 @@ export function FinancialContributions() {
                 <tr className="bg-gradient-to-l from-primary-start to-primary-end">
                   {[
                     "No",
-                    "Bill Code",
+                    //"Bill Code",
                     "Source",
                     "Amount",
                     "Date",
@@ -259,20 +261,21 @@ export function FinancialContributions() {
 
               <tbody>
                 {filteredContributions.map((contribution, index) => (
-                  <tr key={contribution.id} className="bg-gray-100">
+                  <tr key={index} className="bg-gray-100">
                     <td className="p-4 text-md text-blue-900 text-center rounded-l-lg">
                       {index + 1}
                     </td>
-                    <td className="p-4 text-md text-center font-bold">
+                    {/*<td className="p-4 text-md text-center font-bold">
                       {contribution.billCode}
                     </td>
+                    */}
                     <td className="p-4 text-md text-center">
                       <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
-                        {contribution.source}
+                        {contribution.operator.role}
                       </span>
                     </td>
                     <td className="p-4 text-md text-center font-semibold">
-                      ${contribution.amount.toLocaleString()}
+                      {contribution.amount.toLocaleString()} F CFA
                     </td>
                     <td className="p-4 text-md text-center text-gray-600">
                       {format(new Date(contribution.date), "dd MMM yyyy")}
@@ -296,12 +299,14 @@ export function FinancialContributions() {
                           tooltip="View details"
                           className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
                         />
+                        {/*  
                         <TooltipButton
                           icon={<FaTrash className="text-red-400 text-xl" />}
                           onClick={() => handleDelete(contribution)}
                           tooltip="Delete record"
                           className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
                         />
+                        */}
                       </div>
                     </td>
                   </tr>

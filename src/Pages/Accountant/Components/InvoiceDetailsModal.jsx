@@ -1,133 +1,131 @@
-import { FaCheckCircle, FaTimes } from "react-icons/fa";
+import { format } from "date-fns";
+import {
+  FaTimes,
+  FaUser,
+  FaCalendar,
+  FaMoneyBillWave,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaFileInvoice,
+} from "react-icons/fa";
 import PropTypes from "prop-types";
-import axiosInstance from "../../../Utils/axiosInstance.js";
-import { useEffect, useState } from "react";
+
 export function InvoiceDetailsModal({
   isOpen,
   onClose,
   invoice,
   validateInvoice,
 }) {
-  InvoiceDetailsModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    invoice: PropTypes.object.isRequired,
-    validateInvoice: PropTypes.func.isRequired,
-  };
-
-  const [invoiceLines, setInvoiceLines] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Fonction pour récupérer les lignes de la facture
-  const fetchInvoiceLines = async () => {
-    if (!invoice) return;
-
-    setIsLoading(true);
-    try {
-      const response = await axiosInstance.get(`/bill-item/${invoice.id}/`);
-      if (response.status === 200) {
-        setInvoiceLines(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching invoice lines:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isOpen && invoice) {
-      fetchInvoiceLines();
-    }
-  }, [isOpen, invoice]);
+  if (!isOpen || !invoice) return null;
 
   return (
-    <div
-      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ${
-        isOpen ? "" : "hidden"
-      }`}
-    >
-      <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
-        {/* En-tête de la modal */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">
-            Détails de la Facture
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition duration-300"
-          >
-            <FaTimes className="text-xl" />
-          </button>
-        </div>
-
-        {/* Corps de la modal */}
-        {isLoading ? (
-          <p>Chargement en cours...</p>
-        ) : (
-          <div className="space-y-4">
-            {/* Informations de la facture */}
-            <div>
-              <p>
-                <strong>Date:</strong> {invoice?.date}
-              </p>
-              <p>
-                <strong>Montant:</strong> {invoice?.amount} FCFA
-              </p>
-              <p>
-                <strong>Opérateur:</strong> {invoice?.operator}
-              </p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
+      <div className="bg-white rounded-lg shadow-xl w-[700px]">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="flex justify-between items-center bg-gradient-to-r from-primary-start to-primary-end p-4">
+            <h2 className="text-2xl font-bold text-white">Invoice Details</h2>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-200"
+            >
+              <FaTimes size={24} />
+            </button>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-2 gap-4">
+              <DetailItem
+                icon={<FaFileInvoice />}
+                label="Invoice ID"
+                value={invoice.billCode}
+              />
+              <DetailItem
+                icon={<FaCalendar />}
+                label="Date"
+                value={format(new Date(invoice.date), "PPP 'at' p")}
+              />
+              <DetailItem
+                icon={<FaMoneyBillWave />}
+                label="Amount"
+                value={`${invoice.amount} FCFA`}
+              />
+              <DetailItem
+                icon={
+                  invoice.isValidated ? (
+                    <FaCheckCircle className="text-green-500" />
+                  ) : (
+                    <FaTimesCircle className="text-red-500" />
+                  )
+                }
+                label="Validated"
+                value={invoice.isValidated ? "Yes" : "No"}
+              />
+              <DetailItem
+                icon={<FaUser />}
+                label="Operator"
+                value={`${invoice.operator.first_name} ${invoice.operator.last_name}`}
+              />
             </div>
 
-            {/* Lignes de la facture */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">
-                Lignes de la Facture
-              </h3>
+            {/* Invoice Items */}
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2">Invoice Items</h3>
               <table className="w-full border-separate border-spacing-y-2">
                 <thead>
                   <tr className="bg-gray-200">
-                    <th className="p-2 text-left">Désignation</th>
-                    <th className="p-2 text-left">Quantité</th>
-                    <th className="p-2 text-left">Prix Unitaire</th>
+                    <th className="p-2 text-left">Designation</th>
+                    <th className="p-2 text-left">Quantity</th>
+                    <th className="p-2 text-left">Unit Price</th>
                     <th className="p-2 text-left">Total</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {invoiceLines.map((line) => (
-                    <tr key={line.id} className="bg-gray-100">
-                      <td className="p-2">{line.designation}</td>
-                      <td className="p-2">{line.quantity}</td>
-                      <td className="p-2">{line.unitP} FCFA</td>
-                      <td className="p-2">{line.totalP} FCFA</td>
-                    </tr>
-                  ))}
+                  {invoice.bill_items &&
+                    invoice.bill_items.map((item) => (
+                      <tr key={item.id} className="bg-gray-100">
+                        <td className="p-2">{item.designation}</td>
+                        <td className="p-2">{item.quantity}</td>
+                        <td className="p-2">{item.unitP} FCFA</td>
+                        <td className="p-2">{item.totalP} FCFA</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
 
-            {/* Bouton de validation ou OK */}
-            <div className="flex justify-end">
-              {invoice?.isValidated ? (
+            {/* Validation Button */}
+            {!invoice.isValidated && (
+              <div className="mt-6 flex justify-end">
                 <button
-                  onClick={onClose}
-                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  OK
-                </button>
-              ) : (
-                <button
-                  onClick={() => validateInvoice(invoice.id)}
+                  onClick={() => validateInvoice(invoice.billCode)}
                   className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
                 >
                   <FaCheckCircle className="mr-2" />
-                  Valider la Facture
+                  Validate Invoice
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
 }
+
+function DetailItem({ icon, label, value }) {
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="text-primary-start">{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="font-semibold">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+InvoiceDetailsModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  invoice: PropTypes.object,
+  validateInvoice: PropTypes.func.isRequired,
+};

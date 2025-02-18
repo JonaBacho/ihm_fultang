@@ -102,6 +102,8 @@ export function LoginPage()
     }
 
 
+
+
     return (
         <>
             <div className="flex flex-col"
@@ -112,7 +114,7 @@ export function LoginPage()
                      backgroundRepeat: "no-repeat",
                  }}
             >
-                <p className="text-3xl text-white font-bold mt-6 ml-8">
+                <p onClick={ ()=>navigate("/") } className="text-3xl text-white font-bold mt-6 ml-8 cursor-pointer">
                     FullTang
                 </p>
                 <div className="flex-1 flex flex-col items-center justify-center">

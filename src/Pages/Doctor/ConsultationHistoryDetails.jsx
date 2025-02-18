@@ -10,13 +10,14 @@ import {
     Stethoscope,
     ClipboardList, Heart, AlertTriangle, MapPin, Phone, ArrowLeft, Printer, Clock,
 } from "lucide-react"
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useCalculateAge} from "../../Utils/compute.js";
-import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js";
+import {formatDateOnly, formatDateOnlyWithoutWeekDay, formatDateToTime} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
+import {useEffect} from "react";
 
 export  function ConsultationHistoryDetails() {
 
@@ -27,7 +28,7 @@ export  function ConsultationHistoryDetails() {
     const patientParameters = consultation?.idMedicalFolderPage;
 
     const {calculateAge} = useCalculateAge();
-    const { value: ageValue, unit: ageUnit } = calculateAge('2000-01-01');
+    const { value: ageValue, unit: ageUnit } = calculateAge(patientInfos?.birthDate);
 
 
     const MedicalParametersInfos = [
@@ -78,12 +79,16 @@ export  function ConsultationHistoryDetails() {
         }
     ];
 
+    useEffect(() => {
+        console.log(consultation);
+    }, []);
+
 
     const navigate = useNavigate();
 
 
     return (
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
         <div className="space-y-6">
 
@@ -107,7 +112,7 @@ export  function ConsultationHistoryDetails() {
                                 <div className="flex items-center gap-2 text-white">
                                     <Calendar className="w-6 h-6"/>
                                     <div className="flex">
-                                        <span>Born on {patientInfos?.birthDate && formatDateOnly(patientInfos?.birthDate) || 'Not Specified'}</span>
+                                        <span>Born on {patientInfos?.birthDate && formatDateOnlyWithoutWeekDay(patientInfos?.birthDate) || 'Not Specified'}</span>
                                         <div className="flex gap-1 mt-0.5 ">
                                             <span className="ml-2 text-white text-sm">({ageValue}</span>
                                             <span className="text-white text-sm">{ageUnit})</span>
@@ -186,7 +191,7 @@ export  function ConsultationHistoryDetails() {
                             <ClipboardList className="h-5 w-5 mr-2 text-blue-500"/>
                             Nurse Notes
                         </h3>
-                        <p className="text-gray-700 ml-10">{patientParameters?.nurseNotes || 'Not Specified'}</p>
+                        <p className="text-gray-700 ml-10">{patientParameters?.nurseNotes || consultation?.consultationNotes ||'Not Specified'}</p>
                     </div>
 
 
@@ -205,7 +210,7 @@ export  function ConsultationHistoryDetails() {
                             <ClipboardList className="h-5 w-5 mr-2 text-blue-500"/>
                             Doctor Notes
                         </h3>
-                        <p className="text-gray-700 ml-10">{patientParameters?.doctorNotes || 'Not Specified'}</p>
+                        <p className="text-gray-700 ml-10">{patientParameters?.doctorNote || 'Not Specified'}</p>
                     </div>
 
 
@@ -297,7 +302,7 @@ export  function ConsultationHistoryDetails() {
                 </div>
             </div>
         </div>
-        </DoctorDashboard>
+        </CustomDashboard>
     )
 }
 

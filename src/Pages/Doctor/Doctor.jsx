@@ -2,11 +2,11 @@ import { Users, Calendar, ClipboardList,  FileSpreadsheet, UserPlus, FileText } 
 
 import {useNavigate} from "react-router-dom";
 import {AppRoutesPaths as AppRouterPaths} from "../../Router/appRouterPaths.js";
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx"
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx"
 import {doctorNavLink} from "./lib/doctorNavLink.js"
 import QuickActionButton from "../../GlobalComponents/QuickActionButton.jsx";
 import StatCard from "../../GlobalComponents/StatCard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 
 export function Doctor() {
@@ -25,7 +25,7 @@ export function Doctor() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="p-6 space-y-6">
                 <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white">
@@ -75,26 +75,26 @@ export function Doctor() {
                         <QuickActionButton
                             icon={UserPlus}
                             label="Manage Patient"
-                            onClick={() => navigate(AppRouterPaths.doctorPatientListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorPatientList)}
                         />
 
                         <QuickActionButton
                             icon={Calendar}
                             label="View Appointments List"
-                            onClick={() => navigate(AppRouterPaths.doctorAppointmentsListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorAppointment)}
                         />
 
                         <QuickActionButton
                             icon={FileSpreadsheet}
                             label="View Consultations List"
-                            onClick={() => navigate(AppRouterPaths.doctorConsultationsListPage)}
+                            onClick={() => navigate(AppRouterPaths.doctorConsultationList)}
                         />
 
 
                     </div>
                 </div>
             </div>
-        </DoctorDashboard>
+        </CustomDashboard>
     );
 }
 

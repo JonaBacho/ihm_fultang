@@ -1,5 +1,5 @@
 import { Users, Stethoscope, Calendar, ClipboardList, Building2, FileText, ShieldCheck, UserCog, Settings, FileSpreadsheet, UserPlus, Hospital } from 'lucide-react';
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import {useNavigate} from "react-router-dom";
@@ -48,7 +48,7 @@ export function AdminHomePage() {
 
 
     return (
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="p-6 space-y-6">
                 <div className="bg-gradient-to-r from-primary-end to-primary-start rounded-lg p-6 text-white">
@@ -168,7 +168,7 @@ export function AdminHomePage() {
                     </div>
                 </div>
             </div>
-        </AdminDashBoard>
+        </CustomDashboard>
     );
 }
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant";
@@ -16,6 +18,7 @@ import { Tooltip, Modal, Input, Button } from "antd";
 import { AccountantDashBoard } from "./Components/AccountantDashboard.jsx";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { useLocation } from "react-router-dom";
+import { formatDateOnlyWithoutWeekDay } from "../../Utils/formatDateMethods.js";
 
 export function AccountDetailsPage() {
   const { accountId } = useParams();
@@ -48,9 +51,10 @@ export function AccountDetailsPage() {
       const invoicesResponse = await axiosInstance.get(
         url + `/?account_id=${accountDetail.id}`
       );
+      console.log(invoicesResponse);
       if (accountResponse.status === 200 && invoicesResponse.status === 200) {
         setAccountDetails(accountResponse.data);
-        setInvoices(invoicesResponse.data.results);
+        setInvoices(invoicesResponse.data || []);
         setTotalPages(
           Math.ceil(
             invoicesResponse.data.count ? invoicesResponse.data.count / 10 : 1
@@ -60,9 +64,13 @@ export function AccountDetailsPage() {
         setPreviousUrl(invoicesResponse.data.previous);
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.detail || "An error occurred");
+      console.error("Error fetching account details:", error);
+      setErrorMessage(
+        error.response?.data?.detail ||
+          "Une erreur est survenue lors du chargement des données."
+      );
       setCanOpenErrorMessageModal(true);
-      setInvoices([]);
+      setInvoices([]); // Réinitialise les factures pour éviter l'affichage d'anciennes données
     } finally {
       setIsLoading(false);
     }
@@ -74,9 +82,7 @@ export function AccountDetailsPage() {
 
   const validateInvoice = async (invoiceId) => {
     try {
-      const response = await axiosInstance.post(
-        `/invoices/${invoiceId}/validate/`
-      );
+      const response = await axiosInstance.patch(`/bill/${invoiceId}/account/`);
       if (response.status === 200) {
         await fetchAccountDetails();
       }
@@ -142,87 +148,95 @@ export function AccountDetailsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-lg shadow-md">
-          <table className="w-full border-separate border-spacing-y-2">
-            <thead>
-              <tr className="bg-gradient-to-r from-primary-start to-primary-end text-white">
-                <th className="py-4 px-6 text-left rounded-tl-lg">
-                  <div className="flex items-center">
-                    <span className="mr-2">#</span>
-                    <FaSort className="text-gray-300" />
-                  </div>
-                </th>
-                <th className="py-4 px-6 text-left">
-                  <div className="flex items-center">
-                    <span className="mr-2">Date</span>
-                    <FaSort className="text-gray-300" />
-                  </div>
-                </th>
-                <th className="py-4 px-6 text-left">
-                  <div className="flex items-center">
-                    <span className="mr-2">Montant</span>
-                    <FaSort className="text-gray-300" />
-                  </div>
-                </th>
-                <th className="py-4 px-6 text-left">
-                  <div className="flex items-center">
-                    <span className="mr-2">Opérateur</span>
-                    <FaSort className="text-gray-300" />
-                  </div>
-                </th>
-                <th className="py-4 px-6 text-center rounded-tr-lg">
-                  Opérations
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices?.map((invoice, index) => (
-                <tr key={invoice.id} className="bg-gray-100">
-                  <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">
-                    {index + 1}
-                  </td>
-                  <td className="p-4 text-md text-center">{invoice.date}</td>
-                  <td className="p-4 text-md text-center">
-                    {invoice.amount} FCFA
-                  </td>
-                  <td className="p-4 text-md text-center">
-                    {invoice.operator}
-                  </td>
-                  <td className="p-4 relative rounded-r-lg">
-                    <div className="flex justify-center">
-                      <Tooltip placement="left" title="Voir les détails">
-                        <button
-                          onClick={() => {
-                            setSelectedInvoice(invoice);
-                            console.log("Voici la facture", invoice);
-                            setCanOpenInvoiceDetailsModal(true);
-                          }}
-                          className="flex items-center justify-center w-9 h-9 text-primary-end text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
-                        >
-                          <FaEye />
-                        </button>
-                      </Tooltip>
+          {invoices.length === 0 ? (
+            <p className="text-center text-lg">No invoices available.</p>
+          ) : (
+            <table className="w-full border-separate border-spacing-y-2">
+              <thead>
+                <tr className="bg-gradient-to-r from-primary-start to-primary-end text-white">
+                  <th className="py-4 px-6 text-left rounded-tl-lg">
+                    <div className="flex items-center">
+                      <span className="mr-2">#</span>
+                      <FaSort className="text-gray-300" />
                     </div>
-                  </td>
+                  </th>
+                  <th className="py-4 px-6 text-left">
+                    <div className="flex items-center">
+                      <span className="mr-2">Date</span>
+                      <FaSort className="text-gray-300" />
+                    </div>
+                  </th>
+                  <th className="py-4 px-6 text-left">
+                    <div className="flex items-center">
+                      <span className="mr-2">Montant</span>
+                      <FaSort className="text-gray-300" />
+                    </div>
+                  </th>
+                  <th className="py-4 px-6 text-left">
+                    <div className="flex items-center">
+                      <span className="mr-2">Opérateur</span>
+                      <FaSort className="text-gray-300" />
+                    </div>
+                  </th>
+                  <th className="py-4 px-6 text-center rounded-tr-lg">
+                    Opérations
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {invoices?.map((invoice, index) => (
+                  <tr key={index} className="bg-gray-100">
+                    <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">
+                      {index + 1}
+                    </td>
+                    <td className="p-4 text-md text-center">
+                      {formatDateOnlyWithoutWeekDay(invoice.date)}
+                    </td>
+                    <td className="p-4 text-md text-center">
+                      {invoice.amount} FCFA
+                    </td>
+                    <td className="p-4 text-md text-center">
+                      {invoice.operator.first_name} {invoice.operator.last_name}
+                    </td>
+                    <td className="p-4 relative rounded-r-lg">
+                      <div className="flex justify-center">
+                        <Tooltip placement="left" title="Voir les détails">
+                          <button
+                            onClick={() => {
+                              const fullInvoice = invoices.find(
+                                (inv) => inv.id === invoice.id
+                              );
+                              setSelectedInvoice(fullInvoice);
+                              console.log("Voici la facture", fullInvoice);
+                              setCanOpenInvoiceDetailsModal(true);
+                            }}
+                            className="flex items-center justify-center w-9 h-9 text-primary-end text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
+                          >
+                            <FaEye />
+                          </button>
+                        </Tooltip>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           <div className="flex justify-center mt-6">
             <div className="flex gap-4">
-              <Tooltip placement="left" title="Page précédente">
-                <button
-                  onClick={() => handlePageChange("prev")}
-                  disabled={!previousUrl}
-                  className={`w-10 h-10 border-2 rounded-lg flex items-center justify-center ${
-                    !previousUrl
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-secondary hover:bg-secondary hover:text-white"
-                  }`}
-                >
-                  <FaArrowLeft />
-                </button>
-              </Tooltip>
+              <Tooltip placement="left" title="Page précédente"></Tooltip>
+              <button
+                onClick={() => handlePageChange("prev")}
+                disabled={!previousUrl}
+                className={`w-10 h-10 border-2 rounded-lg flex items-center justify-center ${
+                  !previousUrl
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-secondary hover:bg-secondary hover:text-white"
+                }`}
+              >
+                <FaArrowLeft />
+              </button>
               <p className="text-secondary text-2xl font-bold mt-2">
                 Page {currentPage} sur {totalPages}
               </p>

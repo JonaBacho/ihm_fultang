@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Search, Calendar, Clock, MapPin, Phone, ChevronLeft, ChevronRight, CheckCircle, Eye } from "lucide-react"
+import { Search, Calendar,  ChevronLeft, ChevronRight } from "lucide-react"
 import AppointmentCard from "./DoctorComponents/AppointmentCard.jsx";
 import {useAuthentication} from "../../Utils/Provider.jsx";
-import {DoctorDashboard} from "./DoctorComponents/DoctorDashboard.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 
 // Données simulées
 const mockAppointments = [
@@ -81,7 +81,7 @@ export  function AppointmentList() {
 
 
     return (
-        <DoctorDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
+        <CustomDashboard linkList={doctorNavLink} requiredRole={"Doctor"}>
             <DoctorNavBar/>
             <div className="mx-auto p-6 h-fit">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">{`Appointments of Dr. ${userData?.first_name + " " + userData?.last_name}`}</h1>
@@ -177,7 +177,7 @@ export  function AppointmentList() {
                     </div>
                 )}
             </div>
-        </DoctorDashboard>
+        </CustomDashboard>
     )
 }
 

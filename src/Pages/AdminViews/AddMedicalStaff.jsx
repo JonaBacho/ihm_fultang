@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {AdminDashBoard} from "./AdminDashboard.jsx";
+import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
 import joinOurStaffImage from "../../assets/medicalStaff.jpg";
@@ -105,7 +105,7 @@ export function AddMedicalStaff() {
     }
 
     return (
-        <AdminDashBoard linkList={adminNavLink} requiredRole={"Admin"}>
+        <CustomDashboard linkList={adminNavLink} requiredRole={"Admin"}>
             <AdminNavBar/>
             <div className="flex m-5">
                 <div className="w-1/2 mr-6 flex flex-col items-center justify-center">
@@ -315,7 +315,7 @@ export function AddMedicalStaff() {
             <SuccessModal isOpen={canOpenSuccessModal} canOpenSuccessModal={setCanOpenSuccessModal} message={successMessage}/>
             <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={setCanOpenErrorModal} message={errorMessage}/>
             {isLoading && <Wait/>}
-        </AdminDashBoard>
+        </CustomDashboard>
     );
 }
 
