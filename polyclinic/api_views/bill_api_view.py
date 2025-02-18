@@ -227,6 +227,44 @@ class BillViewSet(ModelViewSet):
         except BillItem.DoesNotExist:
             return Response({"details": "cet item n'existe pas"}, status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister des factures non verifiées par le comptable",
+        operation_description="Retourne toutes les factures non vérifiées par le comptable",
+        manual_parameters=[
+            openapi.Parameter(
+                'account_id', openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                description="ID du compte",
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(methods=["get"], detail=False, url_path="bill-unaccounted", permission_classes=permission_classes, pagination_class=pagination_class)
+    def get_bill_unaccounted(self, request):
+        account_id = request.query_params.get('account_id')
+
+        if not account_id:
+            return Response(
+                {"details": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        account = Account.objects.filter(id=account_id).first()
+        if not account:
+            return Response(
+                {"details": "Aucun compte trouvé avec cet ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        operations = FinancialOperation.objects.filter(account=account)
+        bills = Bill.objects.filter(operation__in=operations).filter(isAccounted=False)
+
+        serializer = self.get_serializer(bills, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     @swagger_auto_schema(
         method='get',
