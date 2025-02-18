@@ -88,7 +88,7 @@ export function CustomDashboard({ children, linkList, requiredRole}) {
     }
 
 
-    useEffect(() => {
+   useEffect(() => {
         const checkAuth = async () => {
             await new Promise(resolve => setTimeout(resolve, 500));
             setIsLoading(false);

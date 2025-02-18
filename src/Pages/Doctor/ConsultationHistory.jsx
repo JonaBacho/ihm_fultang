@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Search, Calendar, Eye, User, Clock, DollarSign } from "lucide-react"
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
@@ -7,6 +7,8 @@ import {formatDateOnly, formatDateToTime} from "../../Utils/formatDateMethods.js
 import {getStateStyles} from "./lib/applyStyleFunction.js";
 import {useNavigate} from "react-router-dom";
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 // Données simulées
@@ -76,15 +78,48 @@ const mockConsultations = [
 ]
 
 export function ConsultationHistory() {
-    const [searchTerm, setSearchTerm] = useState("")
-    const [dateFilter, setDateFilter] = useState("")
+    const [searchTerm, setSearchTerm] = useState("");
+    const [dateFilter, setDateFilter] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const {userData} = useAuthentication();
+    const [consultationHistoryList, setConsultationHistoryList] = useState([]);
+    const [errorStatus, setErrorStatus] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
-    const filteredConsultations = mockConsultations.filter((consultation) => {
-        const matchesSearch =
-            consultation.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            consultation.patientId.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesDate = dateFilter ? consultation.date === dateFilter : true
+    async function loadConsultationHistory(idDoctor)
+    {
+        setIsLoading(true);
+        try
+        {
+            const response =  await axiosInstance.get(`/consultation/doctor/${userData?.id}/?history=true`);
+            setIsLoading(false);
+            if(response.status === 200)
+            {
+                setConsultationHistoryList(response?.data);
+                console.log(response?.data);
+            }
+
+        }
+        catch (error)
+        {
+            setIsLoading(false);
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        if (userData.id)
+        {
+            loadConsultationHistory(userData.id);
+        }
+    }, [userData.id]);
+
+    const filteredConsultations = consultationHistoryList.filter((consultation) => {
+        const fullName = consultation?.idPatient?.firstName + consultation?.idPatient?.lastName;
+
+        const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesDate = dateFilter ? consultation?.consultationDate === dateFilter : true
         return matchesSearch && matchesDate
     })
 
@@ -173,7 +208,7 @@ export function ConsultationHistory() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 bg-gray-100">
-                                            <div className="text-sm text-center text-gray-900">{consultation?.consultationReason || 'Not Specified'}</div>
+                                            <div className="text-sm text-center text-gray-900">{consultation?.consultationNotes || 'Not Specified'}</div>
                                         </td>
                                         <td className="px-6 py-4 bg-gray-100 ">
                                             <div className="flex items-center justify-center text-sm text-gray-900">
@@ -190,7 +225,7 @@ export function ConsultationHistory() {
                                         </td>
                                         <td className="px-6 py-5  bg-gray-100 rounded-r-xl">
                                             <button
-                                                onClick={()=>{navigate(`/doctor/consultation-history/details/${consultation?.id}`, {state: consultation})}}
+                                                onClick={()=>{navigate(`/doctor/consultation-history/details/${consultation?.id}`, {state: {consultation}})}}
                                                 className="flex items-center text-primary-end hover:text-primary-start font-bold hover:text-[17px] transition-all duration-500"
                                             >
                                                 <Eye className="h-5 w-5 mr-1"/>

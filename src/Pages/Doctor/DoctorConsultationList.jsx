@@ -25,8 +25,7 @@ export  function DoctorConsultationList() {
     const [errorStatus, setErrorStatus] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
     const filteredConsultations = consultations
-        .filter(
-            (consultation) =>
+        .filter((consultation) =>
             {
                 const patientFullName = consultation?.idPatient?.firstName + consultation?.idPatient?.lastName
                 return(
