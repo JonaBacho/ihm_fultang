@@ -5,7 +5,6 @@ import {AppRoutesPaths} from "./appRouterPaths.js";
 
 
 
-
 export function AppRoute()
 {
     const LoginPage = React.lazy(async () => ({default: (await import("../Pages/Authentication/Login.jsx")).LoginPage}));
@@ -24,7 +23,6 @@ export function AppRoute()
     const SpecialistPage = React.lazy(async () => ({default: (await import("../Pages/Doctor/Specialist.jsx")).Specialist}));
     const CashierPage = React.lazy(async () => ({default: (await import("../Pages/Cashier/Cashier.jsx")).Cashier}));
     const ExamsList = React.lazy(async () => ({default: (await import("../Pages/Cashier/ExamsList.jsx")).ExamsList}));
-    const Hospitalisations = React.lazy(async () => ({default: (await import("../Pages/Cashier/Hospitalisations.jsx")).Hospitalisations}));
     const FinancialReport = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialReport.jsx")).FinancialReport}));
     const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminHomePage.jsx")).AdminHomePage}));
     const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/ReceptionistMedicalStaffs.jsx")).ReceptionistMedicalStaffs}));
@@ -42,23 +40,8 @@ export function AppRoute()
     const CurrentExamsLaboratoryPage = React.lazy(async () => ({default: (await import("../Pages/Laboratory/CurrentExams.jsx")).CurrentExams}));
     const ExamsHistoryLaboratoryPage = React.lazy(async () => ({default: (await import("../Pages/Laboratory/ExamsHistory.jsx")).ExamHistory}));
     const FinancialHistory = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialHistory.jsx")).FinancialHistory}));
-    const AccountDetailsPage = React.lazy(async () => ({default: (await import("../Pages/Accountant/AccountDetailsPage.jsx")).AccountDetailsPage}));
-    const AccountList = React.lazy(async () => ({default: (await import("../Pages/Accountant/AccountList.jsx")).AccountList}));
-
-    const DoctorPatientList = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorPatientList.jsx")).DoctorPatientList}));
-    const DoctorConsultationList = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorConsultationList.jsx")).DoctorConsultationList}));
-    const DoctorAppointments = React.lazy(async () => ({default: (await import("../Pages/Doctor/AppointmentList.jsx")).AppointmentList}));
-    const DoctorConsultationHistory = React.lazy(async () => ({default: (await import("../Pages/Doctor/ConsultationHistory.jsx")).ConsultationHistory}));
-    const DoctorConsultationDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorConsultationDetail.jsx")).DoctorConsultationDetails}));
-    const DoctorConsultationHistoryDetails = React.lazy(async () => ({default: (await import("../Pages/Doctor/ConsultationHistoryDetails.jsx")).ConsultationHistoryDetails}));
-    const DoctorExamList = React.lazy(async () => ({default: (await import("../Pages/Doctor/DoctorExamsList.jsx")).DoctorExamsList}));
-    const DoctorPatientMedicalFolder = React.lazy(async () => ({default: (await import("../Pages/Doctor/PatientMedicalFolder.jsx")).PatientMedicalFolder}));
 
 
-    const FinancialContributions = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialContribution.jsx")).FinancialContributions,}));
-    const FinancialReportsAccountant = React.lazy(async () => ({default: (await import("../Pages/Accountant/FinancialReports.jsx")).FinancialReports,}));
-    const PharmacyMedication = React.lazy(async () => ({default: (await import("../Pages/Pharmacy/PharmacyMedication.jsx")).PharmacyMedication,}));
-    const CreateFactureAccountant = React.lazy(async () => ({default: (await import("../Pages/Accountant/CreateFacture.jsx")).CreateFacturePage,}));
 
 
     return (
@@ -75,7 +58,6 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.patientDetailsPage} element={<PatientDetailsPage />} />
                 <Route path={AppRoutesPaths.cashierPage} element={<CashierPage />} />
                 <Route path={AppRoutesPaths.examsList} element={<ExamsList/>} />
-                <Route path={AppRoutesPaths.hospitalisations} element={<Hospitalisations/>} />
                 <Route path={AppRoutesPaths.financialReport} element={<FinancialReport/>} />
                 <Route path={AppRoutesPaths.receptionistPage} element={<ReceptionistPage />} />
                 <Route path={AppRoutesPaths.doctorPage} element={<DoctorPage />} />
@@ -97,24 +79,8 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.laboratoryHistory} element={<ExamsHistoryLaboratoryPage />} />
                 <Route path={AppRoutesPaths.laboratoryCurrent} element={<CurrentExamsLaboratoryPage />} />
                 <Route path={AppRoutesPaths.financialHistory} element={<FinancialHistory />} />
-                <Route  path={AppRoutesPaths.accountDetails}   element={<AccountDetailsPage />} />
-                <Route path={AppRoutesPaths.accountList} element={<AccountList />} />
+
                 <Route path={AppRoutesPaths.notFound} element={<NotFoundPage />} />
-
-                <Route path={AppRoutesPaths.doctorExamList} element={<DoctorExamList />} />
-                <Route path={AppRoutesPaths.doctorConsultationHistory} element={<DoctorConsultationHistory />} />
-                <Route path={AppRoutesPaths.doctorAppointment} element={<DoctorAppointments />} />
-                <Route path={AppRoutesPaths.doctorPatientList} element={<DoctorPatientList />} />
-                <Route path={AppRoutesPaths.doctorConsultationList} element={<DoctorConsultationList />} />
-                <Route path={AppRoutesPaths.doctorConsultationDetailsPage} element={<DoctorConsultationDetails />} />
-                <Route path={AppRoutesPaths.doctorConsultationHistoryDetails} element={<DoctorConsultationHistoryDetails />} />
-                <Route path={AppRoutesPaths.doctorPatientMedicalFolderPage} element={<DoctorPatientMedicalFolder />} />
-
-
-                <Route path={AppRoutesPaths.financialContributions} element={<FinancialContributions />}/>
-                <Route path={AppRoutesPaths.financialReportsAccountant} element={<FinancialReportsAccountant />}/>
-                <Route path={AppRoutesPaths.PharmacyMedication} element ={<PharmacyMedication/>}/>
-                <Route path={AppRoutesPaths.createFactureAccountant} element={<CreateFactureAccountant/>}/>
             </Routes>
         </React.Suspense>
     )
