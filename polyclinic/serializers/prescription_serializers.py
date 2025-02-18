@@ -11,7 +11,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
 
 class PrescriptionCreateSerializer(serializers.ModelSerializer):
-    prescription_drugs = PrescriptionDrugCreateSerializer(many=True, required=True)
+    prescription_drugs = PrescriptionDrugCreateSerializer(many=True, required=False)
 
     class Meta:
         model = Prescription
@@ -20,6 +20,9 @@ class PrescriptionCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if 'idConsultation' not in validated_data:
             raise ValidationError({"details": "la consultation est requise"})
+
+        if not validated_data.get('prescription_drugs'):
+            raise serializers.ValidationError({"detail": "prescription drugs is required"})
 
         prescription_drugs = validated_data['prescription_drugs']
         prescription = Prescription.objects.create(
@@ -30,3 +33,5 @@ class PrescriptionCreateSerializer(serializers.ModelSerializer):
         )
         for item in prescription_drugs:
             PrescriptionDrug.objects.create(prescription=prescription, **item)
+
+        return prescription

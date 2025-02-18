@@ -130,10 +130,6 @@ class PatientViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        # Récupérer l'utilisateur connecté
-        user = self.request.user
-
-        # Si 'id' est présent dans les données validées, on le retire (pour éviter toute interférence)
         serializer.validated_data.pop('id', None)
 
         # Récupérer l'instance du MedicalStaff passé dans les données

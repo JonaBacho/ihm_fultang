@@ -107,10 +107,6 @@ class ExamResultViewSet(ModelViewSet):
     def get_serializer_class(self):
         return ExamResultSerializer
 
-    # def perform_create(self, serializer):
-    #     if 'id' in serializer.validated_data:
-    #         serializer.validated_data.pop('id')
-    #     serializer.save()
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')

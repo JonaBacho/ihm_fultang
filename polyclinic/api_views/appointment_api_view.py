@@ -102,7 +102,7 @@ class AppointmentViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
+        if self.action in ["create", "update", "partial_update"] or self.request.method in ["POST", "PUT", "PATCH"]:
             return AppointmentSerializer
         else:
             return AppointmentDetailSerializer

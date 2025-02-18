@@ -115,7 +115,7 @@ class MedicalFolderViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list", "retrieve"] or self.request.method in ["GET", "HEAD", "OPTIONS"]:
             return MedicalFolderDetailsSerializer
         else:
             return MedicalFolderSerializer
