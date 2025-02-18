@@ -1,7 +1,40 @@
-import { FaClipboardList, FaHistory, FaSignOutAlt } from "react-icons/fa";
+import {FaClipboardList, FaHistory, FaHome} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
+import {FiList} from "react-icons/fi";
 
 export const laboratoryNavLink = [
+
+    {
+        name: "Dashboard",
+        link: appRoutes.laboratoryAssistantPage,
+        icon: FaHome,
+    },
+    {
+        name: "Patient list",
+        link: appRoutes.laboratoryPatientList,
+        icon: FaHome,
+    },
+    {
+        name: 'Exams',
+        icon: FiList,
+        subLinks: [
+            {
+                icon: FiList,
+                name: "Exams List",
+                link: appRoutes.laboratoryExamenList
+            },
+            {
+                icon: FaHistory,
+                name: "Exams History",
+                link: appRoutes.laboratoryExamenHistories
+            },
+            /*  {
+                  icon: FaPlus,
+                  name: "Add A Consultation",
+                  link: appRoutes.doctorAddConsultation
+              }*/
+        ]
+    },
     {
         name: 'Examens en cours',
         icon: FaClipboardList,
@@ -14,10 +47,6 @@ export const laboratoryNavLink = [
         link: appRoutes.laboratoryHistory ,
         description: 'Consulter l\'historique des examens'
     },
-    // {
-    //     name: 'Déconnexion',
-    //     icon: FaSignOutAlt,
-    //     link: appRoutes.logout || '/logout',
-    //     description: 'Se déconnecter de l\'application'
-    // }
+    
+    
 ];
