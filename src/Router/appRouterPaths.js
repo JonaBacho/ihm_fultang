@@ -50,4 +50,9 @@ export const AppRoutesPaths = {
     PharmacyMedication:"/pharmacyMedication",
     createFactureAccountant: "/accountant/create-facture",
 
+    laboratoryPatientList: "/laboratory-assistant/patient-list",
+    laboratoryExamenList: "/laboratory-assistant/exams-list",
+    laboratoryExamenDetail: "/laboratory-assistant/exams-list/details",
+    laboratoryExamenHistories: "/laboratory-assistant/exams-history"
+
 }
