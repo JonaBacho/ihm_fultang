@@ -58,6 +58,19 @@ STATEPATIENT = [
     ("Inprouving", "Inprouving"),
 ]
 
+ROOM_TYPES = [
+    ("Simple", "Simple"),
+    ("Emergency", "Emergency"),
+    ("Staff", "Staff"),
+]
+
+ROOM_FACILITIES = [
+    ("Television", "Television"),
+    ("Air Conditioning", "Air Conditioning"),
+    ("Private bathroom", "Private bathroom"),
+    ("Mini fridge", "Mini fridge"),
+]
+
 # ======================================
 # ======================================== APPOINTMENT DEPARTMENT, PATIENT
 # ======================================
@@ -74,7 +87,7 @@ class Department(models.Model):
 
 ####### Il y'a à faire par rapport à ce model, il faut mettre l'acces d'un objet à jour dans la BD en fonction des dates #########"
 class PatientAccess(models.Model):
-    givenAt = models.DateTimeField(auto_now=True, blank=True)
+    givenAt = models.DateTimeField(auto_now_add=True, blank=True)
     lostAt = models.DateTimeField(blank=True)
 
     access = models.BooleanField(default=True)
@@ -85,7 +98,7 @@ class PatientAccess(models.Model):
 
 # classe qui definie le patient
 class Patient(models.Model):
-    addDate = models.DateTimeField(auto_now=True, blank=True)
+    addDate = models.DateTimeField(auto_now_add=True, blank=True)
     cniNumber = models.CharField(max_length=255, blank=True, default=" ")  # The patient CNI
     firstName = models.CharField(max_length=255, blank=True)
     lastName = models.CharField(max_length=255, blank=True, default=" ")
@@ -111,10 +124,11 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
-    atDate = models.DateTimeField(auto_now=False)
+    atDate = models.DateTimeField(auto_now_add=False)
     reason = models.CharField(max_length=300)
     requirements = models.CharField(max_length=500)
 
+    idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
@@ -135,7 +149,7 @@ class Parameters(models.Model):
     currentMedication = models.TextField(blank=True, null=True)
     familyMedicalHistory = models.TextField(blank=True, null=True)
     skinAppearance = models.CharField(max_length=255, blank=True, null=True)
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.DO_NOTHING, null=True)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
@@ -147,7 +161,7 @@ class ConsultationType(models.Model):
 
 
 class Consultation(models.Model):
-    consultationDate = models.DateTimeField(auto_now=True)
+    consultationDate = models.DateTimeField(auto_now_add=True)
     consultationPrice = models.FloatField(default=5000)
     consultationReason = models.CharField(max_length=100, blank=True, null=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
@@ -174,7 +188,7 @@ class Consultation(models.Model):
 
 
 class MedicalFolder(models.Model):
-    createDate = models.DateTimeField(auto_now=True)
+    createDate = models.DateTimeField(auto_now_add=True)
     lastModificationDate = models.DateTimeField(auto_now=True)
     folderCode = models.CharField(max_length=300)
     isClosed = models.BooleanField()
@@ -182,7 +196,7 @@ class MedicalFolder(models.Model):
 
 class MedicalFolderPage(models.Model):
     pageNumber = models.IntegerField()
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     nurseNote = models.TextField(max_length=10000, blank=True, null=True)
     doctorNote = models.TextField(max_length=10000, blank=True, null=True)
     diagnostic = models.TextField(max_length=10000, blank=True, null=True)
@@ -206,9 +220,9 @@ class Exam(models.Model):
 
 
 class ExamRequest(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     examName = models.CharField(max_length=50, null=True, blank=True)
-    examStatus = models.CharField(max_length=20, default="invalid")
+    examStatus = models.CharField(max_length=20, default="Invalid")
     patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
@@ -222,7 +236,7 @@ class ExamRequest(models.Model):
 
 
 class ExamResult(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(max_length=10000, blank=True, null=True)
     examFile = models.FileField(upload_to="exam_results/", blank=True, null=True)
 
@@ -242,7 +256,7 @@ class ExamResult(models.Model):
 
 
 class Medicament(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=1)
     name = models.CharField(max_length=50, null=False, default="")
     status = models.CharField(max_length=20, default="invalid") 
@@ -255,7 +269,7 @@ class Medicament(models.Model):
 
 
 class Prescription(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True, null=True)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
@@ -279,17 +293,19 @@ class PrescriptionDrug(models.Model):
 
 class Room(models.Model):
     roomLabel = models.CharField(max_length=100)
-    beds = models.PositiveIntegerField(default = 0)
+    beds = models.PositiveIntegerField(default = 1)
     busyBeds = models.IntegerField(default = 0)
     price = models.FloatField(default=2000)
+    type = models.CharField(max_length=255, choices=ROOM_TYPES, default="Simple")
+    facilities = models.CharField(max_length=255, choices=ROOM_FACILITIES, default="Private Bathroom")
 
 class Hospitalisation(models.Model):
-    atDate = models.DateTimeField(auto_now=True)
+    atDate = models.DateTimeField(auto_now_add=True)
     bedLabel = models.CharField(max_length=100)
     note = models.TextField(blank=True, null=True)
     isActive = models.BooleanField(default=True)
     paymentStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
-    removeAt = models.DateTimeField(auto_now=True)
+    removeAt = models.DateTimeField(auto_now_add=True)
 
     idRoom = models.ForeignKey("Room", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
@@ -299,7 +315,7 @@ class Hospitalisation(models.Model):
 # La classe pour la facture
 class Bill(models.Model):
     billCode = models.CharField(max_length=355)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     amount = models.FloatField(default=0.0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
     isAccounted = models.BooleanField(default=False)
@@ -344,7 +360,7 @@ class BillItem(models.Model):
 
 
 class Message(models.Model):
-    addAt = models.DateTimeField(auto_now=True)
+    addAt = models.DateTimeField(auto_now_add=True)
     message = models.TextField()
     reason = models.TextField()
     messageType = models.CharField(max_length=30, choices=MessageType, default='INFO')

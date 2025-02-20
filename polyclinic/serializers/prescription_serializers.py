@@ -4,10 +4,14 @@ from polyclinic.serializers.prescription_drug_serializers import PrescriptionDru
 from rest_framework.exceptions import ValidationError
 
 class PrescriptionSerializer(serializers.ModelSerializer):
-    prescription_drug = PrescriptionDrugSerializer(many=True, read_only=True)
+    prescriptionDrug = serializers.SerializerMethodField()
     class Meta:
         model = Prescription
-        fields = '__all__'
+        fields = ["id", "addDate", "note", "idPatient", "idConsultation", "idMedicalStaff", "prescriptionDrug"]
+
+    def get_prescriptionDrug(self, obj):
+        prescriptions_drug = PrescriptionDrug.objects.filter(prescription=obj)
+        return PrescriptionDrugSerializer(prescriptions_drug, many=True).data
 
 
 class PrescriptionCreateSerializer(serializers.ModelSerializer):

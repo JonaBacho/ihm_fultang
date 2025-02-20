@@ -6,17 +6,15 @@ from polyclinic.serializers.exam_serializers import ExamCreateSerializer
 class ExamRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamRequest
-        exclude = ['id', 'addDate', 'examStatus']
+        exclude = ['id', 'addDate']
 
 
-class ExamRequestCreateManySerializer(serializers.Serializer):
-    exams_list = ExamRequestCreateSerializer(many=True, required=True)
+class ExamRequestCreateManySerializer(serializers.ListSerializer):
+    child = ExamRequestCreateSerializer()
 
     def create(self, validated_data):
-        exams_list = validated_data.pop('exams_list')
-
         exam_requests = []
-        for exam_data in exams_list:
+        for exam_data in validated_data:
             exam_request = ExamRequest.objects.create(**exam_data)
             exam_requests.append(exam_request)
         return exam_requests

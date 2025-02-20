@@ -64,7 +64,7 @@ class ConsultationCreateSerializer(serializers.ModelSerializer):
         if 'state' in validated_data:
             if validated_data.get('state') != "Pending" and instance.paymentStatus == "Invalid":
                 raise ValidationError({"details": "on ne peut pas changer l'etat d'une consultation non payé"})
-        super(ConsultationCreateSerializer, self).update(instance, validated_data)
+        return super().update(instance, validated_data)
 
 
 

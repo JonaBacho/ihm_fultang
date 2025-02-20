@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from polyclinic.models import MedicalFolderPage
+from polyclinic.models import MedicalFolderPage, Prescription, ExamRequest, Consultation
 from polyclinic.serializers.exam_request_serializers import ExamRequestSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from django.utils.timezone import now
@@ -11,13 +11,31 @@ from polyclinic.serializers.prescription_serializers import PrescriptionSerializ
 
 class MedicalFolderPageSerializer(serializers.ModelSerializer):
     parameters = ParametersSerializer(required=False, many=False)
-    prescription = PrescriptionSerializer(required=False)
-    examRequest = ExamRequestSerializer(required=False, many=True)
+    prescriptions = serializers.SerializerMethodField()
+    examRequests = serializers.SerializerMethodField()
 
 
     class Meta:
         model = MedicalFolderPage
-        fields = '__all__'
+        fields = ["id", "pageNumber", "addDate", "nurseNote", "doctorNote", "diagnostic", "idMedicalFolder", "idMedicalStaff", "parameters", "prescriptions", "examRequests"]
+
+    def get_prescriptions(self, obj):
+        # Récupérer toutes les prescriptions associées à cette page
+        conultation = Consultation.objects.filter(idMedicalFolderPage=obj).first()
+        if conultation:
+            prescriptions = Prescription.objects.filter(idConsultation=conultation)
+            return PrescriptionSerializer(prescriptions, many=True).data
+        else:
+            return []
+
+    def get_examRequests(self, obj):
+        # Récupérer toutes les demandes d'examen associées à cette page
+        conultation = Consultation.objects.filter(idMedicalFolderPage=obj).first()
+        if conultation:
+            exam_requests = ExamRequest.objects.filter(idConsultation=conultation)
+            return ExamRequestSerializer(exam_requests, many=True).data
+        else:
+            return []
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)

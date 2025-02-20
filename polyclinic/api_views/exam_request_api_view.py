@@ -104,8 +104,10 @@ class ExamRequestViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "partial_update", "update"]:
+        if self.action in ["create"]:
             return ExamRequestCreateManySerializer
+        elif self.action in ["partial_update", "update"]:
+            return ExamRequestCreateSerializer
         return ExamRequestSerializer
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
