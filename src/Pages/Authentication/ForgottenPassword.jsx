@@ -30,7 +30,7 @@ export function ForgottenPassword() {
                     <div className="w-1/2 p-8 bg-gradient-to-br from-primary-start to-primary-end text-white">
                         <h2 className="text-4xl font-bold mb-6">Forgot Your Password?</h2>
                         <p className="text-lg mb-6">
-                            Don't worry, it happens to the best of us. We'll help you get back on track.
+                            Don&#39;t worry, it happens to the best of us. We'll help you get back on track.
                         </p>
                         <div className="mb-8">
                             <Lock className="w-20 h-20 mx-auto mb-4" />

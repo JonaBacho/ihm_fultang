@@ -15,6 +15,16 @@ export const laboratoryNavLink = [
         icon: FaHome,
     },
     {
+        icon: FiList,
+        name: "Exams List",
+        link: appRoutes.laboratoryExamenList
+    },
+    {
+        icon: FaHistory,
+        name: "Exams History",
+        link: appRoutes.laboratoryExamenHistories
+    },
+    /*{
         name: 'Exams',
         icon: FiList,
         subLinks: [
@@ -28,14 +38,14 @@ export const laboratoryNavLink = [
                 name: "Exams History",
                 link: appRoutes.laboratoryExamenHistories
             },
-            /*  {
+            /!*  {
                   icon: FaPlus,
                   name: "Add A Consultation",
                   link: appRoutes.doctorAddConsultation
-              }*/
+              }*!/
         ]
-    },
-    {
+    },*/
+    /*{
         name: 'Examens en cours',
         icon: FaClipboardList,
         link: appRoutes.laboratoryCurrent,
@@ -46,7 +56,7 @@ export const laboratoryNavLink = [
         icon: FaHistory,
         link: appRoutes.laboratoryHistory ,
         description: 'Consulter l\'historique des examens'
-    },
+    },*/
     
     
 ];
