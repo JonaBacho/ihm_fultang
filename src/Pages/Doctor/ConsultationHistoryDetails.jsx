@@ -21,6 +21,7 @@ import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx"
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {useEffect} from "react";
 import {GiMedicines} from "react-icons/gi";
+import {FaEdit} from "react-icons/fa";
 
 export  function ConsultationHistoryDetails() {
 
@@ -149,16 +150,30 @@ export  function ConsultationHistoryDetails() {
                                 <p className="text-[17px] mt-0.5">Back To Consultation History List</p>
                             </button>
                         </div>
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => {
-                                    window.print();
-                                }}
-                                className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
-                                <Printer size={20} className="inline mr-2"/>
-                                Print
-                            </button>
+                        <div className="flex gap-2">
+                            <div className="flex items-center">
+                                <button
+                                    onClick={() => {window.print();}}
+                                    className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
+                                    <FaEdit size={20} className="inline mr-2"/>
+                                    Edit Consultation
+                                </button>
+                            </div>
+
+
+                            <div className="flex items-center">
+                                <button
+                                    onClick={() => {
+                                        window.print();
+                                    }}
+                                    className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
+                                    <Printer size={20} className="inline mr-2"/>
+                                    Print Medical Folder Page
+                                </button>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
 

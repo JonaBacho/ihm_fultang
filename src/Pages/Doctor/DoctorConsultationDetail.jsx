@@ -17,7 +17,7 @@ import {doctorNavLink} from "./lib/doctorNavLink.js";
 import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
 import {useEffect, useState} from "react";
 import {useCalculateAge} from "../../Utils/compute.js";
-import {formatDateOnly} from "../../Utils/formatDateMethods.js";
+import {formatDateOnly, formatDateOnlyWithoutWeekDay} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
 import MedicationPrescriptionCard from "./DoctorComponents/MedicationPrescriptionCard.jsx";
 import ExamPrescriptionCard from "./DoctorComponents/ExamPrescriptionCard.jsx";
@@ -491,7 +491,7 @@ export function DoctorConsultationDetails() {
                                 <div className="flex items-center gap-2 text-white">
                                     <Calendar className="w-6 h-6"/>
                                     <div className="flex flex-col">
-                                        <span>Born on {patientInfo?.birthDate && formatDateOnly(patientInfo?.birthDate) || 'Not Specified'}</span>
+                                        <span>Born on {patientInfo?.birthDate && formatDateOnlyWithoutWeekDay(patientInfo?.birthDate) || 'Not Specified'}</span>
                                         <div className="flex gap-1 mt-0.5 ">
                                             <span className="text-white text-sm">{ageValue}</span>
                                             <span className="text-white text-sm">{ageUnit}</span>
@@ -531,7 +531,7 @@ export function DoctorConsultationDetails() {
                                 }}
                                 className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
                                 <Printer size={20} className="inline mr-2"/>
-                                Print
+                                Print Medical Folder Page
                             </button>
                         </div>
                     </div>
