@@ -5,18 +5,17 @@ from rest_framework import status
 import fitz  # PyMuPDF pour extraire le texte du PDF
 import google.generativeai as genai
 import os
-
 from fultang.settings import MEDIA_URL, MEDIA_ROOT
 from polyclinic.serializers.chat_serializers import UserQuerySerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
 
 # Charger la clé API Gemini
 os.environ["GEMINI_API_KEY"] = "AIzaSyAfCi7g6555XvHg2Qfr84eX04J3fo5kvz8"
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-MEDIA_ROOT = settings.MEDIA_ROOT
 # Charger et extraire le texte du PDF
 PDF_PATH = MEDIA_ROOT + "/guide_fultang.pdf"
 def extract_text_from_pdf(pdf_path):
@@ -33,6 +32,7 @@ def generate_answer(prompt):
     return response.text.strip()
 
 class ChatbotView(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         operation_description="poser une question au chatbot pour plus d'information sur fultnag",
         request_body=UserQuerySerializer,
