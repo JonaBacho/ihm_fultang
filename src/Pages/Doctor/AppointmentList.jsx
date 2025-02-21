@@ -55,11 +55,11 @@ const mockAppointments = [
 ]
 
 export  function AppointmentList() {
-    const [filter, setFilter] = useState("upcoming")
-    const [searchTerm, setSearchTerm] = useState("")
-    const [dateFilter, setDateFilter] = useState("")
-    const [currentPage, setCurrentPage] = useState(1)
-    const appointmentsPerPage = 5
+    const [filter, setFilter] = useState("upcoming");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [dateFilter, setDateFilter] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const appointmentsPerPage = 5;
 
     const filteredAppointments = mockAppointments.filter((appointment) => {
         const matchesFilter = filter === "all" || appointment.status === filter
@@ -71,13 +71,15 @@ export  function AppointmentList() {
     })
 
 
-    const indexOfLastAppointment = currentPage * appointmentsPerPage
-    const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage
-    const currentAppointments = filteredAppointments.slice(indexOfFirstAppointment, indexOfLastAppointment)
+    const indexOfLastAppointment = currentPage * appointmentsPerPage;
+    const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+    const currentAppointments = filteredAppointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     const {userData} = useAuthentication();
+
+
 
 
     return (

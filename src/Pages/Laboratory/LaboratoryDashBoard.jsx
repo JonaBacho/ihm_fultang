@@ -1,15 +1,14 @@
-import {useEffect, useState} from 'react';
+import  { useState } from 'react';
 import {Link, Navigate, useLocation} from "react-router-dom";
 import PropTypes from "prop-types";
-import { AccessDenied } from "./AccessDenied.jsx";
-import { useAuthentication } from "../Utils/Provider.jsx";
+import { AccessDenied } from "../../GlobalComponents/AccessDenied.jsx";
+import { useAuthentication } from "../../Utils/Provider.jsx";
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import {Loading} from "./Loading.jsx";
 
-export function CustomDashboard({ children, linkList, requiredRole}) {
+export function LaboratoryDashBoard({ children, linkList, requiredRole}) {
 
 
-    CustomDashboard.propTypes = {
+   LaboratoryDashBoard.propTypes = {
         children: PropTypes.node.isRequired,
         linkList: PropTypes.array.isRequired,
         requiredRole: PropTypes.string.isRequired,
@@ -19,7 +18,6 @@ export function CustomDashboard({ children, linkList, requiredRole}) {
     const location = useLocation();
     const activeLink = location.pathname;
     const { isAuthenticated, hasRole } = useAuthentication();
-    const [isLoading, setIsLoading] = useState(true);
     const [expandedLinks, setExpandedLinks] = useState({});
 
 
@@ -87,21 +85,6 @@ export function CustomDashboard({ children, linkList, requiredRole}) {
         );
     }
 
-
-   useEffect(() => {
-        const checkAuth = async () => {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setIsLoading(false);
-        };
-        checkAuth();
-    }, []);
-
-
-
-
-    if (isLoading) {
-        return <Loading/>
-    }
 
     if (!isAuthenticated()) {
         return <Navigate to="/login" />;

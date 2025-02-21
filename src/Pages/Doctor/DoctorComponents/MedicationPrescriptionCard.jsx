@@ -24,14 +24,14 @@ export default function MedicationPrescriptionCard({prescriptions, availableMedi
 
     return (
         <form className="space-y-4" onSubmit={handlePrescribe}>
-            <div className="flex ml-7 gap-2 mb-2">
+            {/* <div className="flex ml-7 gap-2 mb-2">
                 <div className="w-7 h-7 flex justify-center items-center rounded-full border border-orange-500">
                     <FaInfo className="w-5 h-5 text-orange-500"/>
                 </div>
                 <p className="mt-1.5 text-[15px] italic font-semibold text-orange-500">This
                     section is intended for prescribing medications. Please indicate the
                     recommended treatments, as well as the dosage and duration of treatment.</p>
-            </div>
+            </div>*/}
             {prescriptions.map((prescription, index) => (
                 <div key={prescription.id || index} className="bg-gray-100 p-4 rounded-lg relative">
                     <Tooltip placement={"top"} title={"Remove Medication"}>
