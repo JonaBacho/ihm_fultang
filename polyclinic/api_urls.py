@@ -18,6 +18,7 @@ from .api_views.room_api_view import RoomViewSet
 from authentication.api_views.medical_staff_api_views import MedicalStaffViewSet
 from rest_framework.routers import DefaultRouter
 from django.urls import path
+from polyclinic.api_views.chat_api_view import ChatbotView
 
 
 router = DefaultRouter()
@@ -42,5 +43,5 @@ router.register(r'prescription', PrescriptionViewSet, basename='prescription')
 router.register(r'room', RoomViewSet, basename='room')
 
 
-urlpatterns = []
+urlpatterns = [path('chatbot/', ChatbotView.as_view(), name='chatbot'),]
 urlpatterns += router.urls

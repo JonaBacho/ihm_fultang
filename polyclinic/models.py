@@ -71,6 +71,15 @@ ROOM_FACILITIES = [
     ("Mini fridge", "Mini fridge"),
 ]
 
+APPOINTMENT_STATUS = [
+    ("Not Payable", "Not Payable"),   # n'a pas eu lieu
+    ("Payable", "Payable"),
+]
+
+APPOINTMENT_STATE = [
+    ("Pending", "Pending"),
+    ("Completed", "Completed"),
+]
 # ======================================
 # ======================================== APPOINTMENT DEPARTMENT, PATIENT
 # ======================================
@@ -127,6 +136,8 @@ class Appointment(models.Model):
     atDate = models.DateTimeField(auto_now_add=False)
     reason = models.CharField(max_length=300)
     requirements = models.CharField(max_length=500)
+    state = models.CharField(max_length=200, choices=APPOINTMENT_STATE, default='Pending')
+    status = models.CharField(max_length=200, choices=APPOINTMENT_STATUS, default='Not Payable')
 
     idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
