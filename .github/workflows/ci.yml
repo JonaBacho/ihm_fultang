@@ -80,6 +80,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
             cd /home/${{ secrets.REMOTE_USER }}/ihm
             sudo rm -r *
+            mkdir volumes
           ENDSSH
           scp  -o StrictHostKeyChecking=no -r ./.env ./fultang ./polyclinic ./Dockerfile ./manage.py ./requirements.txt ./docker-compose.yml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }}:/home/${{ secrets.REMOTE_USER }}/ihm
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
