@@ -48,16 +48,8 @@ export function MedicalStaffList()
             setNumberOfMedicalStaff(0);
             setNexUrlForRenderMedicalStaffList("");
             setPreviousUrlForRenderMedicalStaffList("");
-            if(error.status === 403 || error.status === 500 || error.status === 503)
-            {
-                setErrorMessage("Something went wrong went retrieving medical staff list");
-                setErrorStatus(error.status);
-            }
-            else
-            {
-                setErrorStatus(null);
-                setErrorMessage("");
-            }
+            setErrorMessage("Something went wrong went retrieving medical staff list");
+            setErrorStatus(error.status);
             console.log(error);
         }
 
@@ -151,7 +143,7 @@ export function MedicalStaffList()
                     <div className="mt-16">
                         <ServerErrorPage errorStatus={errorStatus} message={errorMessage}/>
                     </div>
-                ) : !medicalStaffList.length > 0 ?
+                ) : medicalStaffList.length > 0 ?
                 (
                     <>
                         <div className="ml-5 mr-5 mt-2 border-2 h-[500px] rounded-lg shadow-lg  p-2">
