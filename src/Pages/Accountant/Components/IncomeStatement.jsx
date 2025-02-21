@@ -20,7 +20,7 @@ export default function IncomeStatement({ year }) {
     async function fetchData() {
       try {
         const response = await axiosInstanceAccountant.get(
-          `/budget-exercise/get_balance_sheet/`
+          `/budget-exercise/get_income_statement/`
         );
 
         console.log(response);

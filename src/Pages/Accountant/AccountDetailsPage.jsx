@@ -19,6 +19,7 @@ import { AccountantDashBoard } from "./Components/AccountantDashboard.jsx";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { useLocation } from "react-router-dom";
 import { formatDateOnlyWithoutWeekDay } from "../../Utils/formatDateMethods.js";
+import { AccountantNavBar } from "./Components/AccountantNavBar.jsx";
 
 export function AccountDetailsPage() {
   const { accountId } = useParams();
@@ -81,8 +82,12 @@ export function AccountDetailsPage() {
   }, [accountId, accountDetail, currentPage]); // Added accountDetail to dependencies
 
   const validateInvoice = async (invoiceId) => {
+    const isAccounted = true;
     try {
-      const response = await axiosInstance.patch(`/bill/${invoiceId}/account/`);
+      const response = await axiosInstance.patch(
+        `/bill/${invoiceId}/account/`,
+        isAccounted
+      );
       if (response.status === 200) {
         await fetchAccountDetails();
       }
@@ -128,6 +133,8 @@ export function AccountDetailsPage() {
       requiredRole={"Accountant"}
       linkList={AccountantNavLink}
     >
+      <AccountantNavBar></AccountantNavBar>
+
       <div className="p-5">
         <h1 className="text-2xl font-bold mb-5">Détails du Compte</h1>
         {isLoading && <Wait />}
@@ -154,6 +161,7 @@ export function AccountDetailsPage() {
             <table className="w-full border-separate border-spacing-y-2">
               <thead>
                 <tr className="bg-gradient-to-r from-primary-start to-primary-end text-white">
+                  <th></th>
                   <th className="py-4 px-6 text-left rounded-tl-lg">
                     <div className="flex items-center">
                       <span className="mr-2">#</span>
@@ -186,6 +194,14 @@ export function AccountDetailsPage() {
               <tbody>
                 {invoices?.map((invoice, index) => (
                   <tr key={index} className="bg-gray-100">
+                    <td className="relative">
+                      <div
+                        className={`absolute left-0 top-0 h-full w-2 ${
+                          invoice.isAccounted ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      ></div>
+                    </td>
+
                     <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">
                       {index + 1}
                     </td>
