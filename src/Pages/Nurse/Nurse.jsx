@@ -9,7 +9,6 @@ import {Tooltip} from "antd";
 import {useEffect, useState} from "react";
 import axiosInstance from "../../Utils/axiosInstance.js";
 import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
-import {ErrorModal} from "../Modals/ErrorModal.jsx";
 import Loader from "../../GlobalComponents/Loader.jsx";
 import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
 
@@ -31,7 +30,6 @@ export function Nurse()
 
     const [canOpenViewPatientDetailsModal, setCanOpenViewPatientDetailsModal] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState({});
-    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
     const [errorStatus, setErrorStatus] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +52,6 @@ export function Nurse()
                 setPreviousUrlForRenderPatientList(response.data.previous);
                 setErrorStatus(null);
                 setErrorMessage("");
-                setCanOpenErrorModal(false);
             }
         }
         catch (error)
@@ -63,7 +60,6 @@ export function Nurse()
             console.log(error);
             setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
             setErrorStatus(error.status)
-            setCanOpenErrorModal(true);
         }
     }
 
@@ -83,13 +79,13 @@ export function Nurse()
                     setNexUrlForRenderPatientList(response.data.next);
                     setPreviousUrlForRenderPatientList(response.data.previous);
                     setErrorMessage("");
-                    setCanOpenErrorModal(false);
+                    setErrorStatus(null);
                 }
             } catch (error) {
                 setIsLoading(false);
                 console.log(error);
                 setErrorMessage("Something went wrong when retrieving the patient list, please try again later !");
-                setCanOpenErrorModal(true);
+                setErrorStatus(error.status);
             }
         }
     }
@@ -213,13 +209,10 @@ export function Nurse()
 
 
                 {/*Modal Content*/}
-                <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient}
-                                         onClose={() => {
-                                             setCanOpenViewPatientDetailsModal(false)
-                                         }}/>
-                {/* <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={() => {
-                    setCanOpenErrorModal(false)
-                }} message={errorMessage}/>*/}
+                <ViewPatientDetailsModal
+                    isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient}
+                    onClose={() => {setCanOpenViewPatientDetailsModal(false)}}
+                />
             </DashBoard>
         </>
     )

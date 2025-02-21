@@ -1,4 +1,4 @@
-import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaSearch, FaTrash,} from "react-icons/fa";
+import {FaArrowLeft, FaArrowRight, FaEdit, FaEye, FaPlus, FaSearch, FaTrash,} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {useEffect, useState} from "react";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
@@ -20,7 +20,9 @@ import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
 export function AdminMedicalStaffList()
 {
 
-    const [errorMessage, setErrorMessage] = useState("");
+    const [waitFetchingData, setWaitFetchingData] = useState(false);
+    const [errorStatus, setErrorStatus] = useState(null);
+    const [serverErrorMessage, setServerErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [selectedMedicalStaffDetails, setSelectedMedicalStaffDetails] = useState({});
     const [canOpenSuccessModal, setCanOPenSuccessModal] = useState(false);
@@ -35,10 +37,10 @@ export function AdminMedicalStaffList()
     const [previousUrlForRenderMedicalStaffList, setPreviousUrlForRenderMedicalStaffList] = useState("");
     const [actualPageNumber, setActualPageNumber] = useState(1);
     const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const [waitFetchingData, setWaitFetchingData] = useState(false);
-    const [errorStatus, setErrorStatus] = useState(null);
-    const [serverErrorMessage, setServerErrorMessage] = useState("");
+
 
 
 
@@ -66,16 +68,16 @@ export function AdminMedicalStaffList()
 
 
 
+    async function fetchMedicalStaffData(url = "/medical-staff/") {
+        if (!url) return;
 
-    async function fetchMedicalStaffList () {
-        try
-        {
-            setWaitFetchingData(true);
-            const response = await axiosInstance.get("/medical-staff/");
+        setWaitFetchingData(true);
+
+        try {
+            const response = await axiosInstance.get(url);
             setWaitFetchingData(false);
-            if (response.status === 200)
-            {
-                //console.log(response.data);
+
+            if (response.status === 200) {
                 setMedicalStaffList(response.data.results);
                 setNumberOfMedicalStaff(response.data.count);
                 setNexUrlForRenderMedicalStaffList(response.data.next);
@@ -83,61 +85,31 @@ export function AdminMedicalStaffList()
                 setServerErrorMessage("");
                 setErrorStatus(null);
             }
-        }
-        catch (error)
-        {
+        } catch (error) {
             setWaitFetchingData(false);
             setMedicalStaffList([]);
             setNumberOfMedicalStaff(0);
             setNexUrlForRenderMedicalStaffList("");
             setPreviousUrlForRenderMedicalStaffList("");
-            setServerErrorMessage("Something went wrong when retrieving medical stall list !!")
+            setServerErrorMessage("Something went wrong when retrieving medical staff list !!")
             setErrorStatus(error.status);
             console.log(error);
         }
+    }
 
+
+    async function fetchMedicalStaffList() {
+        await fetchMedicalStaffData();
+    }
+
+
+    async function fetchNextOrPreviousPatientList(url) {
+        await fetchMedicalStaffData(url);
     }
 
     useEffect(() => {
         fetchMedicalStaffList();
     }, []);
-
-
-
-    const navigate = useNavigate();
-
-
-    async function fetchNextOrPreviousPatientList(url)
-    {
-        if(url)
-        {
-            setWaitFetchingData(true);
-            try {
-                const response = await axiosInstance.get(url);
-                setWaitFetchingData(false);
-                if (response.status === 200)
-                {
-                    setMedicalStaffList(response.data.results);
-                    setNumberOfMedicalStaff(response.data.count);
-                    setNexUrlForRenderMedicalStaffList(response.data.next);
-                    setPreviousUrlForRenderMedicalStaffList(response.data.previous);
-                    setServerErrorMessage("");
-                    setErrorStatus(null);
-                }
-            } catch (error) {
-                setWaitFetchingData(false);
-                setMedicalStaffList([]);
-                setNumberOfMedicalStaff(0);
-                setPreviousUrlForRenderMedicalStaffList("");
-                setNexUrlForRenderMedicalStaffList("");
-                setErrorMessage("Something went wrong when retrieving medical staff list !!")
-                setErrorStatus(error.status);
-                console.log(error);
-            }
-        }
-    }
-
-
 
 
 
@@ -162,6 +134,7 @@ export function AdminMedicalStaffList()
             console.log(error);
         }
     }
+
 
 
     return (
@@ -288,8 +261,8 @@ export function AdminMedicalStaffList()
                                 <Tooltip placement={"top"} title={"Add New Medical Staff"}>
                                     <button
                                         onClick={()=>navigate(appRouterPaths.addMedicalStaff)}
-                                        className="fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-4xl font-bold text-white from-primary-start to-primary-end hover:text-5xl transition-all duration-300">
-                                        +
+                                        className="flex justify-center items-center fixed bottom-5 right-16 rounded-full w-14 h-14 bg-gradient-to-r text-3xl font-bold text-white from-primary-start to-primary-end hover:text-4xl transition-all duration-300">
+                                        <FaPlus/>
                                     </button>
                                 </Tooltip>
 

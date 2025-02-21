@@ -1,4 +1,6 @@
 import {
+    Microscope,
+    Pill,
     User,
     Calendar,
     Weight,
@@ -18,6 +20,7 @@ import {formatDateOnly, formatDateOnlyWithoutWeekDay, formatDateToTime} from "..
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {useEffect} from "react";
+import {GiMedicines} from "react-icons/gi";
 
 export  function ConsultationHistoryDetails() {
 
@@ -25,7 +28,7 @@ export  function ConsultationHistoryDetails() {
     const consultation = state?.consultation || {};
 
     const patientInfos = consultation?.idPatient;
-    const patientParameters = consultation?.idMedicalFolderPage;
+    const medicalFolderPageInfos = consultation?.idMedicalFolderPage;
 
     const {calculateAge} = useCalculateAge();
     const { value: ageValue, unit: ageUnit } = calculateAge(patientInfos?.birthDate);
@@ -35,47 +38,47 @@ export  function ConsultationHistoryDetails() {
         {
             icon: Weight,
             label: 'Weight',
-            value: patientParameters?.parameters?.weight || '-',
-            unit:  patientParameters?.parameters?.weight && ' Kg'
+            value: medicalFolderPageInfos?.parameters?.weight || '-',
+            unit:  medicalFolderPageInfos?.parameters?.weight && ' Kg'
         },
         {
             icon: Ruler,
             label: 'Height',
-            value: patientParameters?.parameters?.height || '-',
-            unit: patientParameters?.parameters?.height && ' m²'
+            value: medicalFolderPageInfos?.parameters?.height || '-',
+            unit: medicalFolderPageInfos?.parameters?.height && ' m²'
         },
         {
             icon: Thermometer,
             label: 'Temperature',
-            value: patientParameters?.parameters?.temperature || '-',
-            unit:  patientParameters?.parameters?.temperature && '°C'
+            value: medicalFolderPageInfos?.parameters?.temperature || '-',
+            unit:  medicalFolderPageInfos?.parameters?.temperature && '°C'
         },
         {
             icon: Activity,
             label: 'Blood Pressure',
-            value: patientParameters?.parameters?.bloodPressure || '-',
-            unit: patientParameters?.parameters?.bloodPressure && ' mmHg'
+            value: medicalFolderPageInfos?.parameters?.bloodPressure || '-',
+            unit: medicalFolderPageInfos?.parameters?.bloodPressure && ' mmHg'
         },
         {
             icon: Heart,
             label: 'Heart Rate',
-            value: patientParameters?.parameters?.heartRate || '-',
-            unit: patientParameters?.parameters?.heartRate && ' bpm'
+            value: medicalFolderPageInfos?.parameters?.heartRate || '-',
+            unit: medicalFolderPageInfos?.parameters?.heartRate && ' bpm'
         },
         {
             icon: AlertTriangle,
             label: 'Allergies',
-            value: patientParameters?.parameters?.allergies || '-'
+            value: medicalFolderPageInfos?.parameters?.allergies || '-'
         },
         {
             icon: Pills,
             label: 'Family Medical History',
-            value: patientParameters?.parameters?.familyMedicalHistory || '-'
+            value: medicalFolderPageInfos?.parameters?.familyMedicalHistory || '-'
         },
         {
             icon: FileText,
             label: 'Current Medication',
-            value: patientParameters?.parameters?.currentMedication || '-'
+            value: medicalFolderPageInfos?.parameters?.currentMedication || '-'
         }
     ];
 
@@ -186,12 +189,22 @@ export  function ConsultationHistoryDetails() {
 
                     {/*Nurse Notes*/}
 
-                    <div className="mb-8">
+                    <div className="mb-10">
                         <h3 className="text-lg font-semibold mb-4 flex items-center">
                             <ClipboardList className="h-5 w-5 mr-2 text-blue-500"/>
                             Nurse Notes
                         </h3>
-                        <p className="text-gray-700 ml-10">{patientParameters?.nurseNotes || consultation?.consultationNotes ||'Not Specified'}</p>
+                        <p className="text-gray-700 ml-10">{medicalFolderPageInfos?.nurseNotes || consultation?.consultationNotes || 'Not Specified'}</p>
+                    </div>
+
+
+                    {/*Doctor notes*/}
+                    <div className="mb-10">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center">
+                            <ClipboardList className="h-5 w-5 mr-2 text-blue-500"/>
+                            Doctor Notes
+                        </h3>
+                        <p className="text-gray-700 ml-10">{medicalFolderPageInfos?.doctorNote || 'Not Specified'}</p>
                     </div>
 
 
@@ -201,70 +214,95 @@ export  function ConsultationHistoryDetails() {
                             <Stethoscope className="h-5 w-5 mr-2 text-blue-500"/>
                             Diagnostic
                         </h3>
-                        <p className="text-gray-700 ml-10">{patientParameters?.diagnostic || 'Not Specified'}</p>
+                        <p className="text-gray-700 ml-10">{medicalFolderPageInfos?.diagnostic || 'Not Specified'}</p>
                     </div>
 
-                    {/*Doctor notes*/}
-                    <div className="mb-8">
-                        <h3 className="text-lg font-semibold mb-4 flex items-center">
-                            <ClipboardList className="h-5 w-5 mr-2 text-blue-500"/>
-                            Doctor Notes
-                        </h3>
-                        <p className="text-gray-700 ml-10">{patientParameters?.doctorNote || 'Not Specified'}</p>
-                    </div>
+
 
 
                     {/* Prescriptions */}
-                    {consultation?.prescriptions && consultation?.prescriptions.length > 0 && (
-                        <div className="mb-8">
-                            <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                <Pills className="h-5 w-5 mr-2 text-blue-500"/>
-                                Prescriptions
-                            </h3>
-                            <div className="space-y-4">
-                                {consultation?.prescriptions.map((prescription, index) => (
+                    <div className="mb-10">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center">
+                            <GiMedicines className="h-5 w-5 mr-2 text-blue-500"/>
+                            Prescriptions
+                        </h3>
+                        {medicalFolderPageInfos?.prescriptions && medicalFolderPageInfos?.prescriptions.length > 0 && (
+                            <div className="grid grid-cols-2 gap-5">
+                                {medicalFolderPageInfos?.prescriptions.map((prescription) => {
+                                    let drugsInfo = []
+                                    drugsInfo = prescription?.prescriptionDrug;
+                                    return (
+                                        drugsInfo.length > 0 && drugsInfo.map((drugInfo, index) => (
                                     <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <span className="text-sm text-gray-500">Medication</span>
-                                                <p className="font-medium">{prescription?.medication}</p>
+                                        <div className="grid grid-cols-2 gap-5">
+                                            <div className="flex items-start">
+                                                <Pill className="h-6 w-6 text-blue-500 mt-1" />
+                                                <div className="ml-2">
+                                                    <span className="text-sm text-gray-500">Medicine</span>
+                                                    <p className="font-medium">{drugInfo?.medication}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="text-sm text-gray-500">Dosage</span>
-                                                <p className="font-medium">{prescription?.dosage}</p>
+                                            <div className="flex items-start">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     className="h-6 w-6 text-blue-500 mt-1" fill="none"
+                                                     viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                </svg>
+                                                <div className="ml-2">
+                                                    <span className="text-sm text-gray-500">Dosage</span>
+                                                    <p className="font-medium">{drugInfo?.dosage && drugInfo?.dosage + " mg"}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="text-sm text-gray-500">Frequency</span>
-                                                <p className="font-medium">{prescription?.frequency}</p>
+                                            <div className="flex items-start">
+                                                <Clock className="h-6 w-6 text-blue-500 mt-1"/>
+                                                <div className="ml-2">
+                                                    <span className="text-sm text-gray-500">Frequency</span>
+                                                    <p className="font-medium">{drugInfo?.frequency}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="text-sm text-gray-500">Duration</span>
-                                                <p className="font-medium">{prescription?.duration}</p>
+                                            <div className="flex items-start">
+                                                <Calendar className="h-6 w-6 text-blue-500 mt-1" />
+                                                <div className="ml-2">
+                                                    <span className="text-sm text-gray-500">Duration</span>
+                                                    <p className="font-medium">{drugInfo?.duration && drugInfo?.duration + " day(s)"}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                        ))
+                                    )
+                                })}
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
+
+
 
                     {/* Exams */}
-                    {consultation?.exams && consultation?.exams.length > 0 && (
+                    {medicalFolderPageInfos?.examRequests && medicalFolderPageInfos?.examRequests.length > 0 && (
                         <div>
                             <h3 className="text-lg font-semibold mb-4 flex items-center">
                                 <FileText className="h-5 w-5 mr-2 text-blue-500"/>
                                 Prescribed Exams
                             </h3>
-                            <div className="space-y-4">
-                                {consultation?.exams.map((exam, index) => (
-                                    <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                                        <div className="mb-2">
-                                            <span className="text-sm text-gray-500">Exams</span>
-                                            <p className="font-medium">{exam?.name}</p>
+                            <div className="grid grid-cols-2 gap-5">
+                                {medicalFolderPageInfos?.examRequests.map((exam, index) => (
+
+                                    <div key={index} className="bg-gray-100 p-4 rounded-lg flex justify-around">
+                                        <div className="mb-2 flex items-start">
+                                            <Microscope className="h-6 w-6 text-blue-500 mt-1" />
+                                            <div className="ml-2">
+                                                <span className="text-sm text-gray-500">Exams</span>
+                                                <p className="font-medium">{exam?.examName}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span className="text-sm text-gray-500">Instructions</span>
-                                            <p className="text-gray-700">{exam?.instructions}</p>
+                                        <div className="flex items-start">
+                                            <FileText className="h-6 w-6 text-blue-500 mt-1" />
+                                            <div className="ml-2">
+                                                <span className="text-sm text-gray-500">Instructions</span>
+                                                <p className="text-gray-700">{exam?.notes}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -277,18 +315,18 @@ export  function ConsultationHistoryDetails() {
                         <div>
                             <h3 className="text-lg font-semibold mb-4 flex items-center">
                                 <Clock className="h-5 w-5 mr-2 text-blue-500"/>
-                                 Scheduled Appointments
+                                Scheduled Appointments
                             </h3>
                             <div className="space-y-4">
                                 {consultation?.appointments.map((appointment, index) => (
                                     <div key={index} className="bg-gray-100 p-4 rounded-lg">
                                         <div className="mb-2">
                                             <span className="text-sm text-gray-500">Date</span>
-                                            <p className="font-medium">{appointment?.atDate ? formatDateOnly(appointment?.atDate)  : 'Not Specified'}</p>
+                                            <p className="font-medium">{appointment?.atDate ? formatDateOnly(appointment?.atDate) : 'Not Specified'}</p>
                                         </div>
                                         <div>
                                             <span className="text-sm text-gray-500">Time</span>
-                                            <p className="text-gray-700">{appointment?.atDate ? formatDateToTime(appointment?.atDate)  : 'Not Specified'}</p>
+                                            <p className="text-gray-700">{appointment?.atDate ? formatDateToTime(appointment?.atDate) : 'Not Specified'}</p>
                                         </div>
                                         <div>
                                             <span className="text-sm text-gray-500">Reason</span>

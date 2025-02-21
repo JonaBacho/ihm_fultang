@@ -407,7 +407,7 @@ export function DoctorConsultationDetails() {
             setIsEndingConsultation(false);
             if (response.status === 200)
             {
-                setSuccessMessage("")
+                setSuccessMessage("Successfully Ending consultation !")
                 setErrorMessage("");
                 setCanOpenErrorMessageModal(false);
                 setCanOpenSuccessModal(true);
@@ -432,9 +432,8 @@ export function DoctorConsultationDetails() {
     {
         e.preventDefault();
         setIsPrescribingExams(true);
-        let examsData = [
-            exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
-        ]
+        let examsData = exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another"))));
+
         try
         {
             const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);

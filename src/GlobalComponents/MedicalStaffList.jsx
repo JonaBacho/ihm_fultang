@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import axiosInstance from "../Utils/axiosInstance.js";
 import Loader from "./Loader.jsx";
 import ServerErrorPage from "./ServerError.jsx";
+import {calculateNumberOfSlides} from "../Utils/paginationFunctions.js";
 
 
 export function MedicalStaffList()
@@ -24,25 +25,24 @@ export function MedicalStaffList()
 
 
 
-    async function fetchMedicalStaffList () {
+
+    async function fetchMedicalStaffData(url = "/medical-staff/") {
         setIsLoading(true);
-        try
-        {
-            const response = await axiosInstance.get("/medical-staff/");
+        try {
+            const response = await axiosInstance.get(url);
             setIsLoading(false);
-            if (response.status === 200)
-            {
-                console.log(response.data);
-                setErrorStatus(null);
-                setErrorMessage("");
+
+            if (response.status === 200) {
                 setMedicalStaffList(response.data.results);
                 setNumberOfMedicalStaff(response.data.count);
                 setNexUrlForRenderMedicalStaffList(response.data.next);
                 setPreviousUrlForRenderMedicalStaffList(response.data.previous);
+                console.log(response.data);
+                setErrorStatus(null);
+                setErrorMessage("");
+
             }
-        }
-        catch (error)
-        {
+        } catch (error) {
             setIsLoading(false);
             setMedicalStaffList([]);
             setNumberOfMedicalStaff(0);
@@ -52,46 +52,30 @@ export function MedicalStaffList()
             setErrorStatus(error.status);
             console.log(error);
         }
-
     }
 
 
-    async function fetchNextOrPreviousPatientList(url)
-    {
-        if(url)
-        {
-            setIsLoading(true);
-            try {
-                const response = await axiosInstance.get(url);
-                setIsLoading(false);
-                if (response.status === 200)
-                {
-                    setMedicalStaffList(response.data.results);
-                    setNumberOfMedicalStaff(response.data.count);
-                    setNexUrlForRenderMedicalStaffList(response.data.next);
-                    setPreviousUrlForRenderMedicalStaffList(response.data.previous);
-                }
-            } catch (error) {
-                setIsLoading(false);
-                setMedicalStaffList([]);
-                setNumberOfMedicalStaff(0);
-                setPreviousUrlForRenderMedicalStaffList("");
-                setNexUrlForRenderMedicalStaffList("");
-                console.log(error);
-            }
+    async function fetchMedicalStaffList() {
+        await fetchMedicalStaffData();
+    }
+
+
+    async function fetchNextOrPreviousPatientList(url) {
+        if (url) {
+            await fetchMedicalStaffData(url);
         }
     }
 
 
-    function calculateNumberOfSlide() {
-        return numberOfMedicalStaff % 5 === 0 ? numberOfMedicalStaff / 5 : Math.floor(numberOfMedicalStaff / 5) + 1;
-    }
+    useEffect(() => {
+        fetchMedicalStaffList();
+    }, []);
 
 
     function updateActualPageNumber(action) {
         if (action === "next")
         {
-            if(actualPageNumber < calculateNumberOfSlide())
+            if(actualPageNumber < calculateNumberOfSlides(numberOfMedicalStaff,5))
             {
                 setActualPageNumber(actualPageNumber + 1);
             }
@@ -108,9 +92,6 @@ export function MedicalStaffList()
 
 
 
-    useEffect(() => {
-        fetchMedicalStaffList();
-    }, []);
 
 
 
@@ -189,7 +170,7 @@ export function MedicalStaffList()
                                         <FaArrowLeft/>
                                     </button>
                                 </Tooltip>
-                                <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlide()}</p>
+                                <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlides(numberOfMedicalStaff,5)}</p>
                                 <Tooltip placement={"right"} title={"next slide"}>
                                     <button
                                         onClick={async () => {await fetchNextOrPreviousPatientList(nexUrlForRenderMedicalStaffList), updateActualPageNumber("next")}}

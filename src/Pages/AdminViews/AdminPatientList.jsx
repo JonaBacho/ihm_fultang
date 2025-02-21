@@ -14,6 +14,7 @@ import {ConfirmationModal} from "../Modals/ConfirmAction.Modal.jsx";
 import Loader from "../../GlobalComponents/Loader.jsx";
 import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
 import noPatientImage from "../../assets/noPatients.png";
+import {calculateNumberOfSlides} from "../../Utils/paginationFunctions.js";
 //import {AddNewPatientModal} from "../Receptionist/addNewPatientModal.jsx";
 
 export function AdminPatientList()
@@ -44,15 +45,12 @@ export function AdminPatientList()
 
 
 
-    function calculateNumberOfSlide() {
-        return numberOfPatients % 5 === 0 ? numberOfPatients / 5 : Math.floor(numberOfPatients / 5) + 1;
-    }
 
 
     function updateActualPageNumber(action) {
         if (action === "next")
         {
-            if(actualPageNumber < calculateNumberOfSlide())
+            if(actualPageNumber < calculateNumberOfSlides(numberOfPatients, 5))
             {
                 setActualPageNumber(actualPageNumber + 1);
             }
@@ -236,7 +234,7 @@ export function AdminPatientList()
                                             <FaArrowLeft/>
                                         </button>
                                     </Tooltip>
-                                    <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlide()}</p>
+                                    <p className="text-secondary text-2xl font-bold mt-4">{actualPageNumber}/{calculateNumberOfSlides(numberOfPatients, 5)}</p>
                                     <Tooltip placement={"right"} title={"next slide"}>
                                         <button
                                             onClick={async ()=> {await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")}}
@@ -260,7 +258,7 @@ export function AdminPatientList()
                             {/* Modals content */}
                             {/* <AddNewPatientModal isOpen={canOpenAddNewPatientModal} onClose={()=>{setCanOpenAddNewPatientModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading}/>*/}
                             <EditPatientInfosModal isOpen={canOpenEditPatientDetailModal} onClose={()=>{setCanOpenEditPatientDetailModal(false)}} setCanOpenSuccessModal={setCanOPenSuccessModal} setSuccessMessage={setSuccessMessage} setIsLoading={setIsLoading} patientData={selectedPatientDetails}/>
-                            <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal} makeAction={async ()=> {await fetchPatients(), calculateNumberOfSlide()}}/>
+                            <SuccessModal isOpen={canOpenSuccessModal} message={successMessage} canOpenSuccessModal={setCanOPenSuccessModal} makeAction={async ()=> {await fetchPatients(), calculateNumberOfSlides(numberOfPatients, 5)}}/>
                             <ErrorModal isOpen={canOpenErrorMessageModal} onCloseErrorModal={()=>{setCanOpenErrorMessageModal(false)}} message={errorMessage}/>
                             <ViewPatientDetailsModal isOpen={canOpenViewPatientDetailModal} patient={selectedPatientDetails} onClose={()=>{setCanOpenViewPatientDetailModal(false)}}/>
                             {isLoading && <Wait/>}
