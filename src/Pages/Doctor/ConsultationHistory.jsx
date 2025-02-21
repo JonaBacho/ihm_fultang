@@ -66,7 +66,6 @@ export function ConsultationHistory() {
     const navigate = useNavigate();
 
     const {calculateAge} = useCalculateAge();
-    const { value: ageValue, unit: ageUnit } = calculateAge('2000-01-01');
 
 
     return (
@@ -150,10 +149,8 @@ export function ConsultationHistory() {
                                                         <div className="w-full flex justify-center items-center ">
                                                             <Clock className="h-5 w-5 text-gray-400 mr-2 mt-2"/>
                                                             <div>
-                                                                <div
-                                                                    className="text-sm text-center text-gray-900">{consultation?.consultationDate ? formatDateOnly(consultation?.consultationDate) : 'Not Specified'}</div>
-                                                                <div
-                                                                    className="text-sm  text-center text-gray-500">{consultation?.consultationDate ? formatDateToTime(consultation?.consultationDate) : 'Not Specified'} </div>
+                                                                <div className="text-sm text-center text-gray-900">{consultation?.consultationDate ? formatDateOnly(consultation?.consultationDate) : 'Not Specified'}</div>
+                                                                <div className="text-sm  text-center text-gray-500">{consultation?.consultationDate ? formatDateToTime(consultation?.consultationDate) : 'Not Specified'} </div>
                                                             </div>
                                                         </div>
                                                     </td>

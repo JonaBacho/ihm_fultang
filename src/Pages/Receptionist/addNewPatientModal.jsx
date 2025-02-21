@@ -159,7 +159,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
     return (
         <>
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
-                <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 animate-modal">
+                <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4">
                     <div className="bg-gradient-to-r from-primary-end to-primary-start px-6 py-4 rounded-t-lg flex-col flex justify-center items-center">
                         <h3 className="text-4xl font-bold text-white">Add New Patient</h3>
                     </div>

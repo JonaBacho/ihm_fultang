@@ -432,9 +432,9 @@ export function DoctorConsultationDetails() {
     {
         e.preventDefault();
         setIsPrescribingExams(true);
-        let examsData = {
-            exams_list : exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
-        }
+        let examsData = [
+            exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another")))),
+        ]
         try
         {
             const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);
