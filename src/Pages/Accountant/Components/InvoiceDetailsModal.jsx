@@ -28,6 +28,7 @@ export function InvoiceDetailsModal({
     try {
       await validateInvoice(invoiceId);
       await refreshInvoice(); // Recharger les détails après validation
+      invoice.isAccounted = true;
     } catch (error) {
       console.error("Error validating invoice:", error);
     } finally {
@@ -158,6 +159,11 @@ function DetailItem({ icon, label, value }) {
     </div>
   );
 }
+DetailItem.propTypes = {
+  icon: PropTypes.element.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
 
 InvoiceDetailsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
