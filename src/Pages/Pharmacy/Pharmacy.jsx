@@ -12,7 +12,7 @@ export  function Pharmacy() {
 
   return (
     <>
-      <PharmacyDashboard>
+      <PharmacyDashboard linkList={PharmacyDashboard} requiredRole={"Pharmacist"}>
         <div className="h-full flex flex-col">
           <PharmacyNavbar username="Username.N" />
           <div className="flex-1 flex">

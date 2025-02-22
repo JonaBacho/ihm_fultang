@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { cashierNavLink } from "./cashierNavLink.js";
 import { CashierNavBar } from "./CashierNavBar.jsx";
 import { DashBoard } from "../../GlobalComponents/DashBoard.jsx";

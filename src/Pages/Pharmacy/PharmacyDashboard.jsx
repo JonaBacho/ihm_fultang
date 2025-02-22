@@ -30,7 +30,7 @@ export const PharmacyDashboard = ({ children }) => {
             <span>List of Medications</span>
           </NavLink>
           
-          <NavLink to="/prescriptions" className={getLinkClass}>
+          <NavLink to="/pharmacyPrescription" className={getLinkClass}>
             <FiFileText />
             <span>Prescriptions</span>
           </NavLink>

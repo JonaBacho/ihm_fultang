@@ -1,15 +1,48 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../Utils/axiosInstance.js';
+import Loader from '../../GlobalComponents/Loader.jsx';
+import ServerErrorPage from '../../GlobalComponents/ServerError.jsx';
 
-export function PharmacyBoard ()  {
-  const medicines = [
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
-    { id: 1, name: 'para', quantity: 8, price: 2000, status: 'Valid', expirationDate: 'Dec,12,2001', description: 'Head ache' },
+export function PharmacyBoard() {
+  const [medicines, setMedicines] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorStatus, setErrorStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function loadMedicines() {
+      setIsLoading(true);
+      try {
+        const response = await axiosInstance.get('/medicament/');
+        if (response.status === 200) {
+          setMedicines(response.data);
+          setErrorMessage("");
+          setErrorStatus(null);
+        }
+      } catch (error) {
+        setErrorMessage("Something went wrong when retrieving medicines, please retry later!");
+        setErrorStatus(error.status);
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
     
-  ];
+    loadMedicines();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="h-[500px] w-full flex justify-center items-center">
+        <Loader size={"medium"} color={"primary-end"}/>
+      </div>
+    );
+  }
+
+  if (errorStatus) {
+    return <ServerErrorPage errorStatus={errorStatus} message={errorMessage}/>;
+  }
 
   return (
     <div className="overflow-x-auto rounded-lg">
@@ -37,7 +70,7 @@ export function PharmacyBoard ()  {
                   {medicine.status}
                 </span>
               </td>
-              <td className="p-3">{medicine.expirationDate}</td>
+              <td className="p-3">{new Date(medicine.expiryDate).toLocaleDateString()}</td>
               <td className="p-3">{medicine.description}</td>
             </tr>
           ))}
@@ -45,4 +78,4 @@ export function PharmacyBoard ()  {
       </table>
     </div>
   );
-};
+}

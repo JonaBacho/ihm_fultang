@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { AccountantDashBoard } from "./Components/AccountantDashboard";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
