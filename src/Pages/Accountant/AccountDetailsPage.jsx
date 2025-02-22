@@ -19,6 +19,7 @@ import { AccountantDashBoard } from "./Components/AccountantDashboard.jsx";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { formatDateOnlyWithoutWeekDay } from "../../Utils/formatDateMethods.js";
 import { AccountantNavBar } from "./Components/AccountantNavBar.jsx";
+import { useNavigate } from "react-router-dom"; // Ajoutez cette importation
 
 export function AccountDetailsPage() {
   const { accountId } = useParams();
@@ -43,6 +44,8 @@ export function AccountDetailsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [nextUrl, setNextUrl] = useState(null);
   const [previousUrl, setPreviousUrl] = useState(null);
+
+  const navigate = useNavigate(); // Utilisez useNavigate pour la navigation
 
   const fetchAccountDetails = useCallback(
     async (url = `/bill/get_for_account`) => {
@@ -148,7 +151,21 @@ export function AccountDetailsPage() {
       <AccountantNavBar />
 
       <div className="p-5">
-        <h1 className="text-2xl font-bold mb-5">Account Details</h1>
+        <div className="flex items-center space-x-5">
+          {" "}
+          {/* Ajoutez une flèche de retour avec un message au survol */}
+          <Tooltip placement="right" title="Back to Account List">
+            <button
+              onClick={() => navigate(-1)} // Retourne à la page précédente
+              className="flex items-center text-secondary hover:text-primary-end transition duration-300 mb-5"
+            >
+              <FaArrowLeft className="text-4xl" /> {/* Flèche plus grosse */}
+            </button>
+          </Tooltip>
+          <h1 className="text-2xl font-bold mb-5">
+            Account Details - {accountDetail.account?.libelle}
+          </h1>
+        </div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-blue-100 p-4 rounded-lg shadow-md">

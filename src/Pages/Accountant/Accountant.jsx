@@ -11,15 +11,58 @@ import {
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+import { useState, useEffect } from "react";
+import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant";
+
 export function Accountant() {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalInvoices: 0,
+    totalAccounts: 0,
+    totalFinancialOperations: 0,
+  });
 
-  const stats = {
-    totalRevenue: 50000,
-    totalExpenses: 20000,
-    netProfit: 30000,
-    totalClients: 150,
+  // Fonction pour récupérer le nombre total de factures
+  const fetchTotalInvoices = async () => {
+    try {
+      const response = await axiosInstanceAccountant.get("/invoice/total");
+      setStats((prev) => ({ ...prev, totalInvoices: response.data.total }));
+    } catch (error) {
+      console.error("Error fetching total invoices:", error);
+    }
   };
+
+  // Fonction pour récupérer le nombre total de comptes
+  const fetchTotalAccounts = async () => {
+    try {
+      const response = await axiosInstanceAccountant.get("/account/total");
+      setStats((prev) => ({ ...prev, totalAccounts: response.data.total }));
+    } catch (error) {
+      console.error("Error fetching total accounts:", error);
+    }
+  };
+
+  // Fonction pour récupérer le nombre total d'opérations financières
+  const fetchTotalFinancialOperations = async () => {
+    try {
+      const response = await axiosInstanceAccountant.get(
+        "/financial-operation/total"
+      );
+      setStats((prev) => ({
+        ...prev,
+        totalFinancialOperations: response.data.total,
+      }));
+    } catch (error) {
+      console.error("Error fetching total financial operations:", error);
+    }
+  };
+
+  // Charger les données au montage du composant
+  useEffect(() => {
+    fetchTotalInvoices();
+    fetchTotalAccounts();
+    fetchTotalFinancialOperations();
+  }, []);
 
   const quickActions = [
     {
@@ -37,7 +80,6 @@ export function Accountant() {
       label: "View Reports",
       onClick: () => navigate("/accountant/financial-reports"),
     },
-    //{ icon: Settings, label: "Settings", onClick: () => alert("Settings") },
   ];
 
   return (
@@ -48,30 +90,27 @@ export function Accountant() {
       <AccountantNavBar />
       <div className="p-6 space-y-6">
         <h1 className="text-3xl font-bold mb-4">Accounting Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
-            title="Total Revenue"
-            value={stats.totalRevenue}
-            description="Total income generated"
-            color="bg-green-500"
-          />
-          <StatCard
-            title="Total Expenses"
-            value={stats.totalExpenses}
-            description="Total expenses incurred"
-            color="bg-red-500"
-          />
-          <StatCard
-            title="Net Profit"
-            value={stats.netProfit}
-            description="Total profit after expenses"
+            title="Total Invoices"
+            value={stats.totalInvoices}
+            description="Total number of invoices"
             color="bg-blue-500"
+            icon={FileText}
           />
           <StatCard
-            title="Total Clients"
-            value={stats.totalClients}
-            description="Number of clients served"
-            color="bg-yellow-500"
+            title="Total Accounts"
+            value={stats.totalAccounts}
+            description="Total number of accounts"
+            color="bg-green-500"
+            icon={WalletCards}
+          />
+          <StatCard
+            title="Financial Operations"
+            value={stats.totalFinancialOperations}
+            description="Total financial operations"
+            color="bg-purple-500"
+            icon={DollarSign}
           />
         </div>
 
