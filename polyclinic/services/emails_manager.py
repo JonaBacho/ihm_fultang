@@ -4,6 +4,11 @@ from django.conf import settings
 from celery import shared_task
 from django.utils.timezone import now
 
+from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
+from polyclinic.models import Patient
+from polyclinic.serializers.patient_serializers import PatientSerializer
+
+
 class EmailManager:
     TEMPLATES = {
         'staff_account_created': 'emails/staff_account_created.html',
@@ -27,7 +32,7 @@ class EmailManager:
     @classmethod
     def send_staff_account_created(cls, user, reset_link):
         context = {
-            'user': user,
+            'user': MedicalStaffSerializer(user).data,
             'reset_link': reset_link,
             'role': user.role
         }
@@ -41,7 +46,7 @@ class EmailManager:
     @classmethod
     def send_staff_action_notification(cls, staff, action_details):
         context = {
-            'staff': staff,
+            'staff': MedicalStaffSerializer(staff).data,
             'action': action_details,
             'action_date': now()
         }
@@ -55,7 +60,7 @@ class EmailManager:
     @classmethod
     def send_patient_registered(cls, patient):
         context = {
-            'patient': patient,
+            'patient': PatientSerializer(patient).data,
             'registration_date': now()
         }
         cls._trigger_task.delay(
@@ -68,9 +73,9 @@ class EmailManager:
     @classmethod
     def send_patient_action_notification(cls, patient, action_details, medical_staff):
         context = {
-            'patient': patient,
+            'patient': PatientSerializer(patient).data,
             'action': action_details,
-            'medical_staff': medical_staff,
+            'medical_staff': MedicalStaffSerializer(medical_staff).data,
             'action_date': now()
         }
         cls._trigger_task.delay(
