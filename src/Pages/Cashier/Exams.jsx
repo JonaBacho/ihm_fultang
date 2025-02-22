@@ -4,21 +4,67 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 const mockExams = [
-  
+  {
+    id: 1,
+    addDate: "2025-02-14",
+    examType: "Scanner thoracique",
+    examStatus: "pending",
+    patientStatus: "Stable",
+    notes: "Patient présente une légère toux",
+    idExam: 101,
+    idMedicalFolderPage: 201,
+    idPatient: 301,
+    idMedicalStaff: 401
+  },
+  {
+    id: 2,
+    addDate: "2025-02-14",
+    examType: "IRM cérébrale",
+    examStatus: "paid",
+    patientStatus: "Critique",
+    notes: "Suspicion d’AVC",
+    idExam: 102,
+    idMedicalFolderPage: 202,
+    idPatient: 302,
+    idMedicalStaff: 402
+  },
+  {
+    id: 3,
+    addDate: "2025-02-14",
+    examType: "Radiographie pulmonaire",
+    examStatus: "pending",
+    patientStatus: "Stable",
+    notes: "Examen de contrôle post-opératoire",
+    idExam: 103,
+    idMedicalFolderPage: 203,
+    idPatient: 303,
+    idMedicalStaff: 403
+  }
 ]
+
+const mockPatient = []
+
 
 export default function Exams() {
   const [exams, setExams] = useState(mockExams)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
+  const [isLoading, setIsLoading] = useState(false);
+  const [patient, setPatient] = useState(mockPatient)
 
   const handlePayment = (examId) => {
-    setExams((prevExams) => prevExams.map((exam) => (exam.id === examId ? { ...exam, status: "paid" } : exam)))
-  }
+    setExams((prevExams) => {
+      // Mettre à jour le statut de l'examen payé
+      const updatedExams = prevExams.map((exam) =>
+        exam.id === examId ? { ...exam, examStatus: "paid" } : exam
+      );  
+      return updatedExams;
+    });
+  };
 
   const filteredExams = exams.filter((exam) => {
     return (
-        (exam.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (exam.idPatient == searchTerm ||
             exam.examType.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (filterStatus === "all" || exam.status === filterStatus)
     )
@@ -26,25 +72,52 @@ export default function Exams() {
 
    useEffect(() => {
      async function fetchExams()
-     {
+     {  
+      setIsLoading(true);
         
          try
          {
-             const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/medical/exam-request/");
-           
+             const response = await axiosInstance.get("/exam-request/");
+             setIsLoading(false);
              if (response.status === 200)
              {
                  setExams(response.data.results);
+                 console.log(exams)
              }
          }
          catch (error)
          {
-            
+             setIsLoading(false);
              console.log(error);
          }
      }
      fetchExams();
  }, []);
+
+ useEffect(() => {
+  async function fetchPatient(id)
+  {  
+   setIsLoading(true);
+     
+      try
+      {
+          const response = await axiosInstance.get(`/patient/${id}`);
+          setIsLoading(false);
+          if (response.status === 200)
+          {
+              setPatient(response.data.results);
+              console.log(patient)
+          }
+      }
+      catch (error)
+      {
+          setIsLoading(false);
+          console.log(error);
+      }
+  }
+  fetchPatient();
+}, []);
+
 
   return (
       <div className="mx-auto p-6  rounded-lg">
@@ -99,7 +172,7 @@ export default function Exams() {
                     <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Date</th>
 
                     <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">
-                      Price
+                    Patient Status
                     </th>
 
                     <th className="px-6 py-5 text-center text-md font-semibold  text-white uppercase ">Status</th>
@@ -114,7 +187,7 @@ export default function Exams() {
                           <td className="px-6 py-5 ">
                             <div className="flex items-center justify-center">
                               <User className="h-5 w-5 text-gray-400 mr-2" />
-                              <div className="text-md font-semibold text-gray-900">{exam.patientName}</div>
+                              <div className="text-md font-semibold text-gray-900">{exam.idPatient}</div>
                             </div>
                           </td>
 
@@ -128,27 +201,26 @@ export default function Exams() {
                           <td className="px-6 py-5 ">
                             <div className="flex items-center justify-center">
                               <Calendar className="h-5 w-5 text-gray-400 mr-2" />
-                              <div className="text-md text-gray-900">{new Date(exam.date).toLocaleDateString()}</div>
+                              <div className="text-md text-gray-900">{new Date(exam.addDate).toLocaleDateString()}</div>
                             </div>
                           </td>
 
                           <td className="px-6 py-5 ">
                             <div className="flex items-center justify-center">
-                              <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
-                              <div className="text-sm text-gray-900">{exam.amount} FCFA</div>
+                              <div className="text-sm text-gray-900">{exam.patientStatus}</div>
                             </div>
                           </td>
 
                           <td className="px-6 py-5  flex justify-center items-center">
-                            <span className={`px-2 inline-flex text-center text-xs leading-5 font-semibold rounded-full ${exam.status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
-                              {exam.status === "paid" ? "Paid" : "On Load"}
+                            <span className={`px-2 inline-flex text-center text-xs leading-5 font-semibold rounded-full ${exam.examStatus === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
+                              {exam.examStatus === "paid" ? "Paid" : "On Load"}
                             </span>
                           </td>
 
                           <td className="text-md font-medium text-center py-5">
-                            {exam.status === "pending" && (
+                            {exam.examStatus === "pending" && (
                                 <button onClick={() => handlePayment(exam.id)}
-                                    className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto">
+                                className="text-primary-end hover:text-green-700 transition-all duration-500 flex items-center justify-center mx-auto">
                                   <CheckCircle className="h-5 w-5 mr-1" />
                                   Pay
                                 </button>

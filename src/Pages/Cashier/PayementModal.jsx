@@ -24,6 +24,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
     const [financialOperations, setFinancialOperations] = useState([]);
     const {userData} = useAuthentication();
     const [error, setError] = useState("");
+    const [bill, setBill] = useState() 
 
 
     useEffect(() => {
@@ -59,10 +60,12 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
         {
             console.log(billData);
             const response = await axiosInstance.post("/bill/", billData);
+            
             setIsProcessing(false);
             if (response.status === 201)
-            {
-                console.log(response);
+
+            {   setBill(response?.data)
+                console.log(response.data);
                 setBillNumber(response?.data?.id);
                 setIsSuccess(true);
                 setError(null);
@@ -76,12 +79,6 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
         }
     }
 
-
-
-    function handlePrint  ()  {
-        console.log("Impression de la facture:", billNumber);
-        window.print();
-    }
 
 
     useEffect(() => {
@@ -104,7 +101,13 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
         fetchFinancialOperation();
     }, []);
 
-
+    const handlePrint = () => {
+        const printContents = document.getElementById("invoice").innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents; // Restaure la page après l'impression
+    };
 
 
     if (!isOpen) return null
@@ -135,7 +138,7 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
 
 
                                 <div className="rounded-lg bg-gray-50 p-4 space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div id = "invoice" className="grid grid-cols-2 gap-4">
                                         <div>
                                             <p className="text-sm text-gray-500">Patient</p>
                                             <p className="font-medium">{consultationData.idPatient.firstName + " " + consultationData.idPatient.lastName}</p>
@@ -151,6 +154,10 @@ export function PaymentModal({ isOpen, onClose, consultationData }) {
                                         <div>
                                             <p className="text-sm text-gray-500">Date</p>
                                             <p className="font-medium">{new Date(consultationData.consultationDate).toLocaleDateString()}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-500">Price</p>
+                                            <p className="font-medium">{consultationData.consultationPrice.toLocaleString()} FCFA</p>
                                         </div>
                                     </div>
                                 </div>
