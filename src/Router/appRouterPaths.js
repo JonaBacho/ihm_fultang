@@ -1,3 +1,4 @@
+//import { Pharmacy } from "../Pages/Pharmacy/Pharmacy";
 
 export const AppRoutesPaths = {
     notFound: "*",
@@ -54,6 +55,7 @@ export const AppRoutesPaths = {
     laboratoryPatientList: "/laboratory-assistant/patient-list",
     laboratoryExamenList: "/laboratory-assistant/exams-list",
     laboratoryExamenDetail: "/laboratory-assistant/exams-list/details",
-    laboratoryExamenHistories: "/laboratory-assistant/exams-history"
+    laboratoryExamenHistories: "/laboratory-assistant/exams-history",
+    PharmacyList: "/pharmacyList"
 
 }

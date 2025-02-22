@@ -34,7 +34,7 @@ function AddMedicineModal({ isOpen, onClose }) {
       const response = await axiosInstance.post('/medicament/', formData);
       if (response.status === 201) {
         onClose();
-        // Vous pouvez ajouter ici une notification de succès
+        
       }
     } catch (error) {
       setError('Failed to add medicine. Please try again.');

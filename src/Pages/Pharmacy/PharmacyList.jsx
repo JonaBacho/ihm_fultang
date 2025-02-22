@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Edit2, Trash2, Settings } from 'lucide-react';
 
-export default function PharmacistPage() {
+export default function PharmacistList() {
     const [medications] = useState([
         {
             id: 1,
@@ -51,6 +51,13 @@ export default function PharmacistPage() {
     ]);
 
     return (
+         <>
+             <PharmacyDashboard linkList={PharmacyDashboard} requiredRole={"Pharmacist"}>
+                     <div className="h-full flex flex-col">
+                       <PharmacyNavbar username="Username.N" />
+                       <div className="flex-1 flex">
+                         <div className="flex-1 p-4 space-y-4">
+                           <PharmacyFilter />
         <div className="p-6 max-w-full min-h-screen bg-gray-50">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
