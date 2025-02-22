@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Search, Edit2, Trash2, Settings } from 'lucide-react';
 
