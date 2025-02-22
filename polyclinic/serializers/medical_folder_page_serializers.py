@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from polyclinic.models import MedicalFolderPage, Prescription, ExamRequest, Consultation, ExamResult
 from polyclinic.serializers.exam_request_serializers import ExamRequestSerializer
+from polyclinic.serializers.exam_result_serializers import ExamResultSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from django.utils.timezone import now
 from datetime import timedelta
@@ -40,7 +41,7 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
             return []
 
     def get_examResults(self, obj):
-        return ExamResult.objects.filter(idMedicalFolderPage=obj).first()
+        return ExamResultSerializer(ExamResult.objects.filter(idMedicalFolderPage=obj), many=True).data
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)
