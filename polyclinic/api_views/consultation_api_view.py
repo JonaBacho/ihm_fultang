@@ -131,12 +131,10 @@ class ConsultationViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        print(user)
-        print(serializer.validated_data['idMedicalStaffSender'].id)
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
-        if user.id != serializer.validated_data['idMedicalStaffSender'].id:
-            raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
+        #if user.id != serializer.validated_data['idMedicalStaffSender'].id:
+        #    raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
         serializer.save()
 
     def perform_update(self, serializer):
