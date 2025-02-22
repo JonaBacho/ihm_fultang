@@ -54,6 +54,6 @@ export const AppRoutesPaths = {
     laboratoryExamenList: "/laboratory-assistant/exams-list",
     laboratoryExamenDetail: "/laboratory-assistant/exams-list/details/:id",
     laboratoryExamenHistories: "/laboratory-assistant/exams-history",
-    laboratoryExamResultDetails: "/laboratory-assistant/exams-history/details"
+    laboratoryExamResultDetails: "/laboratory-assistant/exams-history/details/:id"
 
 }
