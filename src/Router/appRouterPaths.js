@@ -14,6 +14,7 @@ export const AppRoutesPaths = {
     examsList: "/cashier/exams-list",
     hospitalisations: "/cashier/hospitalisations-list",
     financialReport: "/cashier/financial-report",
+    helpCenter: "/cashier/help-center",
     specialistPage: "/specialist",
     nursePage:"/nurse/patients",
     nurseMedicalStaffsPage: "/nurse/medical-staff",

@@ -1,7 +1,13 @@
 import { AccountantDashBoard } from "./Components/AccountantDashboard";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
-import { Users, DollarSign, FileText, Settings } from "lucide-react";
+import {
+  Users,
+  DollarSign,
+  FileText,
+  Settings,
+  WalletCards,
+} from "lucide-react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +26,11 @@ export function Accountant() {
       icon: DollarSign,
       label: "Add Expense",
       onClick: () => navigate("/accountant/create-facture"),
+    },
+    {
+      icon: WalletCards,
+      label: "View Account",
+      onClick: () => navigate("/accountant/account-list"),
     },
     {
       icon: FileText,

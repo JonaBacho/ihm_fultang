@@ -3,7 +3,7 @@ import { AiOutlineFileExclamation } from "react-icons/ai";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 import {FaHistory, FaHospital} from "react-icons/fa";
-
+import { MdHelpOutline } from "react-icons/md";
 
 export const cashierNavLink =
 [
@@ -33,6 +33,11 @@ export const cashierNavLink =
         name: 'Financial Report',
         icon: HiOutlineDocumentReport,
         link: appRoutes.financialReport,
+    },
+    {
+        name: 'Help Center',
+        icon: MdHelpOutline,
+        link: appRoutes.helpCenter,
     }
 
 ]

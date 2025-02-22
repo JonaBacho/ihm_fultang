@@ -1,145 +1,110 @@
-import { Line, Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
   Tooltip,
   Legend,
-} from "chart.js";
+  ResponsiveContainer,
+} from "recharts";
 
-// Enregistrement des composants nécessaires pour Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-export default function FinancialCharts({ year }) {
-  // Données mensuelles
-  const monthlyData = {
-    labels: [
-      "Jan",
-      "Fév",
-      "Mar",
-      "Avr",
-      "Mai",
-      "Juin",
-      "Juil",
-      "Aoû",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Déc",
-    ],
-    datasets: [
-      {
-        label: "Produits",
-        data: [
-          650000, 680000, 690000, 700000, 720000, 710000, 730000, 740000,
-          750000, 760000, 770000, 780000,
-        ],
-        borderColor: "#50C2B9",
-        backgroundColor: "rgba(80, 194, 185, 0.1)",
-        tension: 0.4,
-      },
-      {
-        label: "Charges",
-        data: [
-          580000, 590000, 585000, 595000, 600000, 605000, 610000, 615000,
-          620000, 625000, 630000, 635000,
-        ],
-        borderColor: "#ef4444",
-        backgroundColor: "rgba(239, 68, 68, 0.1)",
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Données de répartition des actifs
-  const assetData = {
-    labels: ["Immobilisations", "Stocks", "Créances", "Trésorerie"],
-    datasets: [
-      {
-        label: "Montant",
-        data: [3900000, 420000, 650000, 550000],
-        backgroundColor: [
-          "rgba(26, 115, 163, 0.8)",
-          "rgba(80, 194, 185, 0.8)",
-          "rgba(5, 17, 97, 0.8)",
-          "rgba(26, 115, 163, 0.6)",
-        ],
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            let label = context.dataset.label || "";
-            if (label) {
-              label += ": ";
-            }
-            if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat("fr-FR", {
-                style: "currency",
-                currency: "XAF",
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }).format(context.parsed.y);
-            }
-            return label;
-          },
-        },
-      },
+export default function FinancialCharts({ data }) {
+  // Exemple de données formatées pour les graphiques
+  const assetData = [
+    {
+      name: "Immobilized Assets",
+      value: data?.assetCategories?.[0]?.total || 0,
     },
-    scales: {
-      y: {
-        ticks: {
-          callback: (value) =>
-            new Intl.NumberFormat("fr-FR", {
-              style: "currency",
-              currency: "XAF",
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            }).format(value),
-        },
-      },
+    {
+      name: "Circulating Assets",
+      value: data?.assetCategories?.[1]?.total || 0,
     },
-  };
+    { name: "Treasury Assets", value: data?.assetCategories?.[2]?.total || 0 },
+  ];
+
+  const liabilityData = [
+    { name: "Equity", value: data?.liabilityCategories?.[0]?.total || 0 },
+    {
+      name: "Financial Debt",
+      value: data?.liabilityCategories?.[1]?.total || 0,
+    },
+    {
+      name: "Circulating Liabilities",
+      value: data?.liabilityCategories?.[2]?.total || 0,
+    },
+    {
+      name: "Treasury Liabilities",
+      value: data?.liabilityCategories?.[3]?.total || 0,
+    },
+  ];
+
+  const colors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]; // Couleurs pour les graphiques
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      <div className="bg-white p-4 rounded-lg border">
-        <h3 className="text-lg font-semibold mb-4 text-secondary">
-          Évolution Mensuelle
-        </h3>
-        <div className="h-[300px]">
-          <Line data={monthlyData} options={options} />
-        </div>
+      {/* Graphique en camembert pour les actifs */}
+      <div className="p-6 bg-white rounded-lg shadow-md">
+        <h4 className="text-lg font-semibold mb-4 text-secondary">
+          Assets Distribution
+        </h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={assetData}
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              dataKey="value"
+              label
+            >
+              {assetData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={colors[index % colors.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border">
-        <h3 className="text-lg font-semibold mb-4 text-secondary">
-          Répartition des Actifs
-        </h3>
-        <div className="h-[300px]">
-          <Bar data={assetData} options={options} />
-        </div>
+      {/* Graphique en barres pour les passifs */}
+      <div className="p-6 bg-white rounded-lg shadow-md">
+        <h4 className="text-lg font-semibold mb-4 text-secondary">
+          Liabilities Structure
+        </h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={liabilityData}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Graphique linéaire pour l'évolution des actifs et passifs */}
+      <div className="col-span-2 p-6 bg-white rounded-lg shadow-md">
+        <h4 className="text-lg font-semibold mb-4 text-secondary">
+          Assets vs Liabilities Over Time
+        </h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data?.timeSeriesData || []}>
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="assets" fill="#0088FE" />
+            <Bar dataKey="liabilities" fill="#FF8042" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
