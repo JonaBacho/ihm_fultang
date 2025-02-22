@@ -1,66 +1,9 @@
 import { useEffect, useState } from "react"
-import {AlertCircle, Search, Calendar, User, DollarSign, Filter, CheckCircle, Activity } from "lucide-react"
+import {AlertCircle, Search, Filter} from "lucide-react"
 import axiosInstance from "../../Utils/axiosInstance.js";
 
 
-const mockHospitalisations = [
-    [
-        // {
-        //   id: 1,
-        //   atDate: "2025-01-25",
-        //   bedLabel: "Bed A1",
-        //   note: "Patient under observation due to chest pain.",
-        //   isActive: true,
-        //   removeAt: null,
-        //   idRoom: 101,
-        //   idPatient: 2001,
-        //   idMedicalStaff: 3001
-        // },
-        // {
-        //   id: 2,
-        //   atDate: "2025-01-28",
-        //   bedLabel: "Bed B2",
-        //   note: "Patient undergoing post-surgery recovery.",
-        //   isActive: false,
-        //   removeAt: "2025-01-30",
-        //   idRoom: 102,
-        //   idPatient: 2002,
-        //   idMedicalStaff: 3002
-        // },
-        // {
-        //   id: 3,
-        //   atDate: "2025-01-20",
-        //   bedLabel: "Bed C3",
-        //   note: "Patient admitted for long-term rehabilitation.",
-        //   isActive: true,
-        //   removeAt: null,
-        //   idRoom: 103,
-        //   idPatient: 2003,
-        //   idMedicalStaff: 3003
-        // },
-        // {
-        //   id: 4,
-        //   atDate: "2025-01-22",
-        //   bedLabel: "Bed D4",
-        //   note: "Observation for high fever and dehydration.",
-        //   isActive: false,
-        //   removeAt: "2025-01-24",
-        //   idRoom: 104,
-        //   idPatient: 2004,
-        //   idMedicalStaff: 3004
-        // },
-        // {
-        //   id: 5,
-        //   atDate: "2025-01-18",
-        //   bedLabel: "Bed E5",
-        //   note: "Patient admitted for monitoring after accident.",
-        //   isActive: true,
-        //   removeAt: null,
-        //   idRoom: 105,
-        //   idPatient: 2005,
-        //   idMedicalStaff: 3005
-        // }
-      ]      
+const mockHospitalisations = [      
 ]
 
 export default function HospitalisationList() {
@@ -69,17 +12,17 @@ export default function HospitalisationList() {
   const [filterStatus, setFilterStatus] = useState("all")
   
 
-//   const handlePayment = (hospitalisationId) => {
-//     setHospitalisations((prevHospitalisations) => prevHospitalisations.map((hospitalisation) => (hospitalisation.id === hospitalisationId ? { ...hospitalisation, status: "paid" } : hospitalisation)))
-//   }
+   const handlePayment = (hospitalisationId) => {
+     setHospitalisations((prevHospitalisations) => prevHospitalisations.map((hospitalisation) => (hospitalisation.id === hospitalisationId ? { ...hospitalisation, status: "paid" } : hospitalisation)))
+   }
 
-//   const filteredHospitalisations = hospitalisations.filter((hospitalisation) => {
-//     return (
-//         (hospitalisation.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//             hospitalisation.hospitalisationType.toLowerCase().includes(searchTerm.toLowerCase())) &&
-//         (filterStatus === "all" || hospitalisation.status === filterStatus)
-//     )
-//   })
+   const filteredHospitalisations = hospitalisations.filter((hospitalisation) => {
+     return (
+         (hospitalisation.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             hospitalisation.hospitalisationType.toLowerCase().includes(searchTerm.toLowerCase())) &&
+         (filterStatus === "all" || hospitalisation.status === filterStatus)
+     )
+   })
 
    useEffect(() => {
      async function fetchHospitalisations()
@@ -87,7 +30,7 @@ export default function HospitalisationList() {
         
          try
          {
-             const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/medical/hospitalisation/");
+             const response = await axiosInstance.get("/hospitalisation/");
            
              if (response.status === 200)
              {

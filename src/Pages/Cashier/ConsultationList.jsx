@@ -32,7 +32,6 @@ export default function ConsultationList({consultationList}) {
     )
   })
 
-  console.log(consultationList);
 
   return (
       <div className="w-full mx-auto p-6 rounded-lg">

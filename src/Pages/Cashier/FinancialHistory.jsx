@@ -7,41 +7,7 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 const mockTransactions = [
-    //   {
-    //       id: 1,
-    //       patientName: "Jean Dupont",
-    //       type: "Consultation",
-    //       date: "2023-06-15",
-    //       amount: 15000,
-    //   },
-    //   {
-    //       id: 2,
-    //       patientName: "Marie Martin",
-    //       type: "Examen",
-    //       date: "2023-06-16",
-    //       amount: 50000,
-    //   },
-    //   {
-    //       id: 3,
-    //       patientName: "Pierre Durand",
-    //       type: "Hospitalisation",
-    //       date: "2023-06-17",
-    //       amount: 100000,
-    //   },
-    //   {
-    //       id: 4,
-    //       patientName: "Sophie Lefebvre",
-    //       type: "Consultation",
-    //       date: "2023-06-18",
-    //       amount: 20000,
-    //   },
-    //   {
-    //       id: 5,
-    //       patientName: "Luc Moreau",
-    //       type: "Examen",
-    //       date: "2023-06-19",
-    //       amount: 35000,
-    //   },
+    
  ]
 
 
@@ -77,7 +43,7 @@ export function FinancialHistory() {
             
             try
             {
-                const response = await axiosInstance.get("http://85.214.142.178:8009/api/v1/accounting/facture/");
+                const response = await axiosInstance.get("/accounting/facture/");
                 
                 if (response.status === 200)
                 {
