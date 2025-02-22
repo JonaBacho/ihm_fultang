@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axiosInstance from "../Utils/axiosInstance.js";
 
 // Icône de message (vous pouvez utiliser une bibliothèque comme react-icons ou une image SVG)
 const MessageIcon = () => (
@@ -40,25 +40,28 @@ const SendIcon = () => (
 const ChatWindow = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
   const sendMessage = async () => {
-    if (input.trim() === '') return;
+    if (input.trim() === "") return;
 
-    const newMessage = { text: input, sender: 'user' };
+    const newMessage = { text: input, sender: "user" };
     setMessages([...messages, newMessage]);
-    setInput('');
+    setInput("");
 
     try {
-      const response = await axios.post('/api/chat', { message: input });
-      const botMessage = { text: response.data.reply, sender: 'bot' };
+      const response = await axiosInstance.post("/chatbot/", {
+        question: input,
+      });
+      console.log(response);
+      const botMessage = { text: response.data.response, sender: "bot" };
       setMessages([...messages, newMessage, botMessage]);
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message', error);
+      console.error("Erreur lors de l'envoi du message", error);
     }
   };
 
@@ -85,13 +88,15 @@ const ChatWindow = () => {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-4 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}
+                className={`mb-4 ${
+                  msg.sender === "user" ? "text-right" : "text-left"
+                }`}
               >
                 <div
                   className={`inline-block p-3 rounded-lg ${
-                    msg.sender === 'user'
-                      ? 'bg-primary-start text-white'
-                      : 'bg-gray-100'
+                    msg.sender === "user"
+                      ? "bg-primary-start text-white"
+                      : "bg-gray-100"
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -107,7 +112,7 @@ const ChatWindow = () => {
               placeholder="Tapez votre message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyPress={(e) => e.key === "Enter" && sendMessage()}
               className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-start"
             />
             <button

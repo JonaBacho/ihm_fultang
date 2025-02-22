@@ -28,6 +28,7 @@ import Wait from "../Modals/wait.jsx";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
+import {useAuthentication} from "../../Utils/Provider.jsx";
 
 
 
@@ -118,6 +119,8 @@ export function DoctorConsultationDetails() {
     const [appointmentTime, setAppointmentTime] = useState(new Date());
     const [requirements, setRequirements] = useState("");
     const [appointmentReason, setAppointmentReason] = useState("");
+
+
 
 
     const {calculateAge} = useCalculateAge();
