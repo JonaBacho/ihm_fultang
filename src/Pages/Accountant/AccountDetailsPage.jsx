@@ -172,48 +172,34 @@ export function AccountDetailsPage() {
             <>
               <table className="w-full border-separate border-spacing-y-2">
                 <thead>
-                  <tr className="bg-gradient-to-r from-primary-start to-primary-end text-white">
-                    <th></th>
-                    <th className="py-4 px-6 text-left rounded-tl-lg">
-                      <div className="flex items-center">
-                        <span className="mr-2">#</span>
-                        <FaSort className="text-gray-300" />
-                      </div>
+                  <tr className="bg-gradient-to-l from-primary-start to-primary-end">
+                    <th className="text-center text-white p-4 text-xl font-bold border-gray-200 rounded-l-2xl">
+                      #
                     </th>
-                    <th className="py-4 px-6 text-left">
-                      <div className="flex items-center">
-                        <span className="mr-2">Date</span>
-                        <FaSort className="text-gray-300" />
-                      </div>
+                    <th className="text-center text-white p-4 text-xl font-bold border-gray-200">
+                      Date
                     </th>
-                    <th className="py-4 px-6 text-left">
-                      <div className="flex items-center">
-                        <span className="mr-2">Amount</span>
-                        <FaSort className="text-gray-300" />
-                      </div>
+                    <th className="text-center text-white p-4 text-xl font-bold border-gray-200">
+                      Amount
                     </th>
-                    <th className="py-4 px-6 text-left">
-                      <div className="flex items-center">
-                        <span className="mr-2">Operator</span>
-                        <FaSort className="text-gray-300" />
-                      </div>
+                    <th className="text-center text-white p-4 text-xl font-bold border-gray-200">
+                      Operator
                     </th>
-                    <th className="py-4 px-6 text-center rounded-tr-lg">
+                    <th className="text-center text-white p-4 text-xl font-bold border-gray-200 rounded-r-2xl">
                       Operations
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoices.map((invoice, index) => (
-                    <tr key={index} className="bg-gray-100">
-                      <td className="relative">
-                        <div
-                          className={`absolute left-0 top-0 h-full w-2 ${
-                            invoice.isAccounted ? "bg-green-500" : "bg-red-500"
-                          }`}
-                        ></div>
-                      </td>
-                      <td className="p-4 text-md text-blue-900 rounded-l-lg text-center">
+                    <tr key={index} className="bg-gray-100 shadow-sm">
+                      <td
+                        className={`p-4 text-md text-blue-900 text-center rounded-l-lg border-l-4 ${
+                          invoice.isAccounted
+                            ? "border-green-500"
+                            : "border-red-500"
+                        }`}
+                      >
                         {index + 1}
                       </td>
                       <td className="p-4 text-md text-center">
@@ -226,8 +212,8 @@ export function AccountDetailsPage() {
                         {invoice.operator.first_name}{" "}
                         {invoice.operator.last_name}
                       </td>
-                      <td className="p-4 relative rounded-r-lg">
-                        <div className="flex justify-center">
+                      <td className="p-4 text-center rounded-r-lg">
+                        <div className="w-full items-center justify-center flex gap-6">
                           <Tooltip placement="left" title="View details">
                             <button
                               onClick={() => {
