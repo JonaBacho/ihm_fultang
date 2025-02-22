@@ -5,7 +5,6 @@ from celery import shared_task
 from django.utils.timezone import now
 
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
-from polyclinic.models import Patient
 from polyclinic.serializers.patient_serializers import PatientSerializer
 
 
