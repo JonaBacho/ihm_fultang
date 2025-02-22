@@ -453,6 +453,13 @@ export function DoctorConsultationDetails() {
     }
 
 
+    async function handlePrescribeAppointment(e)
+    {
+        e.preventDefault();
+        alert("appointments");
+    }
+
+
     function closeConsultation()
     {
         navigate(-1);
@@ -590,7 +597,7 @@ export function DoctorConsultationDetails() {
                             {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle} handlePrescribe={handlePrescribeMedicament} endConsultation={endConsultation} isPrescribing = {isPrescribing}/>}
                             {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle} handlePrescribeExam={handlePrescribeExams} endConsultation={endConsultation} isPrescribingExam={isPrescribingExam}/>}
                             {/*activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>*/}
-                            {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle}/>}
+                            {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle} endConsultation={endConsultation} onSubmit={handlePrescribeAppointment}/>}
                         </div>
                     </div>
                 </div>
