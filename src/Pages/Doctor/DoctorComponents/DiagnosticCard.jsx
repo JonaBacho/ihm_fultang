@@ -43,7 +43,7 @@ export default function DiagnosticCard({applyInputStyle, setDiagnostic, setDocto
             <div className="flex justify-end gap-4">
                 <button disabled={isUpdatingConsultation}
                         type="submit"
-                        className="bg-primary-end hover:bg-primary-start text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                        className="bg-primary-end hover:bg-primary-start font-semibold text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
                  {isUpdatingConsultation ? "Updating..." : "Submit"}
                 </button>
 
