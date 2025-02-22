@@ -261,14 +261,20 @@ export function FinancialContributions() {
 
               <tbody>
                 {filteredContributions.map((contribution, index) => (
-                  <tr key={index} className="bg-gray-100">
-                    <td className="p-4 text-md text-blue-900 text-center rounded-l-lg">
+                  <tr key={index} className="bg-gray-100 shadow-sm">
+                    <td
+                      className={`p-4 text-md text-blue-900 text-center rounded-l-lg border-l-4 ${
+                        contribution.isAccounted
+                          ? "border-green-500"
+                          : "border-red-500"
+                      }`}
+                    >
                       {index + 1}
                     </td>
                     {/*<td className="p-4 text-md text-center font-bold">
-                      {contribution.billCode}
-                    </td>
-                    */}
+          {contribution.billCode}
+        </td>
+        */}
                     <td className="p-4 text-md text-center">
                       <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
                         {contribution.operator.role}
@@ -300,13 +306,13 @@ export function FinancialContributions() {
                           className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
                         />
                         {/*  
-                        <TooltipButton
-                          icon={<FaTrash className="text-red-400 text-xl" />}
-                          onClick={() => handleDelete(contribution)}
-                          tooltip="Delete record"
-                          className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
-                        />
-                        */}
+            <TooltipButton
+              icon={<FaTrash className="text-red-400 text-xl" />}
+              onClick={() => handleDelete(contribution)}
+              tooltip="Delete record"
+              className="flex items-center justify-center w-9 h-9 text-xl hover:bg-gray-300 hover:rounded-full transition-all duration-300"
+            />
+            */}
                       </div>
                     </td>
                   </tr>

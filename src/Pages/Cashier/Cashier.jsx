@@ -12,6 +12,15 @@ export function Cashier() {
   const { userData } = useAuthentication();
   const [consultations, setConsultations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date().toLocaleTimeString());
+    }, 1000); 
+
+    return () => clearInterval(interval); 
+  }, []);
 
   useEffect(() => {
     async function fetchConsultations() {
@@ -19,7 +28,6 @@ export function Cashier() {
       try {
         const response = await axiosInstance.get("/consultation/");
         setIsLoading(false);
-        console.log(response);
         if (response.status === 200) {
           setConsultations(response.data.results);
         }
@@ -30,8 +38,6 @@ export function Cashier() {
     }
     fetchConsultations();
   }, []);
-
-  console.log(consultations);
 
   return (
     <DashBoard linkList={cashierNavLink} requiredRole={"Cashier"}>
@@ -55,7 +61,7 @@ export function Cashier() {
           </div>
           <div>
             <p className="text-white mt-28 text-xl font-bold mr-4">
-              12:30:25 AM
+              {time}
             </p>
           </div>
         </div>
