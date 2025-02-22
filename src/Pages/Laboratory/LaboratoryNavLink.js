@@ -1,6 +1,7 @@
 import {FaClipboardList, FaHistory, FaHome, FaQuestionCircle} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 import {FiList} from "react-icons/fi";
+import {UserPlus} from "lucide-react";
 
 export const laboratoryNavLink = [
 
@@ -12,7 +13,7 @@ export const laboratoryNavLink = [
     {
         name: "Patient list",
         link: appRoutes.laboratoryPatientList,
-        icon: FaHome,
+        icon: UserPlus,
     },
     {
         icon: FiList,
