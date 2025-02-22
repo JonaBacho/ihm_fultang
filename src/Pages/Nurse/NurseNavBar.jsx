@@ -30,6 +30,7 @@ export function NurseNavBar({children})
                         <span>Nurse</span>
                     </div>
                     <div className="flex gap-2 mt-5 mb-4 mr-5">
+                        {/*
                         <button className={applyNavLinkBtnStyle()}>
                             <FaFlag/>
                         </button>
@@ -48,7 +49,7 @@ export function NurseNavBar({children})
                             <button className={applyNavLinkBtnStyle()}>
                                 <FaUser/>
                             </button>
-                        </Tooltip>
+                        </Tooltip>*/}
                         <Tooltip placement={"top"} title={"LogOut"}>
                             <button
                                 onClick={() => {

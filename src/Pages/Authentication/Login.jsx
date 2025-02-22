@@ -132,7 +132,7 @@ export function LoginPage()
                             <p className="italic mt-4 text-blue-400 text-xl ">
                                 Note: this page is the hospital staff login page
                             </p>
-                            <button className="w-44 h-14  py-2 border-secondary border-2 text-secondary rounded-lg px-1 mt-4 font-bold hover:text-white hover:bg-secondary transition-all duration-300">
+                            <button onClick={()=>navigate(appRouterPaths.helpCenterPage)} className="w-44 h-14  py-2 border-secondary border-2 text-secondary rounded-lg px-1 mt-4 font-bold hover:text-white hover:bg-secondary transition-all duration-300">
                                 <div className="flex justify-center items-center">
                                     <FaExclamation className="mr-1 "/>
                                     <p>Notify A problem</p>
@@ -191,11 +191,11 @@ export function LoginPage()
                                     </Link>
                                 </div>
 
-                                <div className="flex mt-5">
+                                {/*  <div className="flex mt-5">
                                     <input type="checkbox" id="rememberMeCheckbox" value="yes"
                                            className="mr-2 w-5 h-5 border-secondary border-2"/>
                                     <label htmlFor="maCheckbox" className="font-bold text-sm">Remember Me</label>
-                                </div>
+                                </div>*/}
 
                                 <button type="submit"
                                         className="text-white text-2xl bg-gradient-to-r from-primary-start to-primary-end w-full h-12 rounded-lg mt-5 mb-5 font-bold">
