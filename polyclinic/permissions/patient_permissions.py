@@ -15,6 +15,7 @@ class PatientPermission(BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
+        print(f"permission check {request.user.role}")
         user = request.user
         # Autoriser un utilisateur avec le rôle 'Admin' pour toutes les actions
         if user.role == "Admin":
