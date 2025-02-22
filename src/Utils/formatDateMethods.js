@@ -41,3 +41,10 @@ export function formatDateOnlyWithoutWeekDay(dateString) {
     day: "numeric",
   }).format(new Date(dateString));
 }
+
+
+export function combineToISOString(date, time) {
+  const combinedDateTime = new Date(`${date}T${time}`);
+  combinedDateTime.setHours(combinedDateTime.getHours() + 1);
+  return combinedDateTime.toISOString();
+}

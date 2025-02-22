@@ -310,7 +310,7 @@ export function AccountList() {
             onClose={() => setCanOpenConfirmActionModal(false)}
             onConfirm={async () => await deleteAccount(accountToDelete.id)}
             title={"Delete Account"}
-            message={`Are you sure you want to delete the account ${accountToDelete.accountNumber} - ${accountToDelete.accountLabel}?`}
+            message={`Are you sure you want to delete the account ${accountToDelete?.account?.number} - ${accountToDelete?.account?.libelle}?`}
           />
         </div>
       </div>

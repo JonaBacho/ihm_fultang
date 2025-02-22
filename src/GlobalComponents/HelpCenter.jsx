@@ -1,9 +1,9 @@
 import {FaCog, FaEnvelope, FaSignOutAlt} from "react-icons/fa";
 import {Tooltip} from "antd";
-import {useAuthentication} from "../../Utils/Provider.jsx";
-import userIcon from "../../assets/userIcon.png"
+import {useAuthentication} from "../Utils/Provider.jsx";
+import userIcon from "../assets/userIcon.png"
 import { useNavigate } from "react-router-dom"; 
-import ChatWindow from "../../GlobalComponents/ChatWindow.jsx";
+import ChatWindow from "./ChatWindow.jsx";
 
 export function HelpCenter () {
 
@@ -44,7 +44,9 @@ export function HelpCenter () {
                         </Tooltip>
                         <Tooltip placement={"top"} title={"Profile"}>
                             <button className="ml-3 flex">
+                                <p className="font-bold text-secondary text-xl mt-2">{"Hello " +userData?.username + "!"}</p>
                                 <img src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
+
                             </button>
                         </Tooltip>
                     </div>

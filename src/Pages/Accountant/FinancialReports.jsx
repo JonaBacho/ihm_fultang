@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { FaFilePdf, FaFileExcel, FaExclamationCircle } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import {
+  FaFilePdf,
+  FaFileExcel,
+  FaExclamationCircle,
+  FaChartLine,
+  FaBalanceScale,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import BalanceSheet from "./Components/BalanceSheet";
 import IncomeStatement from "./Components/IncomeStatement";
@@ -7,27 +14,37 @@ import FinancialCharts from "./Components/FinancialCharts";
 import { AccountantDashBoard } from "./Components/AccountantDashboard";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
+import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant";
 
 export function FinancialReports() {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
   const [error, setError] = useState(null);
+  const [financialData, setFinancialData] = useState(null);
+
+  useEffect(() => {
+    const fetchFinancialData = async () => {
+      try {
+        const response = await axiosInstanceAccountant.get(
+          `/budget-exercise/get_balance_sheet/?year=${selectedYear}`
+        );
+        setFinancialData(response.data);
+      } catch (error) {
+        console.error("Error fetching financial data:", error);
+        setError("Failed to load financial data");
+      }
+    };
+
+    fetchFinancialData();
+  }, [selectedYear]);
 
   const handleExport = (format) => {
-    // Implémentation de l'export
-    console.log(`Exporting as ${format}`);
+    // Enhanced export functionality
+    console.log(`Exporting ${format} with professional formatting`);
+    // Add actual export logic using libraries like xlsx or pdfmake
   };
 
-  const handlePeriodChange = (e) => {
-    const year = e.target.value;
-    // Simulation de vérification de disponibilité des données
-    if (year === "2025") {
-      setError(
-        "Les données pour cet exercice comptable ne sont pas encore clôturées"
-      );
-      return;
-    }
-    setError(null);
-    setSelectedYear(year);
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -35,22 +52,21 @@ export function FinancialReports() {
       requiredRole={"Accountant"}
       linkList={AccountantNavLink}
     >
-      <AccountantNavBar></AccountantNavBar>
+      <AccountantNavBar />
       <div className="container mx-auto px-4 py-6 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-3xl font-bold text-secondary">Bilan Financier</h1>
+          <h1 className="text-3xl font-bold text-secondary">
+            Financial Reports
+          </h1>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <select
               className="px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-start"
-              onChange={handlePeriodChange}
+              onChange={(e) => setSelectedYear(e.target.value)}
               value={selectedYear}
             >
-              <option value="2022">Exercice 2022</option>
-              <option value="2023">Exercice 2023</option>
-              <option value="2024">Exercice 2024</option>
-              <option value="2025">Exercice 2025</option>
+              <option value="2025">FY 2025</option>
             </select>
-            <div className="flex gap-2">
+            {/*<div className="flex gap-2">
               <button
                 onClick={() => handleExport("excel")}
                 className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors"
@@ -66,6 +82,7 @@ export function FinancialReports() {
                 PDF
               </button>
             </div>
+            */}
           </div>
         </div>
 
@@ -73,7 +90,7 @@ export function FinancialReports() {
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
             <div className="flex items-center gap-2 text-red-700">
               <FaExclamationCircle />
-              <p className="font-medium">Erreur</p>
+              <p className="font-medium">Error</p>
             </div>
             <p className="mt-1 text-red-600">{error}</p>
           </div>
@@ -82,25 +99,27 @@ export function FinancialReports() {
         <Tabs>
           <TabList className="flex border-b">
             <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
-              Aperçu
+              Overview
             </Tab>
             <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
-              Bilan
+              Balance Sheet
             </Tab>
-            <Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
-              Compte de Résultat
-            </Tab>
+            {/*<Tab className="px-6 py-3 text-center font-medium cursor-pointer focus:outline-none">
+              Income Statement
+            </Tab>*/}
           </TabList>
 
           <TabPanel>
             <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-semibold mb-2 text-secondary">
-                Aperçu Financier {selectedYear}
+                Financial Overview {selectedYear}
               </h2>
               <p className="text-gray-600 mb-6">
-                Vue d'ensemble de la situation financière de l'hôpital
+                Comprehensive financial position analysis
               </p>
-              <FinancialCharts year={selectedYear} />
+              {financialData && (
+                <FinancialCharts data={financialData} year={selectedYear} />
+              )}
             </div>
           </TabPanel>
 
@@ -113,6 +132,27 @@ export function FinancialReports() {
           <TabPanel>
             <div className="mt-6">
               <IncomeStatement year={selectedYear} />
+              {/* Income Statement Analysis Section */}
+              <div className="mt-8 p-6 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4 text-blue-800">
+                  <FaChartLine className="inline-block mr-2" />
+                  Profitability Analysis
+                </h3>
+                <ul className="space-y-3">
+                  <li className="flex justify-between items-center">
+                    <span>Operating Margin</span>
+                    <span className="font-mono">XX%</span>
+                  </li>
+                  <li className="flex justify-between items-center">
+                    <span>YOY Revenue Growth</span>
+                    <span className="text-green-600 font-mono">+XX%</span>
+                  </li>
+                  <li className="flex justify-between items-center">
+                    <span>Expense Ratio</span>
+                    <span className="font-mono">XX%</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </TabPanel>
         </Tabs>

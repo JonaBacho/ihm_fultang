@@ -17,11 +17,10 @@ import {doctorNavLink} from "./lib/doctorNavLink.js";
 import { DoctorNavBar } from './DoctorComponents/DoctorNavBar.jsx';
 import {useEffect, useState} from "react";
 import {useCalculateAge} from "../../Utils/compute.js";
-import {formatDateOnly, formatDateOnlyWithoutWeekDay} from "../../Utils/formatDateMethods.js";
+import {combineToISOString, formatDateOnly, formatDateOnlyWithoutWeekDay} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
 import MedicationPrescriptionCard from "./DoctorComponents/MedicationPrescriptionCard.jsx";
 import ExamPrescriptionCard from "./DoctorComponents/ExamPrescriptionCard.jsx";
-import SpecialistPrescriptionCard from "./DoctorComponents/SpecialistPrescriptionCard.jsx";
 import AppointmentPrescriptionCard from "./DoctorComponents/AppointmentPrescriptionCard.jsx";
 import DiagnosticCard from "./DoctorComponents/DiagnosticCard.jsx";
 import axiosInstance from "../../Utils/axiosInstance.js";
@@ -53,12 +52,6 @@ const consultationSteps = [
         label: 'Exams',
         icon: Hospital
     },
-   /* {
-        id:3,
-        name: 'specialist prescription',
-        label: 'Transfer to a specialist',
-        icon: UserPlus
-    }, */
     {
         id:4,
         name: 'appointment',
@@ -88,10 +81,11 @@ export function DoctorConsultationDetails() {
     const [canOpenErrorMessageModal, setCanOpenErrorMessageModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [transactionErrorMessage, setTransactionErrorMessage] = useState("");
+    const [isPrescribingAppointment, setIsPrescribingAppointment] = useState(false);
 
 
 
-   // const [availableSpecialists, setAvailableSpecilists] = useState([]);
+
 
 
     const [activeTab, setActiveTab] = useState("diagnostic");
@@ -120,6 +114,12 @@ export function DoctorConsultationDetails() {
     ]);
     const [diagnostic, setDiagnostic] = useState("");
     const [doctorNote, setDoctorNote] = useState("");
+    const [appointmentDate, setAppointmentDate] = useState(new Date());
+    const [appointmentTime, setAppointmentTime] = useState(new Date());
+    const [requirements, setRequirements] = useState("");
+    const [appointmentReason, setAppointmentReason] = useState("");
+
+
     const {calculateAge} = useCalculateAge();
     const { value: ageValue, unit: ageUnit } = calculateAge(patientInfo?.birthDate);
     const MedicalParametersInfos = [
@@ -272,26 +272,6 @@ export function DoctorConsultationDetails() {
 
 
 
-
-  /*  async function loadSpecialist()
-    {
-        try {
-            const response = await axiosInstance.get("/medicament/");
-            if (response.status === 200)
-            {
-               // console.log(response.data);
-                setAvailableSpecilists(response.data);
-            }
-        }
-        catch (error)
-        {
-            console.log(error);
-
-        }
-    }
-   */
-
-
     useEffect(() => {
         loadMedication();
         loadExams();
@@ -369,7 +349,6 @@ export function DoctorConsultationDetails() {
                 console.log("created prescription ",prescriptionResponse?.data);
                 setTransactionErrorMessage("");
                 setPrescriptions([
-                    ...prescriptions,
                     {
                         id: Date.now(),
                         medicament: "",
@@ -392,6 +371,8 @@ export function DoctorConsultationDetails() {
 
         console.log(prescriptionData);
     }
+
+
 
 
     async function endConsultation()
@@ -434,6 +415,7 @@ export function DoctorConsultationDetails() {
         setIsPrescribingExams(true);
         let examsData = exams.map((exam) => Object.fromEntries(Object.entries(exam).filter(([key]) => (key !== "id" && key !== "isCustom" && exam.idExam !== "another"))));
 
+
         try
         {
             const examRequestResponse = await axiosInstance.post("/exam-request/", examsData);
@@ -450,13 +432,37 @@ export function DoctorConsultationDetails() {
             setTransactionErrorMessage("Something when wrong  with the sever when prescribing exams, please retry !!");
             console.log(error);
         }
+        console.log(examsData)
     }
 
 
     async function handlePrescribeAppointment(e)
     {
         e.preventDefault();
-        alert("appointments");
+        setIsPrescribingAppointment(true);
+        let appointmentData = {
+            atDate: combineToISOString(appointmentDate, appointmentTime),
+            reason: appointmentReason,
+            requirements: requirements,
+            idConsultation: consultation?.id,
+            idPatient: patientInfo?.id,
+            idMedicalStaff: consultation?.idMedicalStaffGiver?.id,
+        }
+        try
+        {
+            const appointmentRequestResponse = await axiosInstance.post("/appointment/", appointmentData);
+            setIsPrescribingAppointment(false);
+            if (appointmentRequestResponse.status === 201)
+            {
+                console.log(appointmentRequestResponse?.data);
+            }
+        }
+        catch (error)
+        {
+            setIsPrescribingAppointment(false);
+            setTransactionErrorMessage("Something when wrong  with the sever when creating your appointment, please retry !!");
+            console.log(error);
+        }
     }
 
 
@@ -591,13 +597,12 @@ export function DoctorConsultationDetails() {
                                 </button>
                             ))}
                         </div>
-                        <div /*onSubmit={handleSubmit}*/>
+                        <div>
                             {transactionErrorMessage && <p className="text-red-500  font-semibold text-md ml-5 mt-2 mb-2">{transactionErrorMessage}</p>}
                             {activeTab === "diagnostic" && <DiagnosticCard applyInputStyle={applyInputStyle} setDiagnostic={setDiagnostic} setDoctorNotes={setDoctorNote} diagnostic={diagnostic} doctorNotes={doctorNote}  handleConsult={updateConsultation}  endConsultation={endConsultation}  isUpdatingConsultation={isUpdatingConsultation}   />}
                             {activeTab === "prescriptions" && <MedicationPrescriptionCard prescriptions={prescriptions} availableMedications={availableMedications} updatePrescription={updatePrescription} removePrescription={removePrescription} addPrescription={addPrescription} applyInputStyle={applyInputStyle} handlePrescribe={handlePrescribeMedicament} endConsultation={endConsultation} isPrescribing = {isPrescribing}/>}
                             {activeTab === "exams" && <ExamPrescriptionCard exams={exams} availableExams={availableExams} setExams={setExams} removeExam={removeExam} addExam={addExam} applyInputStyle={applyInputStyle} handlePrescribeExam={handlePrescribeExams} endConsultation={endConsultation} isPrescribingExam={isPrescribingExam}/>}
-                            {/*activeTab === "specialist prescription" && <SpecialistPrescriptionCard availableSpecialists={availableSpecialists} applyInputStyle={applyInputStyle}/>*/}
-                            {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle} endConsultation={endConsultation} onSubmit={handlePrescribeAppointment}/>}
+                            {activeTab === "appointment" && <AppointmentPrescriptionCard applyInputStyle={applyInputStyle} setAppointmentReason={setAppointmentReason} appointmentReason={appointmentReason} setRequirements={setRequirements} setAppointmentDate={setAppointmentDate} setAppointmentTime={setAppointmentTime} requirements={requirements} appointmentDate={appointmentDate} appointmentTime={appointmentTime} endConsultation={endConsultation} onSubmit={handlePrescribeAppointment} isPrescribingAppointment={isPrescribingAppointment}/>}
                         </div>
                     </div>
                 </div>
