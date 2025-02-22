@@ -3,7 +3,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from authentication.models import MedicalStaff, ROLES, ROLES_ACCOUNTING, USER_TYPE
 from rest_framework import serializers
-
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from rest_framework.exceptions import ValidationError
+User = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -92,3 +95,41 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
         return response_data
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'}
+    )
+    password_confirmation = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'}
+    )
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirmation']:
+            raise serializers.ValidationError({"details": "Les mots de passe ne correspondent pas"})
+
+        try:
+            validate_password(attrs['password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
+        return attrs
+
+    def save(self):
+        email = self.validated_data['email']
+        password = self.validated_data['password']
+
+        try:
+            user = User.objects.get(email=email)
+            user.password = password
+            user.save()
+            return user
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {"details": "Aucun utilisateur trouvé avec cet email"}
+            )
