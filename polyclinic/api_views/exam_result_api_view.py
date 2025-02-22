@@ -97,7 +97,7 @@ auth_header_param = openapi.Parameter(
 class ExamResultViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated, ExamResultPermissions]
-    pagination_class = CustomPagination
+    #pagination_class = CustomPagination
     parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
