@@ -140,11 +140,11 @@ export function AdminHomePage() {
                             label="Manage Medical Staff"
                             onClick={() => navigate(AppRouterPaths.adminMedicalStaffListPage)}
                         />
-                        <QuickActionButton
+                        {/*  <QuickActionButton
                             icon={Calendar}
                             label="View Appointments List"
                             onClick={() => navigate(AppRouterPaths.adminAppointmentsListPage)}
-                        />
+                        />*/}
                         <QuickActionButton
                             icon={Hospital}
                             label="Manage Rooms"
@@ -155,7 +155,7 @@ export function AdminHomePage() {
                             label="View Consultations List"
                             onClick={() => navigate(AppRouterPaths.adminConsultationListPage)}
                         />
-                        <QuickActionButton
+                        {/*  <QuickActionButton
                             icon={FileSpreadsheet}
                             label="Manage Medicine"
                             onClick={() => alert("Manage Medicine")}
@@ -164,7 +164,7 @@ export function AdminHomePage() {
                             icon={FileSpreadsheet}
                             label="Financial Reports"
                             onClick={() => navigate(AppRouterPaths.adminFinancialReportsPage)}
-                        />
+                        />*/}
                     </div>
                 </div>
             </div>
