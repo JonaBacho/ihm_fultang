@@ -12,7 +12,7 @@ def update_consultations_status():
     # on recupère toutes les conultations dont la date de creation dépasse deux semaines
     # 2 semaines en arrière
     two_weeks_ago = now() - timedelta(weeks=2)
-    consultations = Consultation.objects.filter(consultationDate__gte=two_weeks_ago)
+    consultations = Consultation.objects.filter(consultationDate__lte=two_weeks_ago)
 
     for consultation in consultations:
         consultation.state = 'Completed'

@@ -157,7 +157,7 @@ class ConsultationViewSet(ModelViewSet):
                 'history',
                 openapi.IN_QUERY,
                 description="Si `true`, retourne juste les consultations du medicin qui ne sont plus à pending",
-                type=openapi.TYPE_BOOLEAN,
+                type=openapi.TYPE_STRING,
                 required=False
             ),
             auth_header_param
@@ -170,7 +170,7 @@ class ConsultationViewSet(ModelViewSet):
             self.pagination_class = None
             medical_staff = MedicalStaff.objects.get(id=id)
             if medical_staff.role != "Doctor":
-                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_404_NOT_FOUND)
+                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_400_BAD_REQUEST)
             queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff).filter(paymentStatus="Valid")
             history = self.request.query_params.get("history", "false")
             if history and history.lower() == "true":

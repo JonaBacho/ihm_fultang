@@ -134,8 +134,8 @@ class Patient(models.Model):
 
 class Appointment(models.Model):
     atDate = models.DateTimeField(auto_now_add=False)
-    reason = models.CharField(max_length=300)
-    requirements = models.CharField(max_length=500)
+    reason = models.CharField(max_length=300, blank=True, null=True)
+    requirements = models.CharField(max_length=500, blank=True, null=True)
     state = models.CharField(max_length=200, choices=APPOINTMENT_STATE, default='Pending')
     status = models.CharField(max_length=200, choices=APPOINTMENT_STATUS, default='Not Payable')
 

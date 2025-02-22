@@ -50,6 +50,7 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
         medical_folder = self.validated_data.get('idMedicalFolder')
         medical_staff = self.validated_data.get('idMedicalStaff')
         pageNumber = self.validated_data.get('pageNumber')
+        automatic_creation = self.validated_data.pop('automaticCreation', False)
 
         if not medical_folder:
             raise ValidationError({"details": "Le dossier médical (idMedicalFolder) est requis."})
@@ -67,7 +68,7 @@ class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
             addDate__gte=two_weeks_ago
         ).count()
 
-        if recent_pages_count >= 2:
+        if recent_pages_count >= 2 and not automatic_creation:
             raise ValidationError(
                 {"details": "Vous ne pouvez créer que 2 pages médicales pour ce dossier médical toutes les 2 semaines."}
             )
