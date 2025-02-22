@@ -139,6 +139,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+FRONTEND_URL = "fultang.cm"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -171,6 +173,15 @@ CELERY_TIMEZONE = 'UTC'  # or your timezone
 
 # For django-celery-beat
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# email configuration
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'webmail.gloswitch.com'
+EMAIL_HOST_USER = "fultang@gloswitch.com"
+EMAIL_HOST_PASSWORD = "VIlLeDubionSERJEstaRACyCERypHaUX,41,-"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
 
 
 
