@@ -1,165 +1,217 @@
 "use client"
 
-import { useState } from "react"
-import { Search, Filter, Calendar, User, Stethoscope } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { Search, Calendar, Eye, User, Stethoscope, Clock } from "lucide-react"
 import { laboratoryNavLink } from "./LaboratoryNavLink.js"
 import { LaboratoryNavBar } from "./LaboratoryNavBar.jsx"
 import { LaboratoryDashBoard } from "./LaboratoryDashBoard.jsx"
+import { useAuthentication } from "../../Utils/Provider.jsx"
+import Loader from "../../GlobalComponents/Loader.jsx"
+import ServerErrorPage from "../../GlobalComponents/ServerError.jsx"
+import { formatDateOnly, formatDateToTime } from "../../Utils/formatDateMethods.js"
+import {AppRoutesPaths} from "../../Router/appRouterPaths.js";
+import {useNavigate} from "react-router-dom";
 
-const fakeExams = [
+// Fake data for demonstration
+const fakeExamData = [
     {
         id: 1,
-        examName: "Hémogramme",
-        patientName: "Émilie Durand",
-        doctorName: "Dr. Pierre Martin",
-        status: "Terminé",
-        date: "2023-12-15",
-        type: "Sanguin",
+        patientName: "NGOUPAYE THIERRY",
+        examName: "Allergy Test",
+        status: "Completed",
+        date: "2023-06-15T09:30:00",
+        doctorName: "Dr. Alain Davis",
     },
-    {
-        id: 2,
-        examName: "IRM Cérébrale",
-        patientName: "Jean Dupont",
-        doctorName: "Dr. Sophie Leroy",
-        status: "En attente",
-        date: "2023-12-14",
-        type: "Imagerie",
-    },
-    {
-        id: 3,
-        examName: "ECG",
-        patientName: "Marie Lambert",
-        doctorName: "Dr. Lucas Bernard",
-        status: "Annulé",
-        date: "2023-12-13",
-        type: "Cardio",
-    },
-    // Ajouter plus d'examens...
+
+
 ]
 
-function StatusBadge({ status }) {
-    const statusConfig = {
-        Terminé: { color: "bg-green-100 text-green-800", icon: "✅" },
-        "En attente": { color: "bg-yellow-100 text-yellow-800", icon: "⏳" },
-        Annulé: { color: "bg-red-100 text-red-800", icon: "❌" },
-    }
-
-    return (
-        <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusConfig[status].color}`}
-        >
-      {statusConfig[status].icon} {status}
-    </span>
-    )
-}
-
-function ExamCard({ exam }) {
-    return (
-        <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-6 border border-gray-200">
-            <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">{exam.examName}</h3>
-                <StatusBadge status={exam.status} />
-            </div>
-            <p className="text-sm text-gray-500 mb-4">{exam.type}</p>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center text-gray-600">
-                    <User className="w-4 h-4 mr-2 text-primary-start" />
-                    <span>{exam.patientName}</span>
-                </div>
-                <div className="flex items-center text-gray-600">
-                    <Stethoscope className="w-4 h-4 mr-2 text-primary-start" />
-                    <span>{exam.doctorName}</span>
-                </div>
-                <div className="flex items-center text-gray-600">
-                    <Calendar className="w-4 h-4 mr-2 text-primary-start" />
-                    <span>{new Date(exam.date).toLocaleDateString()}</span>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 export function ExamHistory() {
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("")
-    const [filterStatus, setFilterStatus] = useState("all")
-    const [sortBy, setSortBy] = useState("date")
+    const [dateFilter, setDateFilter] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const { userData } = useAuthentication()
+    const [examHistoryList, setExamHistoryList] = useState([])
+    const [errorStatus, setErrorStatus] = useState(null)
+    const [errorMessage, setErrorMessage] = useState("")
 
-    const filteredExams = fakeExams.filter((exam) => {
-        const matchesSearch = [exam.examName, exam.patientName, exam.doctorName].some((field) =>
-            field.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
-        return matchesSearch && (filterStatus === "all" || exam.status === filterStatus)
+    const loadExamHistory = useCallback(async (idLabTech) => {
+        setIsLoading(true)
+        try {
+            // Simulating API call with setTimeout
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            setExamHistoryList(fakeExamData)
+            setIsLoading(false)
+            setErrorStatus(null)
+            setErrorMessage("")
+        } catch (error) {
+            setIsLoading(false)
+            setErrorStatus(500)
+            setErrorMessage("Une erreur est survenue lors du chargement des données.")
+            console.error(error)
+        }
+    }, [])
+
+    useEffect(() => {
+        loadExamHistory()
+    }, [loadExamHistory])
+
+    const filteredExams = examHistoryList.filter((exam) => {
+        const fullName = exam?.patientName
+        const matchesSearch =
+            fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            exam.examName.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesDate = !dateFilter || new Date(exam?.date || "").toISOString().split("T")[0] === dateFilter
+        return matchesSearch && matchesDate
     })
 
-    const sortedExams = [...filteredExams].sort((a, b) => {
-        if (sortBy === "date") return new Date(b.date) - new Date(a.date)
-        return a[sortBy].localeCompare(b[sortBy])
-    })
+    function getStatusStyle(status) {
+        switch (status) {
+            case "Terminé":
+                return "bg-green-100 text-green-800 border-green-300"
+            case "En attente":
+                return "bg-yellow-100 text-yellow-800 border-yellow-300"
+            case "Annulé":
+                return "bg-red-100 text-red-800 border-red-300"
+            default:
+                return "bg-gray-100 text-gray-800 border-gray-300"
+        }
+    }
 
     return (
         <LaboratoryDashBoard linkList={laboratoryNavLink} requiredRole={"Labtech"}>
             <LaboratoryNavBar />
-            <div className="min-h-screen bg-gray-50 p-8">
-                <div className="max-w-7xl mx-auto">
-                    <div className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg p-6 text-white mb-6">
-                        <h1 className="text-3xl font-bold mb-2">Historique des Examens</h1>
-                        <p className="opacity-90">Consultez l'historique complet des examens réalisés dans notre établissement.</p>
-                    </div>
+            <div className="mx-auto p-6">
+                <h1 className="text-2xl font-bold text-gray-800 mb-6">Historique des Examens</h1>
 
-                    <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-200">
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <div className="relative flex-grow">
-                                <input
-                                    type="text"
-                                    placeholder="Rechercher un examen, patient ou médecin..."
-                                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-primary-start focus:ring-2 focus:ring-primary-start focus:ring-opacity-50"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <Search className="absolute left-3 top-2.5 text-gray-400" />
-                            </div>
-                            <div className="flex items-center space-x-4">
-                                <div className="relative">
-                                    <select
-                                        value={filterStatus}
-                                        onChange={(e) => setFilterStatus(e.target.value)}
-                                        className="appearance-none pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-primary-start focus:ring-2 focus:ring-primary-start focus:ring-opacity-50"
-                                    >
-                                        <option value="all">Tous les statuts</option>
-                                        <option value="Terminé">Terminé</option>
-                                        <option value="En attente">En attente</option>
-                                        <option value="Annulé">Annulé</option>
-                                    </select>
-                                    <Filter className="absolute left-3 top-2.5 text-gray-400" />
-                                </div>
-                                <select
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                    className="appearance-none px-4 py-2 rounded-lg border border-gray-300 focus:border-primary-start focus:ring-2 focus:ring-primary-start focus:ring-opacity-50"
-                                >
-                                    <option value="date">Trier par date</option>
-                                    <option value="examName">Trier par nom</option>
-                                    <option value="patientName">Trier par patient</option>
-                                </select>
-                            </div>
-                        </div>
+                {/* Filters */}
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                        <input
+                            type="text"
+                            placeholder="Rechercher un examen par nom de patient ou type d'examen..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:border-none rounded-lg focus:ring-2 focus:ring-primary-end focus:outline-none transition-all duration-300"
+                        />
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {sortedExams.map((exam) => (
-                            <ExamCard key={exam.id} exam={exam} />
-                        ))}
-                    </div>
-
-                    <div className="mt-8 flex justify-center space-x-2">
-                        <button className="px-4 py-2 bg-white text-primary-start border border-primary-start rounded-lg hover:bg-primary-start hover:text-white transition-colors duration-300">
-                            Précédent
-                        </button>
-                        <button className="px-4 py-2 bg-primary-start text-white rounded-lg hover:bg-primary-end transition-colors duration-300">
-                            Suivant
-                        </button>
+                    <div className="flex items-center gap-4">
+                        <Calendar className="text-gray-400 h-5 w-5" />
+                        <input
+                            type="date"
+                            value={dateFilter}
+                            onChange={(e) => setDateFilter(e.target.value)}
+                            className="px-4 py-2 border border-gray-300 focus:border-none rounded-lg focus:ring-2 focus:ring-primary-end focus:outline-none transition-all duration-300"
+                        />
                     </div>
                 </div>
+
+                {/* Exam History List */}
+                {isLoading ? (
+                    <div className="h-[500px] w-full flex justify-center items-center">
+                        <Loader size={"medium"} color={"primary-end"} />
+                    </div>
+                ) : errorStatus ? (
+                    <ServerErrorPage errorStatus={errorStatus} message={errorMessage} />
+                ) : filteredExams && filteredExams.length > 0 ? (
+                    <div className="overflow-x-auto">
+                        <table className="w-full border-separate border-spacing-y-2">
+                            <thead>
+                            <tr>
+                                <th className="px-6 py-3 bg-primary-end rounded-l-xl text-center text-md text-white font-bold uppercase">
+                                    Patient
+                                </th>
+                                <th className="px-6 py-3 bg-primary-end text-center text-md text-white font-bold uppercase">
+                                    Date & Heure
+                                </th>
+                                <th className="px-6 py-3 bg-primary-end text-center text-md text-white font-bold uppercase">
+                                    Nom de l'Examen
+                                </th>
+                                <th className="px-6 py-3 bg-primary-end text-center text-md text-white font-bold uppercase">
+                                    Statut
+                                </th>
+                                <th className="px-6 py-3 bg-primary-end text-center text-md text-white font-bold uppercase">
+                                    Médecin
+                                </th>
+                                <th className="px-6 py-3 text-center text-md text-white font-bold bg-primary-end rounded-r-xl uppercase">
+                                    Action
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody className="bg-white border-separate">
+                            {filteredExams.map((exam) => (
+                                <tr key={exam.id}>
+                                    <td className="px-6 py-5 rounded-l-xl bg-gray-100 border-l-4 border-primary-start">
+                                        <div className="w-full flex items-center justify-center">
+                                            <User className="h-6 w-6 text-gray-400 mr-2" />
+                                            <div className="text-md font-medium text-gray-900">{exam.patientName}</div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 bg-gray-100">
+                                        <div className="w-full flex justify-center items-center">
+                                            <Clock className="h-5 w-5 text-gray-400 mr-2 mt-2" />
+                                            <div>
+                                                <div className="text-sm text-center text-gray-900">{formatDateOnly(exam.date)}</div>
+                                                <div className="text-sm text-center text-gray-500">{formatDateToTime(exam.date)}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 bg-gray-100">
+                                        <div className="text-sm text-center text-gray-900">{exam.examName}</div>
+                                    </td>
+                                    <td className="px-6 py-4 bg-gray-100">
+                                        <div className="flex items-center justify-center">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyle(exam.status)}`}>
+                          {exam.status}
+                        </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 bg-gray-100">
+                                        <div className="flex items-center justify-center text-sm text-gray-900">
+                                            <Stethoscope className="h-5 w-5 text-gray-400 mr-2" />
+                                            {exam.doctorName}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 bg-gray-100 rounded-r-xl">
+                                        <button
+                                            onClick={() => {
+                                                navigate(`${AppRoutesPaths.laboratoryExamResultDetails}`);
+
+                                                console.log("Navigating to exam details for ID:", exam.id)
+                                            }}
+                                            className="flex items-center text-primary-end hover:text-primary-start font-semibold hover:text-[17px] transition-all duration-500"
+                                        >
+                                            <Eye className="h-5 w-5" />
+                                            <span className="ml-2">Détails</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="p-8 mt-24 flex items-center justify-center">
+                        <div className="flex flex-col">
+                            <Calendar className="h-16 w-16 text-primary-end mx-auto mb-4" />
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2 mx-auto">Aucun Historique d'Examen</h2>
+                            <p className="text-gray-600 mb-4 mx-auto text-center">
+                                Il n'y a pas encore d'examens enregistrés. Une fois les examens effectués, ils apparaîtront ici pour un
+                                meilleur suivi.
+                            </p>
+                            <button
+                                className="px-4 hover:bg-primary-start duration-300 mx-auto py-2 bg-primary-end text-white rounded-lg transition-all"
+                                onClick={() => {
+                                    window.location.reload()
+                                }}
+                            >
+                                Rafraîchir
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </LaboratoryDashBoard>
     )

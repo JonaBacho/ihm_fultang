@@ -65,6 +65,7 @@ export function AppRoute()
     const LaboratoryExamenList = React.lazy(async () => ({default: (await import("../Pages/Laboratory/LaboratoryExamList.jsx")).ExamenList,}));
     const LaboratoryExamenDetails = React.lazy(async () => ({default: (await import("../Pages/Laboratory/ExamenDetails.jsx")).ExamDetails,}));
     const LaboratoryExamenHistories = React.lazy(async () => ({default: (await import("../Pages/Laboratory/LaboratoryExamHistory.jsx")).ExamHistory,}));
+    const LaboratoryExamResulDetails = React.lazy(async () => ({default: (await import("../Pages/Laboratory/ExamResultDetail.jsx")).ExamResultDetails,}));
     
 
     return (
@@ -127,6 +128,7 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.laboratoryExamenList} element={<LaboratoryExamenList/>}/>
                 <Route path={AppRoutesPaths.laboratoryExamenDetail} element={<LaboratoryExamenDetails/>}/>
                 <Route path={AppRoutesPaths.laboratoryExamenHistories} element={<LaboratoryExamenHistories/>}/>
+                <Route path={AppRoutesPaths.laboratoryExamResultDetails} element={<LaboratoryExamResulDetails/>}/>
             </Routes>
         </React.Suspense>
     )

@@ -7,7 +7,7 @@ export const AppRoutesPaths = {
     forgottenPasswordPage: "/forgotten-password",
     pharmacyPage:"/pharmacy",
     doctorPage: "/doctor/dashboard",
-    laboratoryAssistantPage: "/laboratory-assistant",
+    laboratoryAssistantPage: "/laboratory-assistant/home",
     receptionistPage: "/receptionist/patients",
     cashierPage: "/cashier/consultation-list",
     consultationsList: "/cashier/consultations-list",
@@ -52,7 +52,8 @@ export const AppRoutesPaths = {
 
     laboratoryPatientList: "/laboratory-assistant/patient-list",
     laboratoryExamenList: "/laboratory-assistant/exams-list",
-    laboratoryExamenDetail: "/laboratory-assistant/exams-list/details",
-    laboratoryExamenHistories: "/laboratory-assistant/exams-history"
+    laboratoryExamenDetail: "/laboratory-assistant/exams-list/details/:id",
+    laboratoryExamenHistories: "/laboratory-assistant/exams-history",
+    laboratoryExamResultDetails: "/laboratory-assistant/exams-history/details"
 
 }
