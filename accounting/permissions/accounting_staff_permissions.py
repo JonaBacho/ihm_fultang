@@ -11,5 +11,5 @@ class AccountingStaffPermission(BasePermission):
         elif view.action in ["list", "create", "retrieve", "update", "partial_update"]:
             return user.is_authenticated and (user.userType == "Accountant" or user.role == "Cashier")
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
-            return user.is_authenticated
+            return user.is_authenticated and (user.userType == "Accountant" or user.role == "Cashier")
         return False

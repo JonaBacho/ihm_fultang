@@ -18,3 +18,4 @@ class AppointmentPermissions(BasePermission):
             return True
         elif user.role == "Doctor" and view.action != "destroy":
             return True
+        return False

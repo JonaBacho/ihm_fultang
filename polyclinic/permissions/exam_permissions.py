@@ -9,3 +9,4 @@ class ExamPermissions(permissions.BasePermission):
             return user.is_authenticated and (user.role in ["Admin"])
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
             return user.is_authenticated
+        return False

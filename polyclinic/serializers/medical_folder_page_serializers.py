@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from polyclinic.models import MedicalFolderPage, Prescription, ExamRequest, Consultation
+from polyclinic.models import MedicalFolderPage, Prescription, ExamRequest, Consultation, ExamResult
 from polyclinic.serializers.exam_request_serializers import ExamRequestSerializer
 from polyclinic.serializers.parameters_serializers import ParametersSerializer, ParametersCreateSerializer
 from django.utils.timezone import now
@@ -13,11 +13,13 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
     parameters = ParametersSerializer(required=False, many=False)
     prescriptions = serializers.SerializerMethodField()
     examRequests = serializers.SerializerMethodField()
+    examResults = serializers.SerializerMethodField()
 
 
     class Meta:
         model = MedicalFolderPage
-        fields = ["id", "pageNumber", "addDate", "nurseNote", "doctorNote", "diagnostic", "idMedicalFolder", "idMedicalStaff", "parameters", "prescriptions", "examRequests"]
+        fields = ["id", "pageNumber", "addDate", "nurseNote", "doctorNote", "diagnostic", "idMedicalFolder", "idMedicalStaff",
+                  "parameters", "prescriptions", "examRequests", "examResults"]
 
     def get_prescriptions(self, obj):
         # Récupérer toutes les prescriptions associées à cette page
@@ -36,6 +38,9 @@ class MedicalFolderPageSerializer(serializers.ModelSerializer):
             return ExamRequestSerializer(exam_requests, many=True).data
         else:
             return []
+
+    def get_examResults(self, obj):
+        return ExamResult.objects.filter(idMedicalFolderPage=obj).first()
 
 class MedicalFolderPageCreateSerializer(serializers.ModelSerializer):
     parameters = ParametersCreateSerializer(required=False)
