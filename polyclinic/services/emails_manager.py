@@ -29,7 +29,7 @@ class EmailManager:
         context = {
             'user': user,
             'reset_link': reset_link,
-            'role': user.get_role_display()
+            'role': user.role
         }
         cls._trigger_task.delay(
             "Création de compte - Hôpital [Nom]",
