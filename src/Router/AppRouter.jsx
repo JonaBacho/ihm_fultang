@@ -26,7 +26,7 @@ export function AppRoute()
     const ExamsList = React.lazy(async () => ({default: (await import("../Pages/Cashier/ExamsList.jsx")).ExamsList}));
     const Hospitalisations = React.lazy(async () => ({default: (await import("../Pages/Cashier/Hospitalisations.jsx")).Hospitalisations}));
     const FinancialReport = React.lazy(async () => ({default: (await import("../Pages/Cashier/FinancialReport.jsx")).FinancialReport}));
-    const HelpCenter= React.lazy(async () => ({default: (await import("../Pages/Cashier/HelpCenter.jsx")).HelpCenter})); 
+    const HelpCenter= React.lazy(async () => ({default: (await import("../GlobalComponents/HelpCenter.jsx")).HelpCenter})); 
     const AdminHomePage = React.lazy(async () => ({default: (await import("../Pages/AdminViews/AdminHomePage.jsx")).AdminHomePage}));
     const ReceptionistMedicalStaffsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/ReceptionistMedicalStaffs.jsx")).ReceptionistMedicalStaffs}));
     const ReceptionistAppointmentsPage = React.lazy(async () => ({default: (await import("../Pages/Receptionist/Appointments.jsx")).Appointments}));

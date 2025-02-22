@@ -56,13 +56,9 @@ export default function Exams() {
     setExams((prevExams) => {
       // Mettre à jour le statut de l'examen payé
       const updatedExams = prevExams.map((exam) =>
-        exam.id === examId ? { ...exam, status: "paid" } : exam
-      );
-  
-      // Filtrer pour enlever les examens avec le statut "paid"
-      const filteredExams = updatedExams.filter((exam) => exam.examStatus !== "paid");
-  
-      return filteredExams;
+        exam.id === examId ? { ...exam, examStatus: "paid" } : exam
+      );  
+      return updatedExams;
     });
   };
 
