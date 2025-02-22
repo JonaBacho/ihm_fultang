@@ -11,3 +11,9 @@ class ExamResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamResult
         fields = '__all__'
+
+
+class ExamResultCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExamResult
+        exclude = ('id',)

@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import ExamResult
 from polyclinic.permissions.exam_permissions import ExamPermissions
 from polyclinic.permissions.exam_result_permissions import ExamResultPermissions
-from polyclinic.serializers.exam_result_serializers import ExamResultSerializer
+from polyclinic.serializers.exam_result_serializers import ExamResultSerializer, ExamResultCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -106,7 +106,10 @@ class ExamResultViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        return ExamResultSerializer
+        if self.action in ["create", "partial_update", "update"]:
+            return ExamResultCreateSerializer
+        else:
+            return ExamResultSerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
