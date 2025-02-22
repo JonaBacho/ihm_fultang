@@ -3,7 +3,6 @@ from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
 import uuid
-from polyclinic.services.emails_manager import EmailManager
 # Create your models here.
 
 TYPEDOCTOR = [
@@ -191,37 +190,12 @@ class Consultation(models.Model):
         return f"{self.idPatient.__str__()} par {self.idMedicalStaffGiver.__str__()}"
 
     def save(self, *args, **kwargs):
-        is_new = self._state.adding
         giverRole = self.idMedicalStaffGiver.role
         consultation_type = ConsultationType.objects.filter(typeDoctor=giverRole).first()
         if consultation_type:
             self.idConsultationType = consultation_type
             self.consultationPrice = consultation_type.price
         super().save(*args, **kwargs)
-
-        if is_new:
-            # Notification au médecin
-            action_details = {
-                'type': 'Nouvelle consultation',
-                'description': f"Patient : {self.idPatient.lastName}",
-                'link': f"/consultations/{self.id}"
-            }
-            EmailManager.send_staff_action_notification(
-                self.idMedicalStaffGiver,
-                action_details
-            )
-
-            # Notification au patient
-            patient_action_details = {
-                'type': 'Consultation programmée',
-                'description': f"Médecin : Dr {self.idMedicalStaffGiver.username}",
-                'link': f"/patients/{self.idPatient.id}/consultations"
-            }
-            EmailManager.send_patient_action_notification(
-                self.idPatient,
-                patient_action_details,
-                self.idMedicalStaffSender
-            )
 
 
 class MedicalFolder(models.Model):

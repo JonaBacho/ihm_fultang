@@ -101,7 +101,6 @@ class UserProfileView(APIView):
     def get(self, request):
         user_instance = request.user
         # Retourner les informations de l'utilisateur connecté
-        print(user_instance.is_authenticated)
         user_data = {
             "id": user_instance.id,
             "username": user_instance.username,
