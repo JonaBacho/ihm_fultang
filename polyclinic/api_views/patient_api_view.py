@@ -103,7 +103,8 @@ auth_header_param = openapi.Parameter(
 )
 class PatientViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, PatientPermission]
+    #permission_classes = [IsAuthenticated, PatientPermission]
+    permission_classes = [IsAuthenticated]
     #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 

@@ -101,7 +101,8 @@ auth_header_param = openapi.Parameter(
 )
 class MedicalFolderViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, MedicalFolderPermission]
+    #permission_classes = [IsAuthenticated, MedicalFolderPermission]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):

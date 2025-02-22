@@ -104,7 +104,8 @@ auth_header_param = openapi.Parameter(
 )
 class ConsultationViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, ConsultationPermissions]
+    #permission_classes = [IsAuthenticated, ConsultationPermissions]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
