@@ -2,6 +2,7 @@ import { FaFlag, FaBell, FaEnvelope, FaUser, FaCog, FaSignOutAlt } from 'react-i
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Tooltip} from "antd";
 import PropTypes from "prop-types";
+import userIcon from "../../assets/userIcon.png";
 
 
 export function NurseNavBar({children})
@@ -18,6 +19,9 @@ export function NurseNavBar({children})
     const applyNavLinkBtnStyle = () => {
         return " w-12 h-10 border-2 bg-gray-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary text-secondary text-xl hover:text-white transition-all duration-300";
     }
+
+
+    const {userData} = useAuthentication();
 
 
 
@@ -58,6 +62,14 @@ export function NurseNavBar({children})
                                 className={" w-12 h-10 border-2 bg-red-500 flex justify-center items-center rounded-xl shadow-xl hover:bg-white text-white text-xl hover:text-red-500 transition-all duration-300"}>
                                 <FaSignOutAlt/>
                             </button>
+                        </Tooltip>
+
+                        <Tooltip placement={"top"} title={"Profile"}>
+                            <div className="ml-3 flex">
+                                <p className="font-bold text-secondary text-xl mt-2">{"Hello " +userData?.username + "!"}</p>
+                                <img src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
+
+                            </div>
                         </Tooltip>
                     </div>
                 </div>

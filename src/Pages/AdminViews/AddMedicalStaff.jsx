@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
 import {adminNavLink} from "./adminNavLink.js";
 import {AdminNavBar} from "./AdminNavBar.jsx";
-import joinOurStaffImage from "../../assets/medicalStaff.jpg";
+import joinOurStaffImage from "../../assets/regoignezNotreStaffMedical.png";
 import axiosInstance from "../../Utils/axiosInstance.js";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
