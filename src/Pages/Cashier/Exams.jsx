@@ -4,42 +4,42 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 
 
 const mockExams = [
-  {
-    id: 1,
-    addDate: "2025-02-14",
-    examType: "Scanner thoracique",
-    examStatus: "pending",
-    patientStatus: "Stable",
-    notes: "Patient présente une légère toux",
-    idExam: 101,
-    idMedicalFolderPage: 201,
-    idPatient: 301,
-    idMedicalStaff: 401
-  },
-  {
-    id: 2,
-    addDate: "2025-02-14",
-    examType: "IRM cérébrale",
-    examStatus: "paid",
-    patientStatus: "Critique",
-    notes: "Suspicion d’AVC",
-    idExam: 102,
-    idMedicalFolderPage: 202,
-    idPatient: 302,
-    idMedicalStaff: 402
-  },
-  {
-    id: 3,
-    addDate: "2025-02-14",
-    examType: "Radiographie pulmonaire",
-    examStatus: "pending",
-    patientStatus: "Stable",
-    notes: "Examen de contrôle post-opératoire",
-    idExam: 103,
-    idMedicalFolderPage: 203,
-    idPatient: 303,
-    idMedicalStaff: 403
-  }
+  // {
+  //   id: 1,
+  //   addDate: "2025-02-14",
+  //   examType: "Scanner thoracique",
+  //   examStatus: "pending",
+  //   patientStatus: "Stable",
+  //   notes: "Patient présente une légère toux",
+  //   idExam: 101,
+  //   idMedicalFolderPage: 201,
+  //   idPatient: 301,
+  //   idMedicalStaff: 401
+  // },
+  // {
+  //   id: 2,
+  //   addDate: "2025-02-14",
+  //   examType: "IRM cérébrale",
+  //   examStatus: "paid",
+  //   patientStatus: "Critique",
+  //   notes: "Suspicion d’AVC",
+  //   idExam: 102,
+  //   idMedicalFolderPage: 202,
+  //   idPatient: 302,
+  //   idMedicalStaff: 402
+  // },
+  // {
+  //   id: 3,
+  //   addDate: "2025-02-14",
+  //   examType: "Radiographie pulmonaire",
+  //   examStatus: "pending",
+  //   patientStatus: "Stable",
+  //   notes: "Examen de contrôle post-opératoire",
+  //   idExam: 103,
+  //   idMedicalFolderPage: 203,
+  //   idPatient: 303,
+  //   idMedicalStaff: 403
+  // }
 ]
 
 const mockPatient = []
