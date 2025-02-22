@@ -1,18 +1,12 @@
-import {FaCog, FaEnvelope, FaSignOutAlt} from "react-icons/fa";
-import {Tooltip} from "antd";
-import {useAuthentication} from "../../Utils/Provider.jsx";
-import userIcon from "../../assets/userIcon.png"
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import ChatWindow from "../../GlobalComponents/ChatWindow.jsx";
 
 export function HelpCenter () {
 
-    const {logout , userData} = useAuthentication();
+
     const navigate = useNavigate(); 
 
-    const applyNavLinkBtnStyle = () => {
-        return " w-12 h-10 mt-1 border-2 bg-gray-100 flex justify-center items-center rounded-xl shadow-xl hover:bg-secondary text-secondary text-xl hover:text-white transition-all duration-300";
-    }
+
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -22,32 +16,6 @@ export function HelpCenter () {
                     <h1 className="ml-3 text-4xl text-secondary mt-3.5 font-bold">
                         Help Center
                     </h1>
-                    <div className="flex gap-3 mt-3.5 mb-4 mr-5">
-                        <Tooltip placement={"top"} title={"settings"}>
-                            <button className={applyNavLinkBtnStyle()}>
-                                <FaCog/>
-                            </button>
-
-                        </Tooltip>
-
-                        <Tooltip placement={"top"} title={"Messages"}>
-                            <button className={applyNavLinkBtnStyle()}>
-                                <FaEnvelope/>
-                            </button>
-                        </Tooltip>
-                        <Tooltip placement={"top"} title={"LogOut"}>
-                            <button
-                                onClick={() => {logout()}}
-                                className={" w-12 h-10 mt-1 border-2 bg-red-400 flex justify-center items-center rounded-xl shadow-xl hover:bg-white text-white text-xl hover:text-red-500 transition-all duration-300"}>
-                                <FaSignOutAlt/>
-                            </button>
-                        </Tooltip>
-                        <Tooltip placement={"top"} title={"Profile"}>
-                            <button className="ml-3 flex">
-                                <img src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
-                            </button>
-                        </Tooltip>
-                    </div>
                 </div>
             </div>
             <div className="min-h-screen bg-gray-100">
@@ -71,7 +39,7 @@ export function HelpCenter () {
             d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        Retour
+        Back
       </button>
 
 
@@ -153,14 +121,10 @@ export function HelpCenter () {
             </div>
 
             {/* Footer */}
-            <footer className="bg-gray-800 text-white mt-8 py-6">
+            <footer className="bg-primary-end text-white mt-8 py-6">
                 <div className="container mx-auto px-6">
                     <div className="flex justify-between items-center">
                     <p>© 2025 Fultang Clinic. All rights reserved.</p>
-                    <div className="flex space-x-4">
-                        <a href="#" className="hover:text-blue-500">Privacy Policy</a>
-                        <a href="#" className="hover:text-blue-500">Terms of Use</a>
-                    </div>
                     </div>
                 </div>
             </footer>
