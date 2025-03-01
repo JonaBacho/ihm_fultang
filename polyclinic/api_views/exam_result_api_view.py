@@ -96,8 +96,7 @@ auth_header_param = openapi.Parameter(
 )
 class ExamResultViewSet(ModelViewSet):
 
-    #permission_classes = [IsAuthenticated, ExamResultPermissions]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ExamResultPermissions]
     #pagination_class = CustomPagination
     parser_classes = (MultiPartParser, FormParser)
 

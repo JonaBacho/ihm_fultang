@@ -103,8 +103,8 @@ auth_header_param = openapi.Parameter(
 )
 class BillViewSet(ModelViewSet):
 
-    #permission_classes = [IsAuthenticated, BillPermissions]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, BillPermissions]
+    #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
