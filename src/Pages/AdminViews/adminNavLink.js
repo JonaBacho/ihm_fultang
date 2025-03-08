@@ -37,7 +37,7 @@ export const adminNavLink = [
         icon: FiList,
         link: appRoutes.adminConsultationListPage,
     },
-    {
+   /* {
         name: 'Appointments',
         icon: Calendar,
         link: appRoutes.adminAppointmentsListPage,
@@ -56,7 +56,7 @@ export const adminNavLink = [
         name: 'Financial Report',
         icon: FaFileInvoiceDollar,
         link: appRoutes.adminFinancialReportsPage,
-    },
+    },*/
     {
         name: 'Hospital Rooms',
         icon: BedDouble,

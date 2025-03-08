@@ -19,9 +19,10 @@ import {useCalculateAge} from "../../Utils/compute.js";
 import {formatDateOnly, formatDateOnlyWithoutWeekDay, formatDateToTime} from "../../Utils/formatDateMethods.js";
 import MedicalParametersCard from "./DoctorComponents/MedicalParametersCard.jsx";
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {GiMedicines} from "react-icons/gi";
 import {FaEdit} from "react-icons/fa";
+import EditConsultationModal from "./DoctorComponents/EditConsultationModal.jsx";
 
 export  function ConsultationHistoryDetails() {
 
@@ -89,6 +90,7 @@ export  function ConsultationHistoryDetails() {
 
 
     const navigate = useNavigate();
+    const [canOpenEditConsultationModal, setCanOpenEditConsultationModal] = useState(false);
 
 
     return (
@@ -153,7 +155,7 @@ export  function ConsultationHistoryDetails() {
                         <div className="flex gap-2">
                             <div className="flex items-center">
                                 <button
-                                    onClick={() => {window.print();}}
+                                    onClick={() => {setCanOpenEditConsultationModal(true)}}
                                     className="bg-secondary font-bold duration-300  text-white px-4 py-2 rounded-md hover:bg-primary-end hover:text-white transition-all mr-2">
                                     <FaEdit size={20} className="inline mr-2"/>
                                     Edit Consultation
@@ -254,7 +256,7 @@ export  function ConsultationHistoryDetails() {
                                                 <Pill className="h-6 w-6 text-blue-500 mt-1" />
                                                 <div className="ml-2">
                                                     <span className="text-sm text-gray-500">Medicine</span>
-                                                    <p className="font-medium">{drugInfo?.medication}</p>
+                                                    <p className="font-medium">{drugInfo?.medicament?.name}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-start">
@@ -266,7 +268,7 @@ export  function ConsultationHistoryDetails() {
                                                 </svg>
                                                 <div className="ml-2">
                                                     <span className="text-sm text-gray-500">Dosage</span>
-                                                    <p className="font-medium">{drugInfo?.dosage && drugInfo?.dosage + " mg"}</p>
+                                                    <p className="font-medium">{drugInfo?.dosage ? drugInfo?.dosage : "not specified"}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-start">
@@ -280,7 +282,7 @@ export  function ConsultationHistoryDetails() {
                                                 <Calendar className="h-6 w-6 text-blue-500 mt-1" />
                                                 <div className="ml-2">
                                                     <span className="text-sm text-gray-500">Duration</span>
-                                                    <p className="font-medium">{drugInfo?.duration && drugInfo?.duration + " day(s)"}</p>
+                                                    <p className="font-medium">{drugInfo?.duration ? drugInfo?.duration : "not specified"}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -355,6 +357,13 @@ export  function ConsultationHistoryDetails() {
                 </div>
             </div>
         </div>
+
+            <EditConsultationModal
+                isOpen={canOpenEditConsultationModal}
+                onClose={() => setCanOpenEditConsultationModal(false)}
+                consultation={consultation}
+                onSave={()=>{alert("save")}}
+            />
         </CustomDashboard>
     )
 }

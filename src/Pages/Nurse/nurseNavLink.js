@@ -15,7 +15,7 @@ export const nurseNavLink =
         icon: FaUserMd,
         link: appRoutes.nurseMedicalStaffsPage,
     },
-    {
+   /* {
         name: 'Appointments',
         icon: Calendar,
         link: appRoutes.appointmentsPage,

@@ -11,6 +11,7 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 import {ViewPatientDetailsModal} from "../Receptionist/ViewPatientDetailsModal.jsx";
 import Loader from "../../GlobalComponents/Loader.jsx";
 import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
+import noPatientImage from "../../assets/noPatients.png";
 
 
 
@@ -170,40 +171,51 @@ export function Nurse()
                             </div>
                         )
                         : ( errorStatus ? <ServerErrorPage errorStatus={errorStatus} message={errorMessage}/> :
-                            (<>
-                                <div className="ml-5 mr-5 mt-2 border-2  rounded-lg shadow-lg  p-2">
-                                    <PatientList patients={patientList}
-                                                 setCanOpenViewPatientDetailModal={setCanOpenViewPatientDetailsModal}
-                                                 setSelectedPatient={setSelectedPatient}/>
-                                </div>
+                            (patientList.length >0 ? (
+                                    <>
+                                        <div className="ml-5 mr-5 mt-2 border-2  rounded-lg shadow-lg  p-2">
+                                            <PatientList patients={patientList}
+                                                         setCanOpenViewPatientDetailModal={setCanOpenViewPatientDetailsModal}
+                                                         setSelectedPatient={setSelectedPatient}/>
+                                        </div>
 
-                                {/* Pagination content */}
-                                <div className="justify-center  flex mt-6 mb-4">
-                                    <div className="flex gap-4">
-                                        <Tooltip placement={"left"} title={"previous slide"}>
-                                            <button
-                                                onClick={async () => {
-                                                    await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")
-                                                }}
-                                                className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                                <FaArrowLeft/>
-                                            </button>
-                                        </Tooltip>
-                                        <p className="text-secondary text-xl font-bold mt-6">{`Page ${actualPageNumber} of ${computeNumberOfSlideToRender()}`}</p>
-                                        <Tooltip placement={"right"} title={"next slide"}>
-                                            <button
-                                                onClick={async () => {
-                                                    await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")
-                                                }}
-                                                className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
-                                                <FaArrowRight/>
-                                            </button>
-                                        </Tooltip>
+                                        {/* Pagination content */}
+                                        <div className="justify-center  flex mt-6 mb-4">
+                                            <div className="flex gap-4">
+                                                <Tooltip placement={"left"} title={"previous slide"}>
+                                                    <button
+                                                        onClick={async () => {
+                                                            await fetchNextOrPreviousPatientList(previousUrlForRenderPatientList), updateActualPageNumber("prev")
+                                                        }}
+                                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                        <FaArrowLeft/>
+                                                    </button>
+                                                </Tooltip>
+                                                <p className="text-secondary text-xl font-bold mt-6">{`Page ${actualPageNumber} of ${computeNumberOfSlideToRender()}`}</p>
+                                                <Tooltip placement={"right"} title={"next slide"}>
+                                                    <button
+                                                        onClick={async () => {
+                                                            await fetchNextOrPreviousPatientList(nexUrlForRenderPatientList), updateActualPageNumber("next")
+                                                        }}
+                                                        className="w-14 h-14 border-2 rounded-lg hover:bg-secondary text-xl  text-secondary hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                        <FaArrowRight/>
+                                                    </button>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                    </>
+                                ): (
+                                    <div
+                                        className="flex flex-col items-center justify-center py-12 px-4 text-center mt-7">
+                                        <img src={noPatientImage} alt={"image"} className="w-36 h-36 rounded-lg"/>
+                                        <h3 className="font-bold text-2xl mt-4 mb-2 text-gray-800">No patients recorded</h3>
+                                        <p className="text-gray-600 mb-6 max-w-xl text-md font-medium">
+                                            There are currently no patients registered in the system.
+                                        </p>
                                     </div>
-                                </div>
-                            </>
-                        )
-                        )}
+                                )
+                            )
+                            )}
                     </div>
                 </NurseNavBar>
 
@@ -211,7 +223,9 @@ export function Nurse()
                 {/*Modal Content*/}
                 <ViewPatientDetailsModal
                     isOpen={canOpenViewPatientDetailsModal} patient={selectedPatient}
-                    onClose={() => {setCanOpenViewPatientDetailsModal(false)}}
+                    onClose={() => {
+                        setCanOpenViewPatientDetailsModal(false)
+                    }}
                 />
             </DashBoard>
         </>

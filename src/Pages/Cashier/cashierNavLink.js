@@ -19,11 +19,11 @@ export const cashierNavLink =
         link: appRoutes.examsList,
     },
     
-    {
-        name: 'Hospitalisations List',
-        icon: FaHospital,
-        link: appRoutes.hospitalisations,
-    },
+    // {
+    //     name: 'Hospitalisations List',
+    //     icon: FaHospital,
+    //     link: appRoutes.hospitalisations,
+    // },
     {
         name: 'Financial History',
         icon: FaHistory,
@@ -37,7 +37,7 @@ export const cashierNavLink =
     {
         name: 'Help Center',
         icon: MdHelpOutline,
-        link: appRoutes.helpCenter,
+        link: appRoutes.helpCenterPage,
     }
 
 ]

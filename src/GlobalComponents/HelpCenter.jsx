@@ -3,7 +3,7 @@ import {Tooltip} from "antd";
 import {useAuthentication} from "../Utils/Provider.jsx";
 import userIcon from "../assets/userIcon.png"
 import { useNavigate } from "react-router-dom"; 
-
+import ChatWindow from "./ChatWindow.jsx";
 
 export function HelpCenter () {
 
@@ -168,6 +168,7 @@ export function HelpCenter () {
             </footer>
 
     </div>
+    <ChatWindow />
     </div>
 )
 }

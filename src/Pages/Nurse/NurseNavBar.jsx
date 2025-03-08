@@ -2,6 +2,7 @@ import { FaFlag, FaBell, FaEnvelope, FaUser, FaCog, FaSignOutAlt } from 'react-i
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {Tooltip} from "antd";
 import PropTypes from "prop-types";
+import userIcon from "../../assets/userIcon.png";
 
 
 export function NurseNavBar({children})
@@ -20,6 +21,9 @@ export function NurseNavBar({children})
     }
 
 
+    const {userData} = useAuthentication();
+
+
 
 
     return (
@@ -30,6 +34,7 @@ export function NurseNavBar({children})
                         <span>Nurse</span>
                     </div>
                     <div className="flex gap-2 mt-5 mb-4 mr-5">
+                        {/*
                         <button className={applyNavLinkBtnStyle()}>
                             <FaFlag/>
                         </button>
@@ -48,7 +53,7 @@ export function NurseNavBar({children})
                             <button className={applyNavLinkBtnStyle()}>
                                 <FaUser/>
                             </button>
-                        </Tooltip>
+                        </Tooltip>*/}
                         <Tooltip placement={"top"} title={"LogOut"}>
                             <button
                                 onClick={() => {
@@ -57,6 +62,14 @@ export function NurseNavBar({children})
                                 className={" w-12 h-10 border-2 bg-red-500 flex justify-center items-center rounded-xl shadow-xl hover:bg-white text-white text-xl hover:text-red-500 transition-all duration-300"}>
                                 <FaSignOutAlt/>
                             </button>
+                        </Tooltip>
+
+                        <Tooltip placement={"top"} title={"Profile"}>
+                            <div className="ml-3 flex">
+                                <p className="font-bold text-secondary text-xl mt-2">{"Hello " +userData?.username + "!"}</p>
+                                <img src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
+
+                            </div>
                         </Tooltip>
                     </div>
                 </div>
