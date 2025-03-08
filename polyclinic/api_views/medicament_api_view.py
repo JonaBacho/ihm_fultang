@@ -112,3 +112,4 @@ class MedicamentViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         serializer.save()
+

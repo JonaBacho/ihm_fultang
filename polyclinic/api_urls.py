@@ -45,3 +45,5 @@ router.register(r'room', RoomViewSet, basename='room')
 
 urlpatterns = [path('chatbot/', ChatbotView.as_view(), name='chatbot'),]
 urlpatterns += router.urls
+
+

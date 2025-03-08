@@ -266,6 +266,8 @@ class ExamResult(models.Model):
 # ======================================
 
 
+
+
 class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=1)
