@@ -42,13 +42,13 @@ def calculate_balance(prefixes):
     items = []
     for prefix in prefixes:
         item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "amount":0}
-        # balance[prefix] = {"soldeReel": 0, "soldePrevu": 0}
+        # balance[prefix] = {"soldeReel": 0, "soldeReel": 0}
         account_states = AccountState.objects.filter(account__number__startswith=prefix)
         for state in account_states:
-            item["amount"] += state.soldePrevu
-            # item["soldePrevu"] += state.soldePrevu
+            item["amount"] += state.soldeReel
+            # item["soldeReel"] += state.soldeReel
             # total['soldeReel'] += state.soldeReel
-            total += state.soldePrevu
+            total += state.soldeReel
         items.append(item)
     balance["items"] = items
     balance["total"] = total
@@ -60,16 +60,16 @@ def calculate_treasury(prefixes, type):
     items = []
     for prefix in prefixes:
         item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Compte incomu"), "amount": 0}
-        # treasury[prefix] = {"soldeReel": 0, "soldePrevu": 0}
+        # treasury[prefix] = {"soldeReel": 0, "soldeReel": 0}
         if type == "active":
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="credit")
         else:
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="debit")
         for state in account_states:
             # item["amount"] += state.soldeReel
-            item["amount"] += state.soldePrevu
+            item["amount"] += state.soldeReel
             # total['soldeReel'] += state.soldeReel
-            total += state.soldePrevu
+            total += state.soldeReel
         items.append(item)
     treasury['items'] = items
     treasury['total'] = total
@@ -87,9 +87,9 @@ def calculate_circulant_balance(prefixes, type=None):
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="null")
         for state in account_states:
             # item["soldeReel"] += state.soldeReel
-            item["amount"] += state.soldePrevu
+            item["amount"] += state.soldeReel
             # total['soldeReel'] += state.soldeReel
-            total['amount'] += state.soldePrevu
+            total['amount'] += state.soldeReel
         items.append(item)
     balance['items'] = items
     balance['total'] = total

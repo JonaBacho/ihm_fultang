@@ -165,7 +165,7 @@ class BudgetExerciseViewSet(ModelViewSet):
                         "total":passive_treasury['total']
                     },
                     {
-                        "data":[
+                        "parameters":[
                             {
                                 "item":"Total active",
                                 "value":active
@@ -239,51 +239,66 @@ class BudgetExerciseViewSet(ModelViewSet):
         financial_charges = calculate_balance(financial_charges_prefixes)
         taxes = calculate_balance(taxes_prefixes)
         net_result = working_result - financial_charges['total'] - taxes['total']
-        return Response({
-                "Charges": charges, 
-                "Produits": products,
-                "MargeBrute": gross_margin,
-                "ExcedentBrutDExploitation": gross_operating_surplus,
-                "ResultatDExploitation": working_result,
-                "ResultatNet": net_result
+        return Response(
+            {
+                "data":[
+                    {
+                        "category":"CHARGES",
+                        "items":charges['items'],
+                        "total":charges['total']
+                    },
+                    {
+                        'category':'PRODUCTS',
+                        "items":products['items'],
+                        "total":products['total']
+                    },
+                    {
+                        "parameters":[
+                            {
+                                "item":"Sales Figure",
+                                "value":sales_figure['total']
+                            },
+                            {
+                                "item":"Sold Goods",
+                                "value":sold_goods['total']
+                            },
+                            {
+                                "item":"Gross Margin",
+                                "value":gross_margin
+                            },
+                            {
+                                "item":"Working Charges",
+                                "value":working_charges['total']
+                            },
+                            {
+                                "item":"Gross Operating Surplus",
+                                "value":gross_operating_surplus
+                            },
+                            {
+                                "item":"Depreciation Allocations",
+                                "value":depreciation_allocations['total']
+                            },
+                            {
+                                "item":"Provision Allocations",
+                                "value":provision_allocations['total']
+                            },
+                            {
+                                "item":"Working Result",
+                                "value":working_result
+                            },
+                            {
+                                "item":"Financial Charges",
+                                "value":financial_charges['total']
+                            },
+                            {
+                                "item":"Taxes",
+                                "value":taxes['total']
+                            }
+                        ]
+                    }
+                ]
             }
         )
-        
-    @swagger_auto_schema(
-        method='get',
-        operation_summary="Calculer l'état des flux de trésorerie",
-        operation_description="Retourne l'état de la trésorerie",
-        manual_parameters=[auth_header_param],
-        tags=tags
-    )
-    @action(detail=False, methods=['get'])
-    def get_treasury_flow(self, request):
-        operating_cash_inflows = calculate_balance(operating_cash_inflows_prefixes)
-        operating_cash_outflows = calculate_balance(operating_cash_outflows_prefixes)
-        financing_cash_inflows = calculate_balance(financing_cash_inflows_prefixes)
-        financing_cash_outflows = calculate_balance(financing_cash_outflows_prefixes)
-        investment_cash_inflows = calculate_balance(investment_cash_inflows_prefixes)
-        investment_cash_outflows = calculate_balance(investment_cash_outflows_prefixes)
-        operating_treasury_flow = operating_cash_inflows['total'] - operating_cash_outflows['total']
-        financing_treasury_flow = financing_cash_inflows['total'] - financing_cash_outflows['total']
-        investment_treasury_flow = investment_cash_inflows['total'] - investment_cash_outflows['total']
-        return Response({
-            "ActivitesDExploitation":{
-                "Encaissements": operating_cash_inflows,
-                "Decaissements": operating_cash_outflows,
-                "FluxDeTresorerieDExploitation": operating_treasury_flow
-            },
-            "ActivitesDInvestissement":{
-                "Encaissements": investment_cash_inflows,
-                "Decaissements": investment_cash_outflows,
-                "FluxDeTresorerieDInvestissement": investment_treasury_flow
-            },
-            "ActivitesDeFinancement":{
-                "Encaissements": financing_cash_inflows,
-                "Decaissements": financing_cash_outflows,
-                "FluxDeTresorerieDeFinancement": financing_treasury_flow
-            }
-        })
         
     @swagger_auto_schema(
         method='get',
