@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 from django.utils.timezone import now, timedelta
+from django.db import models
 
 tags = ["patient"]
 auth_header_param = openapi.Parameter(
@@ -268,3 +269,42 @@ class PatientViewSet(ModelViewSet):
             return Response(serializer.data, status.HTTP_200_OK)
         except MedicalStaff.DoesNotExist:
             return Response({"details": "le docteur spécifé n'existe pas"}, status.HTTP_404_NOT_FOUND)
+
+
+
+    @swagger_auto_schema(
+        operation_description="Rechercher des patients par nom",
+        responses={
+            200: openapi.Response(description="Liste des patients correspondants", 
+                                schema=PatientSerializer(many=True)),
+            400: openapi.Response(description="Paramètre de recherche manquant"),
+        },
+        manual_parameters=[
+            openapi.Parameter('query', openapi.IN_QUERY, description="Texte de recherche", 
+                            type=openapi.TYPE_STRING, required=True),
+            auth_header_param
+        ],
+        tags=tags
+        )
+    @action(methods=['get'], detail=False, url_path='search')
+    def search_patients(self, request):
+            query = request.query_params.get('query', '')
+            if not query:
+                return Response({'details': "Un terme de recherche est requis"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+            
+            # Recherche dans firstName ou lastName
+            patients = Patient.objects.filter(
+                models.Q(firstName__icontains=query) | 
+                models.Q(lastName__icontains=query)
+            )
+            
+            # Utiliser le paginateur de la classe
+            page = self.paginate_queryset(patients)
+            if page is not None:
+                serializer = PatientSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            
+            # Si pas de pagination
+            serializer = PatientSerializer(patients, many=True)
+            return Response(serializer.data)
