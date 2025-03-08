@@ -45,3 +45,24 @@ router.register(r'room', RoomViewSet, basename='room')
 
 urlpatterns = [path('chatbot/', ChatbotView.as_view(), name='chatbot'),]
 urlpatterns += router.urls
+
+
+
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from polyclinic.views import (
+    PharmacyCategoryViewSet,
+    PharmacyProductViewSet,
+    PharmacyInventoryMovementViewSet
+)
+
+# Create a router for our pharmacy-related endpoints
+pharmacy_router = DefaultRouter()
+pharmacy_router.register(r'categories', PharmacyCategoryViewSet)
+pharmacy_router.register(r'products', PharmacyProductViewSet)
+pharmacy_router.register(r'inventory-movements', PharmacyInventoryMovementViewSet)
+
+# URLs to include in your main urls.py
+urlpatterns = [
+    path('pharmacy/', include(pharmacy_router.urls)),
+]

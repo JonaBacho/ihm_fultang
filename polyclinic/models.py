@@ -266,6 +266,93 @@ class ExamResult(models.Model):
 # ======================================
 
 
+class PharmacyCategory(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    icon = models.CharField(max_length=50, blank=True, null=True)  # For UI display
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+class PharmacyProduct(models.Model):
+    STATUS_CHOICES = [
+        ('available', 'Available'),
+        ('out_of_stock', 'Out of Stock'),
+        ('discontinued', 'Discontinued'),
+        ('expiring_soon', 'Expiring Soon'),
+    ]
+
+    category = models.ForeignKey('PharmacyCategory', on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=100)
+    generic_name = models.CharField(max_length=100, blank=True, null=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    price = models.FloatField(default=0.0)
+    current_stock = models.IntegerField(default=0)
+    min_stock_level = models.IntegerField(default=5)  # For low stock alerts
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
+    requires_prescription = models.BooleanField(default=False)
+    expiry_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # Additional fields for medications specifically
+    is_medication = models.BooleanField(default=True)
+    dosage = models.CharField(max_length=100, blank=True, null=True)  # e.g., "500mg"
+    form = models.CharField(max_length=50, blank=True, null=True)  # e.g., "tablet", "liquid", etc.
+    
+    # Barcode for inventory management
+    barcode = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    
+    def __str__(self):
+        return f"{self.name} ({self.category.name})"
+    
+    def is_low_stock(self):
+        return self.current_stock <= self.min_stock_level
+
+class PharmacyInventoryMovement(models.Model):
+    MOVEMENT_TYPES = [
+        ('purchase', 'Purchase'),
+        ('sale', 'Sale'),
+        ('return', 'Return'),
+        ('adjustment', 'Adjustment'),
+        ('expired', 'Expired'),
+    ]
+    
+    product = models.ForeignKey('PharmacyProduct', on_delete=models.CASCADE, related_name='movements')
+    movement_type = models.CharField(max_length=20, choices=MOVEMENT_TYPES)
+    quantity = models.IntegerField()  # Positive for additions, negative for removals
+    unit_price = models.FloatField(default=0.0)
+    total_price = models.FloatField(default=0.0)
+    date = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+    
+    # Reference to related entities
+    prescription = models.ForeignKey('Prescription', on_delete=models.SET_NULL, null=True, blank=True)
+    bill = models.ForeignKey('Bill', on_delete=models.SET_NULL, null=True, blank=True)
+    staff = models.ForeignKey('authentication.MedicalStaff', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        movement = "added" if self.quantity > 0 else "removed"
+        return f"{abs(self.quantity)} of {self.product.name} {movement} on {self.date.strftime('%Y-%m-%d')}"
+    
+    def save(self, *args, **kwargs):
+        # Calculate total price if not provided
+        if not self.total_price:
+            self.total_price = self.quantity * self.unit_price
+            
+        # Update product stock
+        self.product.current_stock += self.quantity
+        self.product.save()
+        
+        super().save(*args, **kwargs)
+
+
+
+
 class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=1)

@@ -145,3 +145,5 @@ class PatientAccessViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'details': "id d'objet n'existe pas"}, status=status.HTTP_404_NOT_FOUND, content_type='application/json')
+    
+    
