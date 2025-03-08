@@ -234,26 +234,3 @@ class PharmacyProductViewSet(viewsets.ModelViewSet):
                 {"error": "Quantity must be a valid integer"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-class PharmacyInventoryMovementViewSet(viewsets.ModelViewSet):
-    queryset = PharmacyInventoryMovement.objects.all().order_by('-date')
-    serializer_class = PharmacyInventoryMovementSerializer
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    filterset_fields = ['product', 'movement_type', 'staff', 'date']
-    
-    @action(detail=False, methods=['get'])
-    def product_history(self, request):
-        """Get movement history for a specific product"""
-        product_id = request.query_params.get('product_id')
-        if not product_id:
-            return Response(
-                {"error": "Product ID is required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-            
-        movements = PharmacyInventoryMovement.objects.filter(
-            product_id=product_id
-        ).order_by('-date')
-        
-        serializer = self.get_serializer(movements, many=True)
-        return Response(serializer.data)
