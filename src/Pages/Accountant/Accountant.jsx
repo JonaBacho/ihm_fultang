@@ -1,13 +1,7 @@
 import { AccountantDashBoard } from "./Components/AccountantDashboard";
 import { AccountantNavLink } from "./AccountantNavLink";
 import { AccountantNavBar } from "./Components/AccountantNavBar";
-import {
-  Users,
-  DollarSign,
-  FileText,
-  Settings,
-  WalletCards,
-} from "lucide-react";
+import { DollarSign, FileText, WalletCards } from "lucide-react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
@@ -17,9 +11,9 @@ import axiosInstanceAccountant from "../../Utils/axiosInstanceAccountant";
 export function Accountant() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
-    totalInvoices: 0,
-    totalAccounts: 0,
-    totalFinancialOperations: 0,
+    totalInvoices: 56,
+    totalAccounts: 14,
+    totalFinancialOperations: 21,
   });
 
   // Fonction pour récupérer le nombre total de factures
