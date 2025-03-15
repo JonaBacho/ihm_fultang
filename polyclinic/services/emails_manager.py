@@ -35,7 +35,7 @@ class EmailManager:
             'role': user.role
         }
         cls._trigger_task.delay(
-            "Création de compte - Hôpital [Nom]",
+            "Création de compte - Hôpital Fultang",
             user.email,
             'staff_account_created',
             context
@@ -62,7 +62,7 @@ class EmailManager:
             'registration_date': now()
         }
         cls._trigger_task.delay(
-            "Bienvenue à l'hôpital [Nom]",
+            "Bienvenue à l'hôpital Fultang",
             patient.email,
             'patient_registered',
             context

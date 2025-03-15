@@ -8,6 +8,5 @@ from django.conf import settings
 @receiver(post_save, sender=MedicalStaff)
 def send_account_creation_email(sender, instance, created, **kwargs):
     if created:
-        print("")
-        reset_link = f"{settings.FRONTEND_URL}{reverse('password_reset')}"
+        reset_link = f"{settings.FRONTEND_URL}/{reverse('password_reset')}"
         EmailManager.send_staff_account_created(instance, reset_link)
