@@ -86,6 +86,6 @@ class EmailManager:
     @shared_task(bind=True, max_retries=3)
     def _trigger_task(self, subject, recipient, template_type, context):
         try:
-            return EmailManager._send_email(subject, recipient, self.TEMPLATES[template_type], context)
+            return EmailManager._send_email(subject, recipient, EmailManager.TEMPLATES[template_type], context)
         except Exception as e:
             self.retry(exc=e, countdown=30)
