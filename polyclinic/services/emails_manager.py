@@ -21,7 +21,7 @@ class EmailManager:
         msg = EmailMultiAlternatives(
             subject=subject,
             body=html_content,
-            from_email=settings.DEFAULT_FROM_EMAIL,
+            from_email=settings.EMAIL_HOST_USER,
             to=[recipient]
         )
         msg.attach_alternative(html_content, "text/html")
