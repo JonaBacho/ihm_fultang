@@ -7,7 +7,6 @@ from django.utils.timezone import now
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 from polyclinic.serializers.patient_serializers import PatientSerializer
 
-
 class EmailManager:
     TEMPLATES = {
         'staff_account_created': 'emails/staff_account_created.html',
@@ -85,8 +84,8 @@ class EmailManager:
         )
 
     @shared_task(bind=True, max_retries=3)
-    def _trigger_task(self, subject, recipient, template_type, context):
+    def trigger_task(self, subject, recipient, template_type, context):
         try:
-            return self._send_email(subject, recipient, self.TEMPLATES[template_type], context)
+            return EmailManager._send_email(subject, recipient, self.TEMPLATES[template_type], context)
         except Exception as e:
             self.retry(exc=e, countdown=30)

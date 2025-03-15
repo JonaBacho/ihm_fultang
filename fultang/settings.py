@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'corsheaders',
     'polyclinic',
@@ -157,10 +158,16 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
+    'TOKEN_OBTAIN_SERIALIZER': 'authentication.serializers.auth_serializers.CustomTokenObtainPairSerializer',
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'TOKEN_BLACKLIST_ENABLED': True
 }
 
 # Celery Settings
@@ -178,10 +185,10 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'webmail.gloswitch.com'
-EMAIL_HOST_USER = "fultang@gloswitch.com"
-EMAIL_HOST_PASSWORD = "VIlLeDubionSERJEstaRACyCERypHaUX,41,-"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "alerter@gloswitch.com"
+EMAIL_HOST_PASSWORD = "#,ONenTaiNCullicHNINtIlONiclOrSYME,62"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 
