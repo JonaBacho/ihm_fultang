@@ -108,14 +108,14 @@ class PatientAccess(models.Model):
 # classe qui definie le patient
 class Patient(models.Model):
     addDate = models.DateTimeField(auto_now_add=True, blank=True)
-    cniNumber = models.CharField(max_length=255, blank=True, default=" ")  # The patient CNI
+    cniNumber = models.CharField(max_length=255, blank=True, default=" ", null=True)  # The patient CNI
     firstName = models.CharField(max_length=255, blank=True)
     lastName = models.CharField(max_length=255, blank=True, default=" ")
     gender = models.CharField(max_length=255, choices=SEXE, default='Male', blank=True)  # The patient gender (M, F)
     phoneNumber = models.CharField(max_length=255, blank=True, default=" ")
     birthDate = models.DateField(blank=True, null=True, default="0000-00-00")
     address = models.CharField(max_length=255, blank=True, default=" ")
-    email = models.CharField(max_length=255, blank=True, default=" ")
+    email = models.CharField(max_length=255, blank=True, default=" ", null=True)
     condition = models.CharField(max_length=255, choices=CONDITION, default='NoCritical', null=True)
     service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=True)
     status = models.CharField(max_length=20, default="invalid")  # The patient status

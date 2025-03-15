@@ -61,12 +61,13 @@ class EmailManager:
             'patient': PatientSerializer(patient).data,
             'registration_date': now()
         }
-        cls._trigger_task.delay(
-            "Bienvenue à l'hôpital Fultang",
-            patient.email,
-            'patient_registered',
-            context
-        )
+        if patient.email: # si le patient à bien un mail
+            cls._trigger_task.delay(
+                "Bienvenue à l'hôpital Fultang",
+                patient.email,
+                'patient_registered',
+                context
+            )
 
     @classmethod
     def send_patient_action_notification(cls, patient, action_details, medical_staff):
@@ -76,12 +77,13 @@ class EmailManager:
             'medical_staff': MedicalStaffSerializer(medical_staff).data,
             'action_date': now()
         }
-        cls._trigger_task.delay(
-            f"Notification médicale - {action_details['type']}",
-            patient.email,
-            'patient_action_notification',
-            context
-        )
+        if patient.email:
+            cls._trigger_task.delay(
+                f"Notification médicale - {action_details['type']}",
+                patient.email,
+                'patient_action_notification',
+                context
+            )
 
     @shared_task(bind=True, max_retries=3)
     def _trigger_task(self, subject, recipient, template_type, context):
