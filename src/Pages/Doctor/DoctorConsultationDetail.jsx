@@ -439,6 +439,7 @@ export function DoctorConsultationDetails() {
     }
 
 
+
     async function handlePrescribeAppointment(e)
     {
         e.preventDefault();
@@ -467,6 +468,8 @@ export function DoctorConsultationDetails() {
             console.log(error);
         }
     }
+
+
 
 
     function closeConsultation()
@@ -540,7 +543,7 @@ export function DoctorConsultationDetails() {
                                 <p className="text-[17px] mt-0.5">Back To Consultation List</p>
                             </button>
                         </div>
-                        <div className="flex items-center">
+                         <div className="flex items-center">
                             <button
                                 onClick={() => {
                                     window.print()

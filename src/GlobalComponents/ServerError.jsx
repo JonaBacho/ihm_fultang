@@ -30,7 +30,7 @@ export default function ServerErrorPage({errorStatus, message}) {
                 </h1>
                 <div className="flex flex-col text-gray-600 w-2xl text-md mx-auto gap-3">
                     {message && <p>{message}</p>}
-                    <p>An internal error has occurred on our servers, try refreshing the page, or going back and attempting the action again.</p>
+                    {errorStatus === 503  || errorStatus===500 && <p>An internal error has occurred on our servers, try refreshing the page, or going back and attempting the action again.</p>}
                 </div>
 
                 <div className="mt-4 text-md max-w-4xl text-gray-500 inline-flex gap-2 mb-8">
