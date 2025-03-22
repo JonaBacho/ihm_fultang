@@ -287,16 +287,36 @@ class PatientViewSet(ModelViewSet):
         tags=tags
         )
     @action(methods=['get'], detail=False, url_path='search')
+    @swagger_auto_schema(
+    operation_description="Rechercher des patients par nom, prénom ou nom complet",
+    responses={
+        200: openapi.Response(description="Liste des patients correspondants", 
+                            schema=PatientSerializer(many=True)),
+        400: openapi.Response(description="Paramètre de recherche manquant"),
+    },
+    manual_parameters=[
+        openapi.Parameter('query', openapi.IN_QUERY, description="Texte de recherche (nom, prénom ou nom complet)", 
+                        type=openapi.TYPE_STRING, required=True),
+        auth_header_param
+    ],
+    tags=tags
+    )
+    @action(methods=['get'], detail=False, url_path='search')
     def search_patients(self, request):
             query = request.query_params.get('query', '')
             if not query:
                 return Response({'details': "Un terme de recherche est requis"}, 
                             status=status.HTTP_400_BAD_REQUEST)
             
-            # Recherche dans firstName ou lastName
-            patients = Patient.objects.filter(
+            # Recherche sur les champs individuels et sur les noms concaténés
+            patients = Patient.objects.annotate(
+                full_name1=models.functions.Concat('firstName', models.Value(' '), 'lastName'),
+                full_name2=models.functions.Concat('lastName', models.Value(' '), 'firstName')
+            ).filter(
                 models.Q(firstName__icontains=query) | 
-                models.Q(lastName__icontains=query)
+                models.Q(lastName__icontains=query) |
+                models.Q(full_name1__icontains=query) | 
+                models.Q(full_name2__icontains=query)
             )
             
             # Utiliser le paginateur de la classe
