@@ -14,6 +14,8 @@ export function formatDateToTime(dateString) {
   });
 }
 
+
+
 export function formatFullDateTime(dateString) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -33,6 +35,7 @@ export function formatDateOnly(dateString) {
     day: "numeric",
   }).format(new Date(dateString));
 }
+
 
 export function formatDateOnlyWithoutWeekDay(dateString) {
   return new Intl.DateTimeFormat("en-US", {

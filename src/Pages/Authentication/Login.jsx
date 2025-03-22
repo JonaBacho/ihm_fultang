@@ -146,8 +146,6 @@ export function LoginPage()
                                     <p className="text-red-500 text-md font-bold mt-6 ml-8 mr-2">{loginError}</p>)}
 
                             </div>
-
-
                             <form className="ml-4 mr-8 flex flex-col" onSubmit={handleLogin}>
                                 <div>
                                     <label className="text-md font-bold">
@@ -156,6 +154,7 @@ export function LoginPage()
                                     <div className="bg-gray-300 h-12 mt-2 rounded-lg mb-4">
                                         <input type="text"
                                                name="username"
+                                               autoComplete="username"
                                                onChange={(e) => {setUsername(e.target.value)}}
                                                className="w-full rounded-lg h-12 ml-2 mr-2 bg-gray-300 border-none outline:none focus:border-none ring-0 focus:outline-none focus:ring-0 autofill:shadow-[inset_0_0_0px_1000px_rgb(209,213,219)]"
                                                placeholder={"Enter your username here"}/>
@@ -167,6 +166,8 @@ export function LoginPage()
                                     </label>
                                     <div className="bg-gray-300 h-12 mt-2 rounded-lg flex items-center relative">
                                         <input
+                                            name="password"
+                                            autoComplete="current-password"
                                             type={showPassword ? "text" : "password"}
                                             onChange={(e) => {setPassword(e.target.value)}}
                                             className="w-full rounded-lg h-12 ml-2 mr-10 bg-gray-300 border-none outline:none ring-0 focus:outline-none focus:ring-0"
@@ -205,6 +206,7 @@ export function LoginPage()
                         </div>
                     </div>
                 </div>
+
             </div>
             {isLoading && (<Wait/>)}
         </>

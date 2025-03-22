@@ -3,7 +3,9 @@ import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 import {Bed, BedDouble, Calendar} from "lucide-react";
 import {FiList} from "react-icons/fi";
 import {GiMedicines} from "react-icons/gi";
-
+import { FaListAlt } from "react-icons/fa";
+import { MdMedicalServices } from "react-icons/md";
+import { FaPills } from "react-icons/fa";
 
 export const adminNavLink = [
     {
@@ -41,12 +43,42 @@ export const adminNavLink = [
         name: 'Appointments',
         icon: Calendar,
         link: appRoutes.adminAppointmentsListPage,
-    },
+    },*/
     {
         name: 'Exams',
-        icon: FaNotesMedical,
-        link: appRoutes.adminExamsListPage,
+        icon: MdMedicalServices,
+        subLinks: [
+            {
+                icon: FaListAlt,
+                name: "Exams List",
+                link: appRoutes.adminExamsListPage,
+            },
+            {
+                icon: FaPlus,
+                name: "Add An Exam",
+                link: appRoutes.addExam
+            }
+        ]
+        
     },
+    {
+        name: 'Drugs',
+        icon: FaPills,
+        subLinks: [
+            {
+                icon: FaListAlt,
+                name: "Drugs List",
+                link: appRoutes.adminDrugsListPage,
+            },
+            {
+                icon: FaPlus,
+                name: "Add A Drug",
+                link: appRoutes.addDrug
+            }
+        ]
+        
+    }
+    /*,
     {
         name: 'Medicine',
         icon: GiMedicines,
@@ -57,7 +89,7 @@ export const adminNavLink = [
         icon: FaFileInvoiceDollar,
         link: appRoutes.adminFinancialReportsPage,
     },*/
-    {
+    ,{
         name: 'Hospital Rooms',
         icon: BedDouble,
         link: appRoutes.adminHospitalRoomPage

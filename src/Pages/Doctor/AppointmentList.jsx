@@ -1,72 +1,36 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Search, Calendar,  ChevronLeft, ChevronRight } from "lucide-react"
 import AppointmentCard from "./DoctorComponents/AppointmentCard.jsx";
 import {useAuthentication} from "../../Utils/Provider.jsx";
 import {doctorNavLink} from "./lib/doctorNavLink.js";
 import {DoctorNavBar} from "./DoctorComponents/DoctorNavBar.jsx";
 import {CustomDashboard} from "../../GlobalComponents/CustomDashboard.jsx";
+import axiosInstance from "../../Utils/axiosInstance.js";
+import Loader from "../../GlobalComponents/Loader.jsx";
+import ServerErrorPage from "../../GlobalComponents/ServerError.jsx";
 
-// Données simulées
-const mockAppointments = [
-    {
-        id: 1,
-        patientName: "Sophie Martin",
-        patientId: "P12345",
-        date: "2024-02-15",
-        time: "09:00",
-        reason: "Suivi diabète",
-        status: "upcoming",
-        location: "Cabinet 3",
-        phoneNumber: "06 12 34 56 78",
-    },
-    {
-        id: 2,
-        patientName: "Lucas Bernard",
-        patientId: "P12346",
-        date: "2024-02-15",
-        time: "10:30",
-        reason: "Consultation grippe",
-        status: "upcoming",
-        location: "Cabinet 2",
-        phoneNumber: "06 23 45 67 89",
-    },
-    {
-        id: 3,
-        patientName: "Emma Petit",
-        patientId: "P12347",
-        date: "2024-01-28",
-        time: "14:00",
-        reason: "Contrôle annuel",
-        status: "completed",
-        location: "Cabinet 1",
-        phoneNumber: "06 34 56 78 90",
-    },
-    {
-        id: 4,
-        patientName: "Thomas Dubois",
-        patientId: "P12348",
-        date: "2024-01-27",
-        time: "11:15",
-        reason: "Suivi post-opératoire",
-        status: "completed",
-        location: "Cabinet 3",
-        phoneNumber: "06 45 67 89 01",
-    },
-]
+
 
 export  function AppointmentList() {
-    const [filter, setFilter] = useState("upcoming");
+    const [filter, setFilter] = useState("Pending");
     const [searchTerm, setSearchTerm] = useState("");
     const [dateFilter, setDateFilter] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const appointmentsPerPage = 5;
+    const [appointmentList, setAppointmentList] = useState([{}]);
 
-    const filteredAppointments = mockAppointments.filter((appointment) => {
-        const matchesFilter = filter === "all" || appointment.status === filter
-        const matchesSearch =
-            appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            appointment.patientId.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesDate = dateFilter ? appointment.date === dateFilter : true
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorStatus, setErrorStatus] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+
+
+
+
+    const filteredAppointments = appointmentList.filter((appointment) => {
+        const fullName = appointment?.idPatient?.firstName + " " + appointment?.idPatient?.lastName;
+        const matchesFilter = filter === "all" || appointment?.state === filter
+        const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesDate = dateFilter ? appointment?.atDate === dateFilter : true
         return matchesFilter && matchesSearch && matchesDate
     })
 
@@ -76,8 +40,43 @@ export  function AppointmentList() {
     const currentAppointments = filteredAppointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
-
     const {userData} = useAuthentication();
+
+
+
+    async function retrieveDoctorAppointments(doctorId)
+    {
+        setIsLoading(true);
+        try
+        {
+            const response  = await axiosInstance.get(`/appointment/doctor/${doctorId}/`);
+            setIsLoading(false);
+            if (response.status === 200)
+            {
+                setAppointmentList(response?.data);
+                console.log(response.data);
+                setErrorStatus(null);
+                setErrorMessage("");
+            }
+        }
+        catch (error)
+        {
+            setIsLoading(false);
+            console.log(error);
+            setErrorStatus(error.status);
+            setErrorMessage("Something went wrong when retrieving your appointments, please try again later !");
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        if(userData.id)
+        {
+            retrieveDoctorAppointments(userData.id);
+        }
+    }, [userData.id]);
 
 
 
@@ -92,15 +91,15 @@ export  function AppointmentList() {
                 <div className="mb-8 space-y-4">
                     <div className="flex flex-wrap gap-4">
                         <button
-                            onClick={() => setFilter("upcoming")}
-                            className={`px-4 py-2 rounded-md hover:bg-primary-start text-white duration-300 transition-all ${filter === "upcoming" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"} transition-colors`}
+                            onClick={() => setFilter("Pending")}
+                            className={`px-4 py-2 rounded-md hover:bg-primary-start text-white duration-300 transition-all ${filter === "Pending" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"} transition-colors`}
                         >
                             Upcoming appointments
                         </button>
                         <button
-                            onClick={() => setFilter("completed")}
+                            onClick={() => setFilter("Completed")}
                             className={`px-4 py-2 rounded-md hover:bg-primary-start duration-300 transition-all  hover:text-white ${
-                                filter === "completed" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                                filter === "Completed" ? "bg-primary-end text-white font-bold " : "bg-gray-100 text-gray-800 hover:bg-gray-200"
                             } transition-colors`}
                         >
                             Honored appointments
@@ -136,25 +135,54 @@ export  function AppointmentList() {
                 </div>
 
                 {/* Liste des rendez-vous */}
-                <div className="space-y-6">
-                    {currentAppointments.map((appointment) => (
-                        <AppointmentCard key={appointment.id} appointment={appointment} />
-                    ))}
-                </div>
+
+                    {isLoading ? (
+                        <div className="h-[400px] w-full flex justify-center items-center">
+                            <Loader size={"medium"} color={"primary-end"}/>
+                        </div>
+                    ) : (
+                        errorStatus ?  <ServerErrorPage errorStatus={errorStatus} message={errorMessage}/> :(
+                            filteredAppointments.length>0 ? (
+                                    <div className="space-y-6">
+                                        {currentAppointments.map((appointment) => (
+                                        <AppointmentCard key={appointment.id} appointment={appointment} />))}
+                                    </div>
+                            ) : (
+                                <div className="p-8 mt-24 flex items-center justify-center">
+                                    <div className="flex flex-col">
+                                        <Calendar className="h-16 w-16 text-primary-end mx-auto mb-4"/>
+                                        <h2 className="text-2xl font-bold text-gray-800 mb-2 mx-auto">No Appointments
+                                            </h2>
+                                        <p className="text-gray-600 mb-4 mx-auto">There are currently no appointments
+                                            scheduled.</p>
+                                        <button
+                                            className="px-4 hover:bg-primary-start  duration-300 mx-auto py-2 bg-primary-end text-white rounded-lg transition-all "
+                                            onClick={() => {
+                                                window.location.reload()
+                                            }}
+                                        >
+                                            Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        )
+                    )}
 
                 {/* Pagination */}
-                {filteredAppointments.length > appointmentsPerPage && (
+                {appointmentList.length > appointmentsPerPage && (
                     <div className="mt-8 flex justify-center">
-                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                             aria-label="Pagination">
                             <button
                                 onClick={() => paginate(currentPage - 1)}
                                 disabled={currentPage === 1}
                                 className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                             >
                                 <span className="sr-only">Précédent</span>
-                                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                                <ChevronLeft className="h-5 w-5" aria-hidden="true"/>
                             </button>
-                            {Array.from({ length: Math.ceil(filteredAppointments.length / appointmentsPerPage) }).map((_, index) => (
+                            {Array.from({length: Math.ceil(appointmentList.length / appointmentsPerPage) }).map((_, index) => (
                                 <button
                                     key={index}
                                     onClick={() => paginate(index + 1)}
