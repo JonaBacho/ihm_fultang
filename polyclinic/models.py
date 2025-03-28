@@ -300,7 +300,7 @@ class PolyclinicProduct(models.Model):
     price = models.FloatField(default=0.0)
     current_stock = models.IntegerField(default=0)
     min_stock_level = models.IntegerField(default=5)  # For low stock alerts
-    status = models.CharField(max_length=20, choices=STATUS_PRODUCT_CHOICES, default='available')
+    status = models.CharField(max_length=20, choices=STATUS_PRODUCT_CHOICES, default='Available')
     requires_prescription = models.BooleanField(default=False)
     expiry_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -352,20 +352,6 @@ class PolyclinicInventoryMovement(models.Model):
         self.product.save()
 
         super().save(*args, **kwargs)
-
-"""
-class Medicament(models.Model):
-    addDate = models.DateTimeField(auto_now_add=True)
-    quantity = models.IntegerField(default=1)
-    name = models.CharField(max_length=50, null=False, default="")
-    status = models.CharField(max_length=20, default="invalid") 
-    price = models.FloatField(default=5000)
-    expiryDate = models.DateTimeField(auto_now=False)
-    description = models.TextField(max_length=200, null=False, default="important")
-
-    def __str__(self):
-        return self.name.__str__()
-"""
 
 class Prescription(models.Model):
     addDate = models.DateTimeField(auto_now_add=True)
