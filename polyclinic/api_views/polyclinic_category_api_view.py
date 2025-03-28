@@ -1,14 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
-from polyclinic.models import Medicament
-from polyclinic.permissions.medicament_permissions import MedicamentPermissions
-from polyclinic.serializers.medicament_serializers import MedicamentSerializer
+from polyclinic.models import PolyclinicProductCategory
+from polyclinic.serializers.polyclinic_category_serializers import PolyclinicProductCategorySerializer, PolyclinicProductCategoryCreateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 
-tags = ["medicament"]
+tags = ["product-category"]
 auth_header_param = openapi.Parameter(
     name="Authorization",
     in_=openapi.IN_HEADER,
@@ -92,16 +91,20 @@ auth_header_param = openapi.Parameter(
         tags=tags,
     )
 )
-class MedicamentViewSet(ModelViewSet):
+class PolyclinicProductCategoryViewSet(ModelViewSet):
 
-    permission_classes = [IsAuthenticated, MedicamentPermissions]
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Medicament.objects.all()
+        queryset = PolyclinicProductCategory.objects.all()
         return queryset
 
     def get_serializer_class(self):
-        return MedicamentSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return PolyclinicProductCategoryCreateSerializer
+        else:
+            return PolyclinicProductCategorySerializer
 
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:

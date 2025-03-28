@@ -21,7 +21,7 @@ class BillService:
             if any([medicament, consultation, hospitalisation, prescription, examRequest]):
                 try:
                     if medicament:
-                        medicament = Medicament.objects.get(id=medicament.id)
+                        medicament = PolyclinicProduct.objects.get(id=medicament.id)
                         if medicament and quantity is None:
                             raise serializers.ValidationError(
                                 "le nombre de medicament est obligatoire si le medicament est fourni")
@@ -37,7 +37,7 @@ class BillService:
                         prescription = Prescription.objects.get(id=prescription.id)
                         prescription_drug = PrescriptionDrug.objects.filter(prescription=prescription)
                         for item in prescription_drug:
-                            medicament = Medicament.objects.get(id=item.medicament)
+                            medicament = PolyclinicProduct.objects.get(id=item.medicament)
                             total += medicament.price * item.quantity
                         unity_price = total
                     elif examRequest:
@@ -66,7 +66,7 @@ class BillService:
                         total=total,
                     )
                     return bill_item
-                except Medicament.DoesNotExist:
+                except PolyclinicProduct.DoesNotExist:
                     raise serializers.ValidationError("le medicament n'existe pas ou un medicament prescrit n'existe pas")
                 except Consultation.DoesNotExist:
                     raise serializers.ValidationError("le consultation n'existe pas")

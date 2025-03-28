@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'polyclinic',
     'authentication',
     'accounting',
+    'mptt',
 ]
 
 MIDDLEWARE = [

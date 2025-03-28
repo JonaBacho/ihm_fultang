@@ -3,6 +3,7 @@ from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
 import uuid
+from mptt.models import MPTTModel, TreeForeignKey
 # Create your models here.
 
 TYPEDOCTOR = [
@@ -80,6 +81,14 @@ APPOINTMENT_STATE = [
     ("Pending", "Pending"),
     ("Completed", "Completed"),
 ]
+
+STATUS_PRODUCT_CHOICES = [
+        ('Available', 'Available'),
+        ('Out of Stock', 'Out of Stock'),
+        ('Discontinued', 'Discontinued'),
+        ('Expiring Soon', 'Expiring Soon'),
+    ]
+
 # ======================================
 # ======================================== APPOINTMENT DEPARTMENT, PATIENT
 # ======================================
@@ -262,10 +271,89 @@ class ExamResult(models.Model):
 
 
 # ======================================
-# ======================================== MEDICAMENT, PRESCRIPTION, ROOM, HOSPITALISATION
+# ======================================== PRDOUIT DE L'HOPITAL, PRESCRIPTION, ROOM, HOSPITALISATION
 # ======================================
 
+class PolyclinicProductCategory(MPTTModel):
+    name = models.CharField(max_length=255, null = False, blank = False)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, blank=False, null=True, related_name='children')
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = [['name', 'parent'], ]
+        verbose_name_plural = "PolyclinicProductCategories"
+
+    def __str__(self):
+        return self.name
+
+
+class PolyclinicProduct(models.Model):
+
+    category = models.ForeignKey('PolyclinicProductCategory', on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=100)
+    generic_name = models.CharField(max_length=100, blank=True, null=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    price = models.FloatField(default=0.0)
+    current_stock = models.IntegerField(default=0)
+    min_stock_level = models.IntegerField(default=5)  # For low stock alerts
+    status = models.CharField(max_length=20, choices=STATUS_PRODUCT_CHOICES, default='available')
+    requires_prescription = models.BooleanField(default=False)
+    expiry_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Additional fields for medications specifically
+    is_medication = models.BooleanField(default=False)
+    dosage = models.CharField(max_length=100, blank=True, null=True)  # e.g., "500mg"
+    form = models.CharField(max_length=50, blank=True, null=True)  # e.g., "tablet", "liquid", etc.
+
+    def __str__(self):
+        return f"{self.name} ({self.category.name})"
+
+    def is_low_stock(self):
+        return self.current_stock <= self.min_stock_level
+
+
+class PolyclinicInventoryMovement(models.Model):
+    MOVEMENT_TYPES = [
+        ('purchase', 'Purchase'),
+        ('sale', 'Sale'),
+        ('return', 'Return'),
+        ('adjustment', 'Adjustment'),
+        ('expired', 'Expired'),
+    ]
+
+    product = models.ForeignKey('PolyclinicProduct', on_delete=models.CASCADE, related_name='movements')
+    movement_type = models.CharField(max_length=20, choices=MOVEMENT_TYPES)
+    quantity = models.IntegerField()  # Positive for additions, negative for removals
+    date = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+
+    # Reference to related entities
+    prescription = models.ForeignKey('Prescription', on_delete=models.SET_NULL, null=True, blank=True)
+    bill = models.ForeignKey('Bill', on_delete=models.SET_NULL, null=True, blank=True)
+    staff = models.ForeignKey('authentication.MedicalStaff', on_delete=models.CASCADE)
+
+    def __str__(self):
+        movement = "added" if self.quantity > 0 else "removed"
+        return f"{abs(self.quantity)} of {self.product.name} {movement} on {self.date.strftime('%Y-%m-%d')}"
+
+    def save(self, *args, **kwargs):
+        # Calculate total price if not provided
+        if not self.total_price:
+            self.total_price = self.quantity * self.unit_price
+
+        # Update product stock
+        self.product.current_stock += self.quantity
+        self.product.save()
+
+        super().save(*args, **kwargs)
+
+"""
 class Medicament(models.Model):
     addDate = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=1)
@@ -277,7 +365,7 @@ class Medicament(models.Model):
 
     def __str__(self):
         return self.name.__str__()
-
+"""
 
 class Prescription(models.Model):
     addDate = models.DateTimeField(auto_now_add=True)
@@ -291,7 +379,7 @@ class Prescription(models.Model):
         return self.note.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
 
 class PrescriptionDrug(models.Model):
-    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.CASCADE, null=False)
+    medicament = models.ForeignKey("polyclinic.PolyclinicProduct", on_delete=models.CASCADE, null=False)
     quantity = models.IntegerField(default=1)
     prescription = models.ForeignKey("polyclinic.Prescription", on_delete=models.CASCADE, null=False)
     dosage = models.CharField(max_length=255, null=False, default=" ")
@@ -350,7 +438,7 @@ class Bill(models.Model):
 
 class BillItem(models.Model):
     bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)
-    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.SET_NULL, null=True)
+    medicament = models.ForeignKey("polyclinic.PolyclinicProduct", on_delete=models.SET_NULL, null=True)
     consultation = models.ForeignKey('polyclinic.Consultation', on_delete=models.SET_NULL, null=True)
     hospitalisation = models.ForeignKey('polyclinic.Hospitalisation', on_delete=models.SET_NULL, null=True)
     prescription = models.ForeignKey('polyclinic.Prescription', on_delete=models.SET_NULL, null=True)

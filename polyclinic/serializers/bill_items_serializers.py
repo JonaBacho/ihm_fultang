@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from polyclinic.models import BillItem, Medicament, Consultation, Prescription, PrescriptionDrug, ExamRequest, Exam, \
-    Hospitalisation, Room
-from polyclinic.serializers.prescription_serializers import PrescriptionSerializer
+from polyclinic.models import BillItem
 
 
 class BillItemSerializer(serializers.ModelSerializer):
