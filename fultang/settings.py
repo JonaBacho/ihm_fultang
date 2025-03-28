@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+from datetime import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -172,15 +173,26 @@ SIMPLE_JWT = {
 }
 
 # Celery Settings
-CELERY_BROKER_URL = 'redis://redis:6379/0'  # or your broker URL
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'  # or your result backend
+CELERY_BROKER_URL = 'redis://:fultang@redis:6379/0'  # or your broker URL
+CELERY_RESULT_BACKEND = 'redis://:fultang@redis:6379/0'  # or your result backend
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'  # or your timezone
+REDIS_URL = 'redis://:fultang@redis:6379/'
+CELERY_TIMEZONE = datetime.now().astimezone().tzinfo
 
 # For django-celery-beat
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL + '1',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
 
 # email configuration
 # Email settings
