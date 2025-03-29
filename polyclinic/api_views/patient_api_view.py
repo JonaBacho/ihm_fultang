@@ -140,12 +140,6 @@ class PatientViewSet(ModelViewSet):
         if user.id != medical_staff.id:
             raise ValidationError({"detail": "Vous ne pouvez pas créer un patient pour un autre staff."})
 
-        # Vérifier que les champs 'gender' et 'cniNumber' sont présents
-        gender = serializer.validated_data.get('gender')
-        cni_number = serializer.validated_data.get('cniNumber')
-        if not gender or not cni_number:
-            raise ValidationError({"detail": "Les champs 'gender' et 'cniNumber' sont obligatoires."})
-
         # Sauvegarder l'instance via le serializer
         serializer.save()
 
