@@ -30,8 +30,7 @@ class Account(models.Model):
     
 
 class AccountState(models.Model):
-    soldeReel = models.FloatField(default=0)
-    soldePrevu = models.FloatField(default=0)
+    balance = models.FloatField(default=0)
 
     budgetExercise = models.ForeignKey('BudgetExercise', on_delete=models.CASCADE)
     account = models.ForeignKey('Account', on_delete=models.CASCADE)

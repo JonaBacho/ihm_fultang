@@ -13,3 +13,4 @@ media/
 .vscode/
 .vscode
 !media/guide_fultang.pdf
+*.qodo/*
