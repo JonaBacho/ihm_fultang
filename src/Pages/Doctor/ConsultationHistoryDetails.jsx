@@ -298,27 +298,37 @@ export  function ConsultationHistoryDetails() {
 
                     {/* Exams */}
                     {medicalFolderPageInfos?.examRequests && medicalFolderPageInfos?.examRequests.length > 0 && (
-                        <div>
+                        <div className="mb-5">
                             <h3 className="text-lg font-semibold mb-4 flex items-center">
                                 <FileText className="h-5 w-5 mr-2 text-blue-500"/>
                                 Prescribed Exams
                             </h3>
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-2">
                                 {medicalFolderPageInfos?.examRequests.map((exam, index) => (
 
-                                    <div key={index} className="bg-gray-100 p-4 rounded-lg flex justify-around">
-                                        <div className="mb-2 flex items-start">
-                                            <Microscope className="h-6 w-6 text-blue-500 mt-1" />
+                                    <div key={index} className="bg-gray-100 p-4 rounded-lg grid grid-cols-2">
+                                        <div className="flex mb-2">
+                                            <Microscope className="h-6 w-6 text-blue-500 mt-1"/>
                                             <div className="ml-2">
                                                 <span className="text-sm text-gray-500">Exams</span>
-                                                <p className="font-medium">{exam?.examName}</p>
+                                                <p className="font-medium">{exam?.idExam?.examName}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-start">
-                                            <FileText className="h-6 w-6 text-blue-500 mt-1" />
+
+                                        {/*
+                                        <div className="flex mb-2">
+                                            <FileText className="h-6 w-6 text-blue-500 mt-1"/>
+                                            <div className="ml-2">
+                                                <span className="text-sm text-gray-500">Exam Description</span>
+                                                <p className="font-medium">{exam?.idExam?.examDescription}</p>
+                                            </div>
+                                        </div>*/}
+
+                                        <div className="flex mb-2">
+                                            <FileText className="h-6 w-6 text-blue-500 mt-1"/>
                                             <div className="ml-2">
                                                 <span className="text-sm text-gray-500">Instructions</span>
-                                                <p className="text-gray-700">{exam?.notes}</p>
+                                                <p className="font-medium">{exam?.notes}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -334,16 +344,24 @@ export  function ConsultationHistoryDetails() {
                                 <Clock className="h-5 w-5 mr-2 text-blue-500"/>
                                 Scheduled Appointments
                             </h3>
-                            <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-5">
                                 {consultation?.appointments.map((appointment, index) => (
                                     <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                                        <div className="mb-2">
-                                            <span className="text-sm text-gray-500">Date</span>
-                                            <p className="font-medium">{appointment?.atDate ? formatDateOnly(appointment?.atDate) : 'Not Specified'}</p>
-                                        </div>
-                                        <div>
-                                            <span className="text-sm text-gray-500">Time</span>
-                                            <p className="text-gray-700">{appointment?.atDate ? formatDateToTime(appointment?.atDate) : 'Not Specified'}</p>
+                                        <div className="flex gap-20">
+                                            <div className="mb-2">
+                                                <div className="flex gap-2">
+                                                    <Calendar className="text-blue-500"/>
+                                                    <span className="text-sm text-gray-500">Date</span>
+                                                </div>
+                                                <p className="font-medium ml-8">{appointment?.atDate ? formatDateOnly(appointment?.atDate) : 'Not Specified'}</p>
+                                            </div>
+                                            <div>
+                                                <div className="flex gap-2">
+                                                    <Clock className="text-blue-500"/>
+                                                    <span className="text-sm text-gray-500">Time</span>
+                                                </div>
+                                                <p className="text-gray-700 ml-8">{appointment?.atDate ? formatDateToTime(appointment?.atDate) : 'Not Specified'}</p>
+                                            </div>
                                         </div>
                                         <div>
                                             <span className="text-sm text-gray-500">Reason</span>

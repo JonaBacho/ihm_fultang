@@ -1,4 +1,4 @@
-import {FaClipboardList, FaHistory, FaHome, FaQuestionCircle} from "react-icons/fa";
+import {FaClipboardList, FaBell, FaHistory, FaHome, FaQuestionCircle} from "react-icons/fa";
 import {AppRoutesPaths as appRoutes} from "../../Router/appRouterPaths.js";
 import {FiList} from "react-icons/fi";
 import {UserPlus} from "lucide-react";
@@ -24,6 +24,11 @@ export const laboratoryNavLink = [
         icon: FaHistory,
         name: "Exams History",
         link: appRoutes.laboratoryExamenHistories
+    },
+    {
+        icon: FaBell,
+        name: "Notifications",
+        link: appRoutes.laboratoryNotification
     },
     {
         name: 'Help Center',
