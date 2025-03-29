@@ -9,6 +9,10 @@ from accounting.models import Account, AccountState, BudgetExercise
 from rest_framework.viewsets import ModelViewSet
 from django.utils.timezone import now
 from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from accounting.models import FinancialOperation
+from accounting.serializers import FinancialOperationSerializer
 
 tags = ["account"]
 auth_header_param = openapi.Parameter(
@@ -118,3 +122,27 @@ class AccountViewSet(ModelViewSet):
             serializer.validated_data.pop('id')
         serializer.save()
 
+    @swagger_auto_schema(
+        operation_summary="Récupérer les opérations financières d'un compte",
+        operation_description=(
+            "Cette route permet d'obtenir toutes les opérations financières liées à un compte spécifique. "
+            "L'authentification est requise pour accéder à cette ressource."
+        ),
+        manual_parameters=[auth_header_param],
+        responses={
+            200: "Liste des opérations financières",
+            404: "Compte non trouvé"
+        },
+        tags=tags,
+    )
+    @action(detail=True, methods=["get"], url_path="financial-operations", url_name="financial_operations")
+    def financial_operations(self, request, pk=None):
+        try:
+            account = Account.objects.get(pk=pk)
+        except Account.DoesNotExist:
+            return Response({"detail": "Compte non trouvé."}, status=404)
+
+        operations = FinancialOperation.objects.filter(account=account)
+        
+        serializer = FinancialOperationSerializer(operations, many=True)
+        return Response(serializer.data)
