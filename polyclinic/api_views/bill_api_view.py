@@ -162,17 +162,16 @@ class BillViewSet(ModelViewSet):
             raise ValidationError(
                 {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
             )
-        account_state.soldePrevu += bill.amount
+        account_state.balance += bill.amount
         account_state.save()
             
-        account_state_data = {
-            "account": account_state.account.id,
-            "budgetExercise": account_state.budgetExercise.id,
-            "soldePrevu": account_state.soldePrevu,
-            "soldeReel": account_state.soldeReel,
-            "montant": bill.amount
-        }
-        return Response(account_state_data, status=status.HTTP_201_CREATED)
+        # account_state_data = {
+        #     "account": account_state.account.id,
+        #     "budgetExercise": account_state.budgetExercise.id,
+        #     "balance": account_state.balance,
+        #     "montant": bill.amount
+        # }
+        return Response(bill, status=status.HTTP_201_CREATED)
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
@@ -295,43 +294,8 @@ class BillViewSet(ModelViewSet):
         if bill.isAccounted:
             return Response(
                 {"error": "La facture est déjà approuvée."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_409_CONFLICT
             )
-
-        operation = bill.operation
-        if not operation:
-            return Response(
-                {"error": "Aucune opération financière associée à cette facture."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        account = operation.account
-        if not account:
-            return Response(
-                {"error": "Aucun compte associé à cette opération financière."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        current_date = timezone.now().date()
-        budget_exercises = BudgetExercise.objects.filter(start__lte=current_date, end__gte=current_date)
-        if str(account.number).startswith(('5', '4')):
-            status_param = request.query_params.get('status')
-            if status_param:
-                account_state = AccountState.objects.filter(
-                    account=account, 
-                    budgetExercise__in=budget_exercises
-                ).first()
-        else:
-            account_state = AccountState.objects.filter(account=account, budgetExercise__in=budget_exercises).first()
-
-        if not account_state:
-            return Response(
-                {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        account_state.soldeReel += bill.amount
-        account_state.save()
 
         bill.isAccounted = True
         bill.save()

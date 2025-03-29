@@ -37,4 +37,4 @@ class AccountingViewSerializer(ModelSerializer):
     
     class Meta:
         model = AccountState
-        fields = ['id', 'soldeReel', 'soldePrevu', 'account']
+        fields = ['id', 'balance', 'account']

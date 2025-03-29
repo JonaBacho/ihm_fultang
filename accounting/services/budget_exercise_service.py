@@ -42,13 +42,10 @@ def calculate_balance(prefixes):
     items = []
     for prefix in prefixes:
         item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Copte incomu"), "amount":0}
-        # balance[prefix] = {"soldeReel": 0, "soldeReel": 0}
         account_states = AccountState.objects.filter(account__number__startswith=prefix)
         for state in account_states:
-            item["amount"] += state.soldeReel
-            # item["soldeReel"] += state.soldeReel
-            # total['soldeReel'] += state.soldeReel
-            total += state.soldeReel
+            item["amount"] += state.balance
+            total += state.balance
         items.append(item)
     balance["items"] = items
     balance["total"] = total
@@ -60,16 +57,13 @@ def calculate_treasury(prefixes, type):
     items = []
     for prefix in prefixes:
         item = {"accountNo":prefix, "label":ACCOUNTS_MAPPING.get(prefix, "Compte incomu"), "amount": 0}
-        # treasury[prefix] = {"soldeReel": 0, "soldeReel": 0}
         if type == "active":
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="credit")
         else:
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="debit")
         for state in account_states:
-            # item["amount"] += state.soldeReel
-            item["amount"] += state.soldeReel
-            # total['soldeReel'] += state.soldeReel
-            total += state.soldeReel
+            item["amount"] += state.balance
+            total += state.balance
         items.append(item)
     treasury['items'] = items
     treasury['total'] = total
@@ -86,10 +80,8 @@ def calculate_circulant_balance(prefixes, type=None):
         else:
             account_states = AccountState.objects.filter(account__number__startswith=prefix).filter(account__status="null")
         for state in account_states:
-            # item["soldeReel"] += state.soldeReel
-            item["amount"] += state.soldeReel
-            # total['soldeReel'] += state.soldeReel
-            total['amount'] += state.soldeReel
+            item["amount"] += state.balance
+            total['amount'] += state.balance
         items.append(item)
     balance['items'] = items
     balance['total'] = total
