@@ -276,7 +276,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
                                     placeholder={"enter patient's identity card number"}
                                     onChange={handleChange}
                                     className={applyFormStyle()}
-                                    required={true}
+                                    required={false}
                                 />
                             </div>
                         </div>
@@ -307,7 +307,7 @@ export function AddNewPatientModal({isOpen, onClose, setCanOpenSuccessModal, set
                                     placeholder={"enter patient's email"}
                                     onChange={handleChange}
                                     className={applyFormStyle()}
-                                    required={true}
+                                    required={false}
                                 />
                             </div>
                         </div>

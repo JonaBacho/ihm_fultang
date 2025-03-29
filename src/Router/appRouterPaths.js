@@ -7,7 +7,7 @@ export const AppRoutesPaths = {
     forgottenPasswordPage: "/forgotten-password",
     pharmacyPage:"/pharmacy",
     doctorPage: "/doctor/dashboard",
-    laboratoryAssistantPage: "/laboratory-assistant",
+    laboratoryAssistantPage: "/laboratory-assistant/home",
     receptionistPage: "/receptionist/patients",
     cashierPage: "/cashier/consultation-list",
     consultationsList: "/cashier/consultations-list",
@@ -24,10 +24,13 @@ export const AppRoutesPaths = {
     receptionistMedicalStaffsPage: "/receptionist/medical-staffs",
     appointmentsPage: "/receptionist/appointments",
     adminPatientListPage: "/admin/patient-list",
+    addDrug: "/admin/add-drug",
+    adminDrugsListPage : "/admin/drugs-list",
     addMedicalStaff: "/admin/add-medical-staff",
     adminMedicalStaffListPage: "/admin/medical-staff-list",
     adminConsultationListPage: "/admin/consultation-list",
     adminAppointmentsListPage: "/admin/appointments-list",
+    addExam: "/admin/add-exam",
     adminExamsListPage: "/admin/exams-list",
     adminHospitalRoomPage: "/admin/room-list",
     adminFinancialReportsPage: "/admin/financial-report",
@@ -53,7 +56,9 @@ export const AppRoutesPaths = {
 
     laboratoryPatientList: "/laboratory-assistant/patient-list",
     laboratoryExamenList: "/laboratory-assistant/exams-list",
-    laboratoryExamenDetail: "/laboratory-assistant/exams-list/details",
-    laboratoryExamenHistories: "/laboratory-assistant/exams-history"
+    laboratoryExamenDetail: "/laboratory-assistant/exams-list/details/:id",
+    laboratoryExamenHistories: "/laboratory-assistant/exams-history",
+    laboratoryExamResultDetails: "/laboratory-assistant/exams-history/details/:id",
+    laboratoryNotification: "/laboratory-assistant/notifications"
 
 }

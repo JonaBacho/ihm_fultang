@@ -14,6 +14,8 @@ export function formatDateToTime(dateString) {
   });
 }
 
+
+
 export function formatFullDateTime(dateString) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -34,10 +36,18 @@ export function formatDateOnly(dateString) {
   }).format(new Date(dateString));
 }
 
+
 export function formatDateOnlyWithoutWeekDay(dateString) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   }).format(new Date(dateString));
+}
+
+
+export function combineToISOString(date, time) {
+  const combinedDateTime = new Date(`${date}T${time}`);
+  combinedDateTime.setHours(combinedDateTime.getHours() + 1);
+  return combinedDateTime.toISOString();
 }

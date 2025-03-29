@@ -20,8 +20,8 @@ export function AdminNavBar()
                     <h1 className="ml-3 text-4xl text-secondary mt-3.5 font-bold">
                         Administrator
                     </h1>
-                    <div className="flex gap-3 mt-3.5 mb-4 mr-5">
-                        <Tooltip placement={"top"} title={"settings"}>
+                     <div className="flex gap-3 mt-3.5 mb-4 mr-5">
+                         {/* <Tooltip placement={"top"} title={"settings"}>
                             <button className={applyNavLinkBtnStyle()}>
                                 <FaCog/>
                             </button>
@@ -32,7 +32,7 @@ export function AdminNavBar()
                             <button className={applyNavLinkBtnStyle()}>
                                 <FaEnvelope/>
                             </button>
-                        </Tooltip>
+                        </Tooltip> */}
                         <Tooltip placement={"top"} title={"LogOut"}>
                             <button
                                 onClick={() => {logout()}}
@@ -41,11 +41,11 @@ export function AdminNavBar()
                             </button>
                         </Tooltip>
                         <Tooltip placement={"top"} title={"Profile"}>
-                            <button className="ml-3 flex">
+                            <div className="ml-3 flex">
                                 <p className="font-bold text-secondary text-xl mt-2">{"Hello " +userData?.username + "!"}</p>
                                 <img src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
 
-                            </button>
+                            </div>
                         </Tooltip>
                     </div>
                 </div>

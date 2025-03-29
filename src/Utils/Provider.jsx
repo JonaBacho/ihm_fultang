@@ -39,10 +39,11 @@ function useLogin() {
             if (response.status === 200)
             {
                 setIsLoading(false);
-                //console.log("logged user data: ",response);
+                console.log("logged user data: ",response);
                 saveAuthParameters(response.data.access, response.data.refresh);
                 setUserData(response.data.user);
                 setUserRole(response.data.user.role);
+                await getCurrentUserInfos();
                 setIsLogged(true);
                 return response.data.user.role;
             }
@@ -56,31 +57,38 @@ function useLogin() {
     }
 
 
+    async function getCurrentUserInfos  ()
+    {
+        const token = localStorage.getItem("token_key_fultang");
+        if (token)
+        {
+            try
+            {
+                const response = await axios.get("http://85.214.142.178:8009/api/v1/auth/me/", {headers: {"Authorization": `Bearer ${token}`}});
+                if (response.status === 200)
+                {
+                    console.log(response.data);
+                    setIsLogged(true);
+                    setUserData(response.data);
+                    setUserRole(response.data.role);
+                }
+            }
+            catch (error)
+            {
+                console.log(error);
+                setIsLogged(false);
+            }
+        }
+
+    }
+
+
 
     useEffect(() => {
         const token = localStorage.getItem("token_key_fultang");
         if (token)
         {
             setIsLogged(true);
-            async function getCurrentUserInfos  ()
-            {
-                try
-                {
-                    const response = await axios.get("http://85.214.142.178:8009/api/v1/auth/me/", {headers: {"Authorization": `Bearer ${token}`}});
-                    if (response.status === 200)
-                    {
-                        //console.log(response.data);
-                        setIsLogged(true);
-                        setUserData(response.data);
-                        setUserRole(response.data.role);
-                    }
-                }
-                catch (error)
-                {
-                    console.log(error);
-                    setIsLogged(false);
-                }
-            }
             getCurrentUserInfos()
         }
         else
