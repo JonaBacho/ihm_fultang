@@ -40,7 +40,6 @@ export function MedicalStaffList()
                 console.log(response.data);
                 setErrorStatus(null);
                 setErrorMessage("");
-
             }
         } catch (error) {
             setIsLoading(false);

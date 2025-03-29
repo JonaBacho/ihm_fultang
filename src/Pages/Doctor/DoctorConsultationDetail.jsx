@@ -240,11 +240,11 @@ export function DoctorConsultationDetails() {
     async function loadMedication()
     {
         try {
-            const response = await axiosInstance.get("/medicament/");
+            const response = await axiosInstance.get("/product/?page_size=100");
             if (response.status === 200)
             {
-               // console.log(response.data);
-                setAvailableMedication(response.data);
+                console.log("medimentations ", response.data);
+                setAvailableMedication(response.data.results);
             }
 
         }
@@ -260,11 +260,11 @@ export function DoctorConsultationDetails() {
     {
         try
         {
-            const response = await axiosInstance.get("/exam/");
+            const response = await axiosInstance.get("/exam/?page_size=100");
             if (response.status === 200)
             {
-                //console.log("exams ", response.data);
-                setAvailableExams(response.data);
+                console.log("exams ", response.data);
+                setAvailableExams(response.data.results);
             }
 
         }
