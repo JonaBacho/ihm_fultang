@@ -31,8 +31,7 @@ def new_budget_exercise():
     accounts = Account.objects.all()
     for account in accounts:
         AccountState.objects.create(
-            soldeReel=0,  # Initialiser le solde réel à 0
-            soldePrevu=0,  # Initialiser le solde prévu à 0
+            amount=0,  # Initialiser le solde réel à 0
             budgetExercise=budget_exercise,
             account=account
         )

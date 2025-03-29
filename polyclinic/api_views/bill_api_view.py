@@ -120,58 +120,54 @@ class BillViewSet(ModelViewSet):
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
+
         bill = serializer.save()
+
+        bill_items = self.request.data.get('bill_items', None)
+        if not bill_items:
+            raise ValidationError({"detail": "Bill items required"})
+
+        bill_items = [dict(item) for item in bill_items]
+
+        total_amount = sum(item['unityPrice'] * item['quantity'] for item in bill_items)
+
+        bill.amount = total_amount
+        bill.save()
+
+        for item in bill_items:
+            item.pop('bill', None)
+            BillItem.objects.create(bill=bill, **item)
+
         operation = bill.operation
         if not operation:
-            raise ValidationError(
-                {"details": "Aucune opération financière associée à cette facture."}
-            )
-            
+            raise ValidationError({"details": "Aucune opération financière associée à cette facture."})
+
         account = operation.account
         if not account:
-            raise ValidationError(
-                {"details": "Aucun compte associé à cette opération financière."}
-            )
+            raise ValidationError({"details": "Aucun compte associé à cette opération financière."})
 
         current_date = timezone.now().date()
         budget_exercises = BudgetExercise.objects.filter(
             start__lte=current_date,
             end__gte=current_date
         )
-        
-        if budget_exercises is None:
-            raise ValidationError(
-                {"details":"Aucune opération financière n'a été trouvée"}
-            )
-        
-        account_state = None
-        if str(account.number).startswith(('5', '4')):
-            status_param = self.request.query_params.get('status')
-            if status_param:
-                account_state = AccountState.objects.filter(
-                    account=account,
-                    budgetExercise__in=budget_exercises,
-                ).first()
-        else:
-            account_state = AccountState.objects.filter(
-                account=account,
-                budgetExercise__in=budget_exercises
-            ).first()       
+
+        if not budget_exercises.exists():
+            raise ValidationError({"details": "Aucun exercice budgétaire en cours trouvé."})
+
+        account_state = AccountState.objects.filter(
+            account=account,
+            budgetExercise__in=budget_exercises
+        ).first()
 
         if account_state is None:
-            raise ValidationError(
-                {"details": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
-            )
+            raise ValidationError({"details": "Aucun état de compte trouvé pour la période budgétaire actuelle."})
+
         account_state.balance += bill.amount
         account_state.save()
-            
-        # account_state_data = {
-        #     "account": account_state.account.id,
-        #     "budgetExercise": account_state.budgetExercise.id,
-        #     "balance": account_state.balance,
-        #     "montant": bill.amount
-        # }
-        return Response(bill, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:

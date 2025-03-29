@@ -35,8 +35,7 @@ class FactureSerializer(ModelSerializer):
         fields = '__all__'
 
 class AccountingViewSerializer(ModelSerializer):
-    soldeReel = serializers.FloatField(default=0)
-    soldePrevu = serializers.FloatField(default=0)
+    amount = serializers.FloatField(default=0)
 
     account = AccountSerializer()
     
