@@ -11,4 +11,6 @@ mon_env/
 media/
 .qodo/
 .vscode/
-.qodo
+.vscode
+!media/guide_fultang.pdf
+*.qodo/*

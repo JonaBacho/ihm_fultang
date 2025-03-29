@@ -1,11 +1,34 @@
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, Token
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, AuthUser
 from rest_framework.exceptions import AuthenticationFailed
 from authentication.models import MedicalStaff, ROLES, ROLES_ACCOUNTING, USER_TYPE
 from rest_framework import serializers
-
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from rest_framework.exceptions import ValidationError
+User = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+
+        # Ajouter les informations de l'utilisateur dans la réponse
+        data["user"] = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "user_type": user.userType,
+        }
+        return data
+
+    """
     def validate(self, attrs):
 
         # Authentifier l'utilisateur avec les informations d'identification
@@ -35,9 +58,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
     def authenticate_user(self, attrs):
-        """
-        Authentifie l'utilisateur en utilisant les informations d'identification fournies.
-        """
+        #Authentifie l'utilisateur en utilisant les informations d'identification fournies.
+
         username = attrs.get(self.username_field)
         password = attrs.get('password')
 
@@ -49,6 +71,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             except MedicalStaff.DoesNotExist:
                 return None
         return None
+    """
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -92,3 +115,41 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
         return response_data
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'}
+    )
+    password_confirmation = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'}
+    )
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirmation']:
+            raise serializers.ValidationError({"details": "Les mots de passe ne correspondent pas"})
+
+        try:
+            validate_password(attrs['password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
+        return attrs
+
+    def save(self):
+        email = self.validated_data['email']
+        password = self.validated_data['password']
+
+        try:
+            user = User.objects.get(email=email)
+            user.password = password
+            user.save()
+            return user
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {"details": "Aucun utilisateur trouvé avec cet email"}
+            )

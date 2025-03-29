@@ -101,7 +101,7 @@ class PrescriptionViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "partial_update", "update"]:
+        if self.action in ["create", "partial_update", "update"] or self.request.method in ["POST", "PUT", "PATCH"]:
             return PrescriptionCreateSerializer
         else:
             return PrescriptionSerializer

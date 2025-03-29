@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+from datetime import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,11 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'corsheaders',
     'polyclinic',
     'authentication',
     'accounting',
+    'mptt',
 ]
 
 MIDDLEWARE = [
@@ -139,6 +142,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+FRONTEND_URL = "fultang.cm"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -155,22 +160,48 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
+    'TOKEN_OBTAIN_SERIALIZER': 'authentication.serializers.auth_serializers.CustomTokenObtainPairSerializer',
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'TOKEN_BLACKLIST_ENABLED': True
 }
 
 # Celery Settings
-CELERY_BROKER_URL = 'redis://redis:6379/0'  # or your broker URL
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'  # or your result backend
+CELERY_BROKER_URL = 'redis://:fultang@redis:6379/0'  # or your broker URL
+CELERY_RESULT_BACKEND = 'redis://:fultang@redis:6379/0'  # or your result backend
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'  # or your timezone
+REDIS_URL = 'redis://:fultang@redis:6379/'
+CELERY_TIMEZONE = datetime.now().astimezone().tzinfo
 
 # For django-celery-beat
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL + '1',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# email configuration
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'webmail.gloswitch.com'
+EMAIL_HOST_USER = "alerter@gloswitch.com"
+EMAIL_HOST_PASSWORD = "#,ONenTaiNCullicHNINtIlONiclOrSYME,62"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 

@@ -15,13 +15,14 @@ class BillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bill
         fields = [
-            'billCode', 'date', 'amount', 'operation', 'isAccounted', 'operator', 'patient', 'bill_items'
+            'id', 'billCode', 'date', 'amount', 'operation', 'isAccounted', 'operator', 'patient', 'bill_items'
         ]
 
     def get_bill_items(self, obj):
         # Récupérer tous les BillItems associés à ce Bill
         bill_items = BillItem.objects.filter(bill=obj)
         return BillItemSerializer(bill_items, many=True).data
+
 
 class BillCreateSerializer(serializers.ModelSerializer):
     bill_items = BillItemCreateSerializer(many=True, required=False)
@@ -31,13 +32,14 @@ class BillCreateSerializer(serializers.ModelSerializer):
         exclude = ['billCode', 'date', 'isAccounted']
 
     def create(self, validated_data):
-        print("Validated Data:", validated_data)  # Debugging
 
         bill_data = {
             'operation': validated_data['operation'],
             'operator': validated_data['operator'],
         }
+        is_accounting = True
         if 'patient' in validated_data and validated_data['patient']:
+            is_accounting = False
             bill_data['patient'] = validated_data['patient']
 
         bill = Bill.objects.create(**bill_data)
@@ -49,13 +51,11 @@ class BillCreateSerializer(serializers.ModelSerializer):
         for item in validated_data['bill_items']:
             item['bill'] = bill
             bill_service = BillService()
-            bill_item = bill_service.create_bill_item(item, is_accounting=True)
-            print("Bill Item Total:", bill_item.total)  # Debugging
+            bill_item = bill_service.create_bill_item(item, is_accounting=is_accounting)
             total += bill_item.total
 
-        print("Calculated Total:", total)  # Debugging
         bill.amount = total
         bill.save()
-        print("Final Bill Amount:", bill.amount)  # Debugging
+        print("Final Bill Amount:", bill.amount)
 
         return bill

@@ -3,6 +3,7 @@ from django.db.models.deletion import CASCADE
 from datetime import timedelta
 from django.utils.timezone import now
 import uuid
+from mptt.models import MPTTModel, TreeForeignKey
 # Create your models here.
 
 TYPEDOCTOR = [
@@ -58,6 +59,36 @@ STATEPATIENT = [
     ("Inprouving", "Inprouving"),
 ]
 
+ROOM_TYPES = [
+    ("Simple", "Simple"),
+    ("Emergency", "Emergency"),
+    ("Staff", "Staff"),
+]
+
+ROOM_FACILITIES = [
+    ("Television", "Television"),
+    ("Air Conditioning", "Air Conditioning"),
+    ("Private bathroom", "Private bathroom"),
+    ("Mini fridge", "Mini fridge"),
+]
+
+APPOINTMENT_STATUS = [
+    ("Not Payable", "Not Payable"),   # n'a pas eu lieu
+    ("Payable", "Payable"),
+]
+
+APPOINTMENT_STATE = [
+    ("Pending", "Pending"),
+    ("Completed", "Completed"),
+]
+
+STATUS_PRODUCT_CHOICES = [
+        ('Available', 'Available'),
+        ('Out of Stock', 'Out of Stock'),
+        ('Discontinued', 'Discontinued'),
+        ('Expiring Soon', 'Expiring Soon'),
+    ]
+
 # ======================================
 # ======================================== APPOINTMENT DEPARTMENT, PATIENT
 # ======================================
@@ -74,7 +105,7 @@ class Department(models.Model):
 
 ####### Il y'a à faire par rapport à ce model, il faut mettre l'acces d'un objet à jour dans la BD en fonction des dates #########"
 class PatientAccess(models.Model):
-    givenAt = models.DateTimeField(auto_now=True, blank=True)
+    givenAt = models.DateTimeField(auto_now_add=True, blank=True)
     lostAt = models.DateTimeField(blank=True)
 
     access = models.BooleanField(default=True)
@@ -85,15 +116,15 @@ class PatientAccess(models.Model):
 
 # classe qui definie le patient
 class Patient(models.Model):
-    addDate = models.DateTimeField(auto_now=True, blank=True)
-    cniNumber = models.CharField(max_length=255, blank=True, default=" ")  # The patient CNI
+    addDate = models.DateTimeField(auto_now_add=True, blank=True)
+    cniNumber = models.CharField(max_length=255, blank=True, default=" ", null=True)  # The patient CNI
     firstName = models.CharField(max_length=255, blank=True)
     lastName = models.CharField(max_length=255, blank=True, default=" ")
     gender = models.CharField(max_length=255, choices=SEXE, default='Male', blank=True)  # The patient gender (M, F)
     phoneNumber = models.CharField(max_length=255, blank=True, default=" ")
     birthDate = models.DateField(blank=True, null=True, default="0000-00-00")
     address = models.CharField(max_length=255, blank=True, default=" ")
-    email = models.CharField(max_length=255, blank=True, default=" ")
+    email = models.CharField(max_length=255, blank=True, default=" ", null=True)
     condition = models.CharField(max_length=255, choices=CONDITION, default='NoCritical', null=True)
     service = models.CharField(max_length=50, choices=SERVICE, default='Generalist', null=True)
     status = models.CharField(max_length=20, default="invalid")  # The patient status
@@ -111,10 +142,13 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
-    atDate = models.DateTimeField(auto_now=False)
-    reason = models.CharField(max_length=300)
-    requirements = models.CharField(max_length=500)
+    atDate = models.DateTimeField(auto_now_add=False)
+    reason = models.CharField(max_length=300, blank=True, null=True)
+    requirements = models.CharField(max_length=500, blank=True, null=True)
+    state = models.CharField(max_length=200, choices=APPOINTMENT_STATE, default='Pending')
+    status = models.CharField(max_length=200, choices=APPOINTMENT_STATUS, default='Not Payable')
 
+    idConsultation = models.ForeignKey("Consultation", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
 
@@ -135,7 +169,7 @@ class Parameters(models.Model):
     currentMedication = models.TextField(blank=True, null=True)
     familyMedicalHistory = models.TextField(blank=True, null=True)
     skinAppearance = models.CharField(max_length=255, blank=True, null=True)
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
 
     idMedicalFolderPage = models.OneToOneField("MedicalFolderPage", on_delete=models.DO_NOTHING, null=True)
     idMedicalStaff = models.ForeignKey("authentication.MedicalStaff", on_delete=models.CASCADE, null=False)
@@ -147,7 +181,7 @@ class ConsultationType(models.Model):
 
 
 class Consultation(models.Model):
-    consultationDate = models.DateTimeField(auto_now=True)
+    consultationDate = models.DateTimeField(auto_now_add=True)
     consultationPrice = models.FloatField(default=5000)
     consultationReason = models.CharField(max_length=100, blank=True, null=True)
     consultationNotes = models.TextField(blank=True, null=True, max_length=100000)
@@ -174,7 +208,7 @@ class Consultation(models.Model):
 
 
 class MedicalFolder(models.Model):
-    createDate = models.DateTimeField(auto_now=True)
+    createDate = models.DateTimeField(auto_now_add=True)
     lastModificationDate = models.DateTimeField(auto_now=True)
     folderCode = models.CharField(max_length=300)
     isClosed = models.BooleanField()
@@ -182,7 +216,7 @@ class MedicalFolder(models.Model):
 
 class MedicalFolderPage(models.Model):
     pageNumber = models.IntegerField()
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     nurseNote = models.TextField(max_length=10000, blank=True, null=True)
     doctorNote = models.TextField(max_length=10000, blank=True, null=True)
     diagnostic = models.TextField(max_length=10000, blank=True, null=True)
@@ -206,9 +240,9 @@ class Exam(models.Model):
 
 
 class ExamRequest(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
-    examName = models.CharField(max_length=50, null=True)
-    examStatus = models.CharField(max_length=20, default="invalid")
+    addDate = models.DateTimeField(auto_now_add=True)
+    examName = models.CharField(max_length=50, null=True, blank=True)
+    examStatus = models.CharField(max_length=20, default="Invalid")
     patientStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
     notes = models.TextField(max_length=10000, blank=True, null=True)
 
@@ -222,7 +256,7 @@ class ExamRequest(models.Model):
 
 
 class ExamResult(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(max_length=10000, blank=True, null=True)
     examFile = models.FileField(upload_to="exam_results/", blank=True, null=True)
 
@@ -237,25 +271,90 @@ class ExamResult(models.Model):
 
 
 # ======================================
-# ======================================== MEDICAMENT, PRESCRIPTION, ROOM, HOSPITALISATION
+# ======================================== PRDOUIT DE L'HOPITAL, PRESCRIPTION, ROOM, HOSPITALISATION
 # ======================================
 
+class PolyclinicProductCategory(MPTTModel):
+    name = models.CharField(max_length=255, null = False, blank = False)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, blank=False, null=True, related_name='children')
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-class Medicament(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
-    quantity = models.IntegerField(default=1)
-    name = models.CharField(max_length=50, null=False, default="")
-    status = models.CharField(max_length=20, default="invalid") 
-    price = models.FloatField(default=5000)
-    expiryDate = models.DateTimeField(auto_now=False)
-    description = models.TextField(max_length=200, null=False, default="important")
+    class Meta:
+        unique_together = [['name', 'parent'], ]
+        verbose_name_plural = "PolyclinicProductCategories"
 
     def __str__(self):
-        return self.name.__str__()
+        return self.name
 
+
+class PolyclinicProduct(models.Model):
+
+    category = models.ForeignKey('PolyclinicProductCategory', on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=100)
+    generic_name = models.CharField(max_length=100, blank=True, null=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    price = models.FloatField(default=0.0)
+    current_stock = models.IntegerField(default=0)
+    min_stock_level = models.IntegerField(default=5)  # For low stock alerts
+    status = models.CharField(max_length=20, choices=STATUS_PRODUCT_CHOICES, default='Available')
+    requires_prescription = models.BooleanField(default=False)
+    expiry_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Additional fields for medications specifically
+    is_medication = models.BooleanField(default=False)
+    dosage = models.CharField(max_length=100, blank=True, null=True)  # e.g., "500mg"
+    form = models.CharField(max_length=50, blank=True, null=True)  # e.g., "tablet", "liquid", etc.
+
+    def __str__(self):
+        return f"{self.name} ({self.category.name})"
+
+    def is_low_stock(self):
+        return self.current_stock <= self.min_stock_level
+
+
+class PolyclinicInventoryMovement(models.Model):
+    MOVEMENT_TYPES = [
+        ('purchase', 'Purchase'),
+        ('sale', 'Sale'),
+        ('return', 'Return'),
+        ('adjustment', 'Adjustment'),
+        ('expired', 'Expired'),
+    ]
+
+    product = models.ForeignKey('PolyclinicProduct', on_delete=models.CASCADE, related_name='movements')
+    movement_type = models.CharField(max_length=20, choices=MOVEMENT_TYPES)
+    quantity = models.IntegerField()  # Positive for additions, negative for removals
+    date = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+
+    # Reference to related entities
+    prescription = models.ForeignKey('Prescription', on_delete=models.SET_NULL, null=True, blank=True)
+    bill = models.ForeignKey('Bill', on_delete=models.SET_NULL, null=True, blank=True)
+    staff = models.ForeignKey('authentication.MedicalStaff', on_delete=models.CASCADE)
+
+    def __str__(self):
+        movement = "added" if self.quantity > 0 else "removed"
+        return f"{abs(self.quantity)} of {self.product.name} {movement} on {self.date.strftime('%Y-%m-%d')}"
+
+    def save(self, *args, **kwargs):
+        # Calculate total price if not provided
+        if not self.total_price:
+            self.total_price = self.quantity * self.unit_price
+
+        # Update product stock
+        self.product.current_stock += self.quantity
+        self.product.save()
+
+        super().save(*args, **kwargs)
 
 class Prescription(models.Model):
-    addDate = models.DateTimeField(auto_now=True)
+    addDate = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True, null=True)
 
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
@@ -266,7 +365,7 @@ class Prescription(models.Model):
         return self.note.__str__() + " " + self.idPatient.__str__() + " " + self.idMedicalStaff.__str__()
 
 class PrescriptionDrug(models.Model):
-    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.CASCADE, null=False)
+    medicament = models.ForeignKey("polyclinic.PolyclinicProduct", on_delete=models.CASCADE, null=False)
     quantity = models.IntegerField(default=1)
     prescription = models.ForeignKey("polyclinic.Prescription", on_delete=models.CASCADE, null=False)
     dosage = models.CharField(max_length=255, null=False, default=" ")
@@ -279,17 +378,19 @@ class PrescriptionDrug(models.Model):
 
 class Room(models.Model):
     roomLabel = models.CharField(max_length=100)
-    beds = models.PositiveIntegerField(default = 0)
+    beds = models.PositiveIntegerField(default = 1)
     busyBeds = models.IntegerField(default = 0)
     price = models.FloatField(default=2000)
+    type = models.CharField(max_length=255, choices=ROOM_TYPES, default="Simple")
+    facilities = models.CharField(max_length=255, choices=ROOM_FACILITIES, default="Private Bathroom")
 
 class Hospitalisation(models.Model):
-    atDate = models.DateTimeField(auto_now=True)
+    atDate = models.DateTimeField(auto_now_add=True)
     bedLabel = models.CharField(max_length=100)
     note = models.TextField(blank=True, null=True)
     isActive = models.BooleanField(default=True)
     paymentStatus = models.CharField(max_length=20, choices=STATUT_PAIEMENT_CONSULTATION, default="Invalid")
-    removeAt = models.DateTimeField(auto_now=True)
+    removeAt = models.DateTimeField(auto_now_add=True)
 
     idRoom = models.ForeignKey("Room", on_delete=models.CASCADE, null=False)
     idPatient = models.ForeignKey("Patient", on_delete=models.CASCADE, null=False)
@@ -299,7 +400,7 @@ class Hospitalisation(models.Model):
 # La classe pour la facture
 class Bill(models.Model):
     billCode = models.CharField(max_length=355)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     amount = models.FloatField(default=0.0)
     operation = models.ForeignKey('accounting.FinancialOperation', on_delete=CASCADE, null=False)
     isAccounted = models.BooleanField(default=False)
@@ -323,7 +424,7 @@ class Bill(models.Model):
 
 class BillItem(models.Model):
     bill = models.ForeignKey('polyclinic.Bill', on_delete=models.CASCADE, null=False)
-    medicament = models.ForeignKey("polyclinic.Medicament", on_delete=models.SET_NULL, null=True)
+    medicament = models.ForeignKey("polyclinic.PolyclinicProduct", on_delete=models.SET_NULL, null=True)
     consultation = models.ForeignKey('polyclinic.Consultation', on_delete=models.SET_NULL, null=True)
     hospitalisation = models.ForeignKey('polyclinic.Hospitalisation', on_delete=models.SET_NULL, null=True)
     prescription = models.ForeignKey('polyclinic.Prescription', on_delete=models.SET_NULL, null=True)
@@ -344,7 +445,7 @@ class BillItem(models.Model):
 
 
 class Message(models.Model):
-    addAt = models.DateTimeField(auto_now=True)
+    addAt = models.DateTimeField(auto_now_add=True)
     message = models.TextField()
     reason = models.TextField()
     messageType = models.CharField(max_length=30, choices=MessageType, default='INFO')

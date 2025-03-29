@@ -18,6 +18,11 @@ class AccountStateSerializer(ModelSerializer):
         model = AccountState
         fields = '__all__'
 
+class AccountStateCreateSerializer(ModelSerializer):
+    class Meta:
+        model = AccountState
+        exclude = ['id']
+
 
 class FinancialOperationSerializer(ModelSerializer):
     class Meta:

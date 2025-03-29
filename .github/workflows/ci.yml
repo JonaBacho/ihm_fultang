@@ -82,6 +82,8 @@ jobs:
             cd /home/${{ secrets.REMOTE_USER }}/ihm
             source .env
             sudo docker login ghcr.io -u $NAMESPACE -p $PERSONAL_ACCESS_TOKEN
+            sudo docker compose -f ./docker-compose.yml down
+            sudo docker rmi -f $IMAGE_NAME
             sudo docker pull $FULTANG_IMAGE
-            sudo docker compose -f docker-compose.yml up -d
+            sudo docker compose -f ./docker-compose.yml up -d
           ENDSSH

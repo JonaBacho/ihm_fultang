@@ -104,6 +104,7 @@ auth_header_param = openapi.Parameter(
 class BillViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated, BillPermissions]
+    #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -111,7 +112,7 @@ class BillViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
+        if self.action in ["create", "update", "partial_update"] or self.request.method in ["POST", "PUT", "PATCH"]:
             return BillCreateSerializer
         else:
             return BillSerializer
@@ -120,17 +121,16 @@ class BillViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
         bill = serializer.save()
-        print(bill)
         operation = bill.operation
         if not operation:
             raise ValidationError(
-                {"error": "Aucune opération financière associée à cette facture."}
+                {"details": "Aucune opération financière associée à cette facture."}
             )
             
         account = operation.account
         if not account:
             raise ValidationError(
-                {"error": "Aucun compte associé à cette opération financière."}
+                {"details": "Aucun compte associé à cette opération financière."}
             )
 
         current_date = timezone.now().date()
@@ -140,8 +140,8 @@ class BillViewSet(ModelViewSet):
         )
         
         if budget_exercises is None:
-            raise ValueError(
-                {"error":"Aucune opération financière n'a été trouvée"}
+            raise ValidationError(
+                {"details":"Aucune opération financière n'a été trouvée"}
             )
         
         account_state = None
@@ -160,7 +160,7 @@ class BillViewSet(ModelViewSet):
 
         if account_state is None:
             raise ValidationError(
-                {"error": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
+                {"details": "Aucun état de compte trouvé pour la période budgétaire actuelle."}
             )
         account_state.balance += bill.amount
         account_state.save()
@@ -193,7 +193,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(methods=['get'], detail=True, url_path="bill-items")
+    @action(methods=['get'], detail=True, url_path="bill-items", permission_classes=permission_classes)
     def get_bill_items(self, request):
         bill = self.get_object()
         bill_items = BillItem.objects.filter(bill=bill)
@@ -216,7 +216,7 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(methods=['get'], detail=False, url_path="bill-item/(?P<id>[^/.]+)")
+    @action(methods=['get'], detail=False, url_path="bill-item/(?P<id>[^/.]+)", permission_classes=permission_classes)
     def get_bill_item(self, request, id=None):
         try:
             if id is None:
@@ -226,6 +226,44 @@ class BillViewSet(ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except BillItem.DoesNotExist:
             return Response({"details": "cet item n'existe pas"}, status=status.HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        method='get',
+        operation_summary="Lister des factures non verifiées par le comptable",
+        operation_description="Retourne toutes les factures non vérifiées par le comptable",
+        manual_parameters=[
+            openapi.Parameter(
+                'account_id', openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                description="ID du compte",
+                required=True
+            ),
+            auth_header_param
+        ],
+        tags=["bill"]
+    )
+    @action(methods=["get"], detail=False, url_path="bill-unaccounted", permission_classes=permission_classes, pagination_class=pagination_class)
+    def get_bill_unaccounted(self, request):
+        account_id = request.query_params.get('account_id')
+
+        if not account_id:
+            return Response(
+                {"details": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        account = Account.objects.filter(id=account_id).first()
+        if not account:
+            return Response(
+                {"details": "Aucun compte trouvé avec cet ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        operations = FinancialOperation.objects.filter(account=account)
+        bills = Bill.objects.filter(operation__in=operations).filter(isAccounted=False)
+
+        serializer = self.get_serializer(bills, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
     @swagger_auto_schema(
@@ -243,20 +281,20 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=permission_classes, pagination_class=pagination_class)
     def get_for_account(self, request):
         account_id = request.query_params.get('account_id')
 
         if not account_id:
             return Response(
-                {"error": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
+                {"details": "Le paramètre 'account_id' est requis dans les paramètres de la requête."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         account = Account.objects.filter(id=account_id).first()
         if not account:
             return Response(
-                {"error": "Aucun compte trouvé avec cet ID."},
+                {"details": "Aucun compte trouvé avec cet ID."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -281,15 +319,11 @@ class BillViewSet(ModelViewSet):
         manual_parameters=[auth_header_param],
         tags=["bill"]
     )
-    @action(detail=True, methods=['patch'])
-    def account(self, request, pk=None):
-        try:
-            bill = Bill.objects.get(id=pk)
-        except Bill.DoesNotExist:
-            return Response(
-                {"error": "Facture non trouvée."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    @action(detail=True, methods=['patch'], permission_classes=permission_classes)
+    def account(self, request, pk):
+        bill = self.get_object()
+        if bill is None:
+            return Response({"details": "La facture est absente"}, status=status.HTTP_404_NOT_FOUND)
 
         if bill.isAccounted:
             return Response(
@@ -317,20 +351,20 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], permission_classes=permission_classes)
     def get_by_operation(self, request):
         operation_id = request.query_params.get('operation_id')
 
         if not operation_id:
             return Response(
-                {"error": "Le paramètre 'operation_id' est requis dans les paramètres de la requête."},
+                {"details": "Le paramètre 'operation_id' est requis dans les paramètres de la requête."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         operation = FinancialOperation.objects.filter(id=operation_id).first()
         if not operation:
             return Response(
-                {"error": "Aucune opération financière trouvée avec cet ID."},
+                {"details": "Aucune opération financière trouvée avec cet ID."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -354,20 +388,20 @@ class BillViewSet(ModelViewSet):
         ],
         tags=["bill"]
     )
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], permission_classes=permission_classes)
     def get_by_medical_operator(self, request):
         medical_operator_id = request.query_params.get('medical_operator_id')
 
         if not medical_operator_id:
             return Response(
-                {"error": "Le paramètre 'medical_operator_id' est requis dans les paramètres de la requête."},
+                {"details": "Le paramètre 'medical_operator_id' est requis dans les paramètres de la requête."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         medical_operator = MedicalFolderPage.objects.filter(id=medical_operator_id).first()
         if not medical_operator:
             return Response(
-                {"error": "Aucun opérateur médical trouvé avec cet ID."},
+                {"details": "Aucun opérateur médical trouvé avec cet ID."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -383,7 +417,7 @@ class BillViewSet(ModelViewSet):
         manual_parameters=[auth_header_param],
         tags=["bill"]
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=permission_classes)
     def list_with_source(self, request):
         bills = Bill.objects.all()
         serializer = BillSerializer(bills, many=True)

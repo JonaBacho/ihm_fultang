@@ -1,16 +1,83 @@
 from django.contrib import admin
-from .models import Department, Patient, Consultation, MedicalFolder, MedicalFolderPage, Room, PatientAccess, Parameters, ConsultationType, Medicament, Bill
+from mptt.admin import MPTTModelAdmin
+from django.utils.translation import gettext_lazy as _
+from .models import Patient, Appointment, Parameters, ConsultationType, Consultation, MedicalFolder, MedicalFolderPage, Exam, ExamRequest, ExamResult, PolyclinicProductCategory, PolyclinicProduct
 
-# Register your models here.
-admin.site.register(Department)
-admin.site.register(Patient)
-admin.site.register(Consultation)
-admin.site.register(MedicalFolder)
-admin.site.register(MedicalFolderPage)
-admin.site.register(Room)
-admin.site.register(PatientAccess)
-admin.site.register(Parameters)
-admin.site.register(ConsultationType)
-admin.site.register(Medicament)
-admin.site.register(Bill)
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ('firstName', 'lastName', 'gender', 'phoneNumber', 'email', 'condition', 'service', 'status')
+    list_filter = ('gender', 'condition', 'service', 'status')
+    search_fields = ('firstName', 'lastName', 'phoneNumber', 'email')
+    ordering = ('firstName',)
+
+    fieldsets = (
+        (_('Informations personnelles'), {'fields': ('firstName', 'lastName', 'gender', 'birthDate', 'cniNumber', 'address', 'phoneNumber', 'email')}),
+        (_('Informations médicales'), {'fields': ('condition', 'service', 'status')}),
+        (_('Détails administratifs'), {'fields': ('idMedicalStaff', 'idMedicalFolder')}),
+    )
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('atDate', 'reason', 'state', 'status', 'idPatient', 'idMedicalStaff')
+    list_filter = ('state', 'status')
+    search_fields = ('reason', 'idPatient__firstName', 'idPatient__lastName')
+    ordering = ('atDate',)
+
+@admin.register(Parameters)
+class ParametersAdmin(admin.ModelAdmin):
+    list_display = ('weight', 'height', 'temperature', 'bloodPressure', 'heartRate')
+    search_fields = ('idMedicalStaff__username',)
+    ordering = ('addDate',)
+
+@admin.register(ConsultationType)
+class ConsultationTypeAdmin(admin.ModelAdmin):
+    list_display = ('typeDoctor', 'price')
+    ordering = ('typeDoctor',)
+
+@admin.register(Consultation)
+class ConsultationAdmin(admin.ModelAdmin):
+    list_display = ('consultationDate', 'consultationPrice', 'paymentStatus', 'state', 'statePatient')
+    list_filter = ('paymentStatus', 'state', 'statePatient')
+    ordering = ('consultationDate',)
+
+@admin.register(MedicalFolder)
+class MedicalFolderAdmin(admin.ModelAdmin):
+    list_display = ('folderCode', 'isClosed', 'createDate', 'lastModificationDate')
+    ordering = ('createDate',)
+
+@admin.register(MedicalFolderPage)
+class MedicalFolderPageAdmin(admin.ModelAdmin):
+    list_display = ('pageNumber', 'addDate', 'nurseNote', 'doctorNote', 'diagnostic')
+    ordering = ('addDate',)
+
+@admin.register(Exam)
+class ExamAdmin(admin.ModelAdmin):
+    list_display = ('examName', 'examCost')
+    search_fields = ('examName',)
+    ordering = ('examName',)
+
+@admin.register(ExamRequest)
+class ExamRequestAdmin(admin.ModelAdmin):
+    list_display = ('examName', 'examStatus', 'patientStatus', 'idPatient', 'idMedicalStaff')
+    list_filter = ('examStatus', 'patientStatus')
+    ordering = ('addDate',)
+
+@admin.register(ExamResult)
+class ExamResultAdmin(admin.ModelAdmin):
+    list_display = ('addDate', 'notes', 'examFile', 'idPatient', 'idMedicalStaff')
+    ordering = ('addDate',)
+
+@admin.register(PolyclinicProduct)
+class PolyclinicProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'price', 'current_stock', 'min_stock_level', 'status')
+    list_filter = ('category', 'status')
+    search_fields = ('name', 'category__name')
+    ordering = ('name',)
+
+
+class CustomMPTTModelAdmin(MPTTModelAdmin):
+    # specify pixel amount for this ModelAdmin only:
+    mptt_level_indent = 20
+
+admin.site.register(PolyclinicProductCategory, CustomMPTTModelAdmin)
 

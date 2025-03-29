@@ -124,7 +124,7 @@ class ConsultationViewSet(ModelViewSet):
             raise ValidationError({'details': "l'id du medecin passé ne correspond à aucun docteur existant"})
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
+        if self.action in ["create", "update", "partial_update"] or self.request.method in ["POST", "PUT", "PATCH"]:
             return ConsultationCreateSerializer
         else:
             return ConsultationSerializer
@@ -133,8 +133,10 @@ class ConsultationViewSet(ModelViewSet):
         user = self.request.user
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
+        """
         if user.id != serializer.validated_data['idMedicalStaffSender'].id:
             raise ValidationError({"detail": "Vous devez donnez votre id en idMedicalStaffSender"})
+        """
         serializer.save()
 
     def perform_update(self, serializer):
@@ -157,21 +159,21 @@ class ConsultationViewSet(ModelViewSet):
                 'history',
                 openapi.IN_QUERY,
                 description="Si `true`, retourne juste les consultations du medicin qui ne sont plus à pending",
-                type=openapi.TYPE_BOOLEAN,
+                type=openapi.TYPE_STRING,
                 required=False
             ),
             auth_header_param
         ],
         tags=tags
     )
-    @action(methods=["get"], detail=False, url_path='doctor/daily-consultation/(?P<id>[^/.]+)', permission_classes=[ConsultationPermissions])
-    def daily_consultation_doctor(self, request, id):
+    @action(methods=["get"], detail=False, url_path='doctor/(?P<id>[^/.]+)', permission_classes=permission_classes)
+    def consultation_doctor(self, request, id):
         try:
             self.pagination_class = None
             medical_staff = MedicalStaff.objects.get(id=id)
             if medical_staff.role != "Doctor":
-                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_404_NOT_FOUND)
-            queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
+                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_400_BAD_REQUEST)
+            queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff).filter(paymentStatus="Valid")
             history = self.request.query_params.get("history", "false")
             if history and history.lower() == "true":
                 queryset = queryset.exclude(state="Pending")
@@ -180,26 +182,6 @@ class ConsultationViewSet(ModelViewSet):
             else:
                 #queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
                 queryset = queryset.filter(state="Pending")
-                serializer = ConsultationSerializer(queryset, many=True)
-                return Response(serializer.data, status.HTTP_200_OK)
-        except MedicalStaff.DoesNotExist:
-            return Response({"details": "le docteur spécifé n'existe pas"}, status.HTTP_404_NOT_FOUND)
-        
-    @action(methods=["get"], detail=False, url_path='doctor/(?P<id>[^/.]+)', permission_classes=[ConsultationPermissions])
-    def consultation_doctor(self, request, id):
-        try:
-            self.pagination_class = None
-            medical_staff = MedicalStaff.objects.get(id=id)
-            if medical_staff.role != "Doctor":
-                return Response({"details": "le medical staff specifie n'est pas un docteur"}, status.HTTP_404_NOT_FOUND)
-            queryset = Consultation.objects.filter(idMedicalStaffGiver=medical_staff)
-            history = self.request.query_params.get("history", "false")
-            if history and history.lower() == "true":
-                queryset = queryset.exclude(state="Pending")
-                serializer = ConsultationSerializer(queryset, many=True)
-                return Response(serializer.data, status.HTTP_200_OK)
-            else:
-                queryset = queryset.filter(consultationDate__date=now().date()).filter(state="Pending")
                 serializer = ConsultationSerializer(queryset, many=True)
                 return Response(serializer.data, status.HTTP_200_OK)
         except MedicalStaff.DoesNotExist:

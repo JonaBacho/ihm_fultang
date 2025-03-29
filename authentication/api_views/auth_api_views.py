@@ -1,14 +1,29 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.views import TokenObtainPairView
-from authentication.serializers.auth_serializers import CustomTokenObtainPairSerializer, RegistrationSerializer
+from rest_framework_simplejwt.tokens import OutstandingToken, BlacklistedToken
+from authentication.serializers.auth_serializers import CustomTokenObtainPairSerializer, RegistrationSerializer, PasswordResetSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.contrib.auth import get_user_model
 
 # Create your views here.
+
+User = get_user_model()
+
+class LogoutAllView(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request):
+        tokens = OutstandingToken.objects.filter(user_id=request.user.id)
+        for token in tokens:
+            token.blacklist()
+            t, _ = BlacklistedToken.objects.get_or_create(token=token)
+
+        return Response(status=status.HTTP_205_RESET_CONTENT)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -98,7 +113,6 @@ class UserProfileView(APIView):
     def get(self, request):
         user_instance = request.user
         # Retourner les informations de l'utilisateur connecté
-        print(user_instance.is_authenticated)
         user_data = {
             "id": user_instance.id,
             "username": user_instance.username,
@@ -116,3 +130,54 @@ class UserProfileView(APIView):
         return Response(user_data)
 
 
+class PasswordResetView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Réinitialisation du mot de passe",
+        operation_description=(
+                "Cette API permet à un utilisateur de réinitialiser son mot de passe en fournissant "
+                "son email, le nouveau mot de passe et sa confirmation en une seule requête."
+        ),
+        request_body=PasswordResetSerializer,
+        responses={
+            200: openapi.Response(
+                description="Mot de passe réinitialisé avec succès",
+                examples={
+                    "application/json": {
+                        "message": "Mot de passe réinitialisé avec succès",
+                        "tokens": {
+                            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                    }
+                }
+            ),
+            400: openapi.Response(
+                description="Données invalides",
+                examples={
+                    "application/json": {
+                        "password": ["Les mots de passe ne correspondent pas"],
+                        "email": ["Aucun utilisateur trouvé avec cet email"]
+                    }
+                }
+            ),
+            404: openapi.Response(
+                description="Utilisateur non trouvé",
+                examples={
+                    "application/json": {
+                        "error": "Aucun utilisateur trouvé avec cet email"
+                    }
+                }
+            )
+        }
+    )
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            "details": "Mot de passe réinitialisé avec succès",
+        }, status=status.HTTP_200_OK)

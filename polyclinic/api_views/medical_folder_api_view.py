@@ -102,6 +102,7 @@ auth_header_param = openapi.Parameter(
 class MedicalFolderViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated, MedicalFolderPermission]
+    #permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -115,7 +116,7 @@ class MedicalFolderViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list", "retrieve"] or self.request.method in ["GET", "HEAD", "OPTIONS"]:
             return MedicalFolderDetailsSerializer
         else:
             return MedicalFolderSerializer
@@ -143,7 +144,7 @@ class MedicalFolderViewSet(ModelViewSet):
         ],
         tags=tags
     )
-    @action(methods=['post'], detail=True, url_path='add-page')
+    @action(methods=['post'], detail=True, url_path='add-page', permission_classes=permission_classes)
     def add_page(self, request, *args, **kwargs):
         user = self.request.user
         medical_folder = self.get_object()
@@ -179,7 +180,7 @@ class MedicalFolderViewSet(ModelViewSet):
         ],
         tags=tags
     )
-    @action(methods=['put'], detail=True, url_path='update-page/(?P<id>[^/.]+)')
+    @action(methods=['put'], detail=True, url_path='update-page/(?P<id>[^/.]+)', permission_classes=permission_classes)
     def update_page(self, request, id=None, *args, **kwargs):
         try:
             if id is None:
@@ -215,7 +216,7 @@ class MedicalFolderViewSet(ModelViewSet):
         },
         tags=tags
     )
-    @action(methods=['post'], detail=True, url_path='new-params')
+    @action(methods=['post'], detail=True, url_path='new-params', permission_classes=permission_classes)
     def new_params(self, request, *args, **kwargs):
         user = self.request.user
         medical_folder = self.get_object()
@@ -246,7 +247,7 @@ class MedicalFolderViewSet(ModelViewSet):
         },
         tags=tags
     )
-    @action(methods=['put'], detail=True, url_path='update-params/(?P<idParam>[^/.]+)')
+    @action(methods=['put'], detail=True, url_path='update-params/(?P<idParam>[^/.]+)', permission_classes=permission_classes)
     def update_params(self, request, idParam=None, *args, **kwargs):
         try:
             if idParam is None:
@@ -269,14 +270,17 @@ class MedicalFolderViewSet(ModelViewSet):
         },
         tags=tags
     )
-    @action(methods=['get'], detail=True, url_path='last-page')
+    @action(methods=['get'], detail=True, url_path='last-page', permission_classes=permission_classes)
     def last_page(self, request, pk=None, *args, **kwargs):
         medical_folder = self.get_object()
         #last_page = medical_folder.medicalfolderpage_set.order_by('-addDate').first()
-        last_page = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).order_by('-addDate').first()
+        last_page = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).order_by('-pageNumber').first()
+        number_page = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder).count()
         if last_page:
             serializer = MedicalFolderPageSerializer(last_page)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            response_data = serializer.data
+            response_data['totalPage'] = number_page
+            return Response(response_data, status=status.HTTP_200_OK)
         return Response({'details': 'No pages found'}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -301,7 +305,7 @@ class MedicalFolderViewSet(ModelViewSet):
 
 
     @swagger_auto_schema(
-        operation_description="Obtenir une page par id ou par date",
+        operation_description="Obtenir une page par id",
         responses={200: ParametersSerializer,
                    404: openapi.Response(description="Page inexistante"),
                    400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
@@ -310,18 +314,18 @@ class MedicalFolderViewSet(ModelViewSet):
         manual_parameters=[auth_header_param,
            openapi.Parameter('id', openapi.IN_PATH, description="Id de la page",
                              type=openapi.TYPE_INTEGER, required=True),
-           openapi.Parameter(
-               'date',
-               openapi.IN_QUERY,
-               description="pour effectuer un filtre par date",
-               type=openapi.TYPE_BOOLEAN,
-               required=False
-           ),
+           #openapi.Parameter(
+           #    'date',
+           #    openapi.IN_QUERY,
+           #    description="pour effectuer un filtre par date",
+           #    type=openapi.TYPE_BOOLEAN,
+           #    required=False
+           #),
         ],
         tags=tags
     )
-    @action(methods=['get'], detail=True, url_path='get-page/(?P<id>[^/.]+)')
-    def get_page(self, request, id=None, *args, **kwargs):
+    @action(methods=['get'], detail=True, url_path='get-page-by-id/(?P<id>[^/.]+)', permission_classes=permission_classes)
+    def get_page_by_id(self, request, id=None, *args, **kwargs):
         date = request.query_params.get('date', None)
         medical_folder = self.get_object()
         pages = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder)
@@ -331,12 +335,35 @@ class MedicalFolderViewSet(ModelViewSet):
                 return Response({'details': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = MedicalFolderPageSerializer(page)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        if date:
-            page = pages.filter(addDate=date).first()
+        return Response({'details': 'bad request'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_description="Obtenir une page par numero de page",
+        responses={200: ParametersSerializer,
+                   404: openapi.Response(description="Page inexistante"),
+                   400: openapi.Response(description="Requête invalide. Vérifiez les données envoyées."),
+                   403: openapi.Response(description="Token invalide ou expiré."),
+                   },
+        manual_parameters=[auth_header_param,
+           openapi.Parameter('number', openapi.IN_PATH, description="numero de la page",
+                             type=openapi.TYPE_INTEGER, required=True),
+           ],
+        tags=tags
+    )
+    @action(methods=['get'], detail=True, url_path='get-page-by-page-number/(?P<number>[^/.]+)',
+            permission_classes=permission_classes)
+    def get_page_by_page_number(self, request, number=None, *args, **kwargs):
+        medical_folder = self.get_object()
+        pages = MedicalFolderPage.objects.filter(idMedicalFolder=medical_folder)
+        if number:
+            page = pages.filter(pageNumber=number).first()
             if not page:
                 return Response({'details': 'Page not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = MedicalFolderPageSerializer(page)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            response_data = serializer.data
+            page_number = pages.count()
+            response_data['nextPage'] = int(number) + 1 if int(number) + 1 <= page_number else None
+            return Response(response_data, status=status.HTTP_200_OK)
         return Response({'details': 'bad request'}, status=status.HTTP_400_BAD_REQUEST)
 
 

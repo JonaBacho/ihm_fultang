@@ -1,6 +1,6 @@
 from accounting.models import AccountState, BudgetExercise, Account
 from accounting.permissions.accounting_staff_permissions import AccountingStaffPermission
-from accounting.serializers import AccountStateSerializer, AccountingViewSerializer
+from accounting.serializers import AccountStateSerializer, AccountingViewSerializer, AccountStateCreateSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
@@ -94,12 +94,17 @@ auth_header_param = openapi.Parameter(
     )
 )
 class AccountStateViewSet(ModelViewSet):
-    serializer_class = AccountStateSerializer
     permission_classes = [IsAuthenticated, AccountingStaffPermission]
     pagination_class =  CustomPagination
 
     def get_queryset(self):
         return AccountState.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ["create", "partial_update", "update"] or self.request.method in ["post", "patch"]:
+            return AccountStateCreateSerializer
+        else:
+            return AccountStateSerializer
     
     @swagger_auto_schema(
         method='get',
