@@ -7,8 +7,12 @@ import axiosInstance from "../../Utils/axiosInstance.js";
 import {SuccessModal} from "../Modals/SuccessModal.jsx";
 import {ErrorModal} from "../Modals/ErrorModal.jsx";
 import Wait from "../Modals/wait.jsx";
+import { Eye, EyeOff } from 'lucide-react';
 
 export function AddMedicalStaff() {
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+
     const [medicalStaffData, setMedicalStaffData] = useState({
         first_name: '',
         last_name: '',
@@ -33,6 +37,7 @@ export function AddMedicalStaff() {
             ...prevData,
             [name]: value
         }));
+        setPassword(medicalStaffData.password);
     }
 
     useEffect(() => {
@@ -167,12 +172,13 @@ export function AddMedicalStaff() {
                                     required
                                 />
                             </div>
-                            <div>
+                            <div >
                                 <label className={applyLabelStyle()}>
                                     Password
                                 </label>
+                                <div className="h-12 mt-2 rounded-lg flex items-center relative">
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     name="password"
                                     value={medicalStaffData.password}
                                     onChange={handleChange}
@@ -180,6 +186,18 @@ export function AddMedicalStaff() {
                                     placeholder="Enter the user's password"
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-2 p-2 hover:bg-gray-400 rounded-full transition-all duration-300"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5 text-gray-600"/>
+                                    ) : (
+                                        <Eye className="w-5 h-5 text-gray-600"/>
+                                    )}
+                                </button>
+                                </div>
                             </div>
                         </div>
 
