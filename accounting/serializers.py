@@ -41,4 +41,4 @@ class AccountingViewSerializer(ModelSerializer):
     
     class Meta:
         model = AccountState
-        fields = ['id', 'balance', 'account']
+        fields = ['id', 'balance', 'account', 'amount']
