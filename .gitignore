@@ -2,7 +2,7 @@
 
 venv
 .metadata
-
+env
 __pycache__
 .pyc
 .env
