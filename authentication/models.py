@@ -32,6 +32,13 @@ ROLES_ACCOUNTING = [
     ('FinanceManager', 'FinanceManager'),
 ]
 
+
+ACCESS_LEVELS = [
+    ('Executive', 'Executive'),
+    ('Lead', 'Lead'),
+    ('Staff', 'Staff'),
+]
+
 TYPEDOCTOR = [
     ('Specialist', 'Specialist'),
     ('Ophtalmologist', 'Ophtalmologist'),
@@ -47,6 +54,7 @@ class MedicalStaff(AbstractUser):
     address = models.CharField(max_length=255, blank=True, default="Yaounde - damas")
     userType = models.CharField(max_length=255, choices=USER_TYPE, default='Medical', null=False)
     role = models.CharField(max_length=20, choices=ROLES+ROLES_ACCOUNTING, default='NoRole')
+    accessLevel = models.CharField(max_length=20, choices=ACCESS_LEVELS, default='Staff', null=False)
 
     objects = CustomManager()
 
@@ -69,6 +77,9 @@ class MedicalStaff(AbstractUser):
         else:
             # New instance
             self.set_password(self.password)
+
+        if self.is_superuser:
+            self.accessLevel = "Executive"
         super().save(*args, **kwargs)
 
     def __str__(self):
