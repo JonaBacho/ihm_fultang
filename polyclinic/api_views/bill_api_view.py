@@ -2,8 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from polyclinic.models import Bill, MedicalFolderPage, BillItem
 from accounting.models import FinancialOperation, Account
 from polyclinic.permissions.bill_permissions import BillPermissions
-from polyclinic.serializers.bill_items_serializers import BillItemSerializer
-from polyclinic.serializers.bill_serializers import BillSerializer, BillCreateSerializer
+from polyclinic.serializers.bill_items_serializers import BillItemSerializer, BillItemCreateSerializer, BillItemUpdateSerializer
+from polyclinic.serializers.bill_serializers import BillSerializer, BillCreateSerializer, BillUpdateSerializer
 from polyclinic.pagination import CustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -15,6 +15,8 @@ from rest_framework import status
 from accounting.models import AccountState, BudgetExercise
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
+from django.db import transaction
+from polyclinic.services.bill_service import BillService
 
 
 tags = ["bill"]
@@ -112,11 +114,14 @@ class BillViewSet(ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"] or self.request.method in ["POST", "PUT", "PATCH"]:
+        if self.action == "create" or self.request.method == "POST":
             return BillCreateSerializer
+        elif self.action in ["update", "partial_update"] or self.request.method in ["PUT", "PATCH"]:
+            return BillUpdateSerializer
         else:
             return BillSerializer
 
+    @transaction.atomic
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
@@ -168,7 +173,7 @@ class BillViewSet(ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
+    @transaction.atomic
     def perform_update(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
@@ -222,6 +227,69 @@ class BillViewSet(ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except BillItem.DoesNotExist:
             return Response({"details": "cet item n'existe pas"}, status=status.HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        method='put',
+        operation_summary="Met à jour un item de facture",
+        operation_description="Met à jour un item d'une facture existante",
+        manual_parameters=[
+            openapi.Parameter(
+                'id', openapi.IN_PATH,
+                type=openapi.TYPE_INTEGER,
+                description="ID de la facture",
+                required=True
+            ),
+            openapi.Parameter(
+                'item_id', openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                description="ID de l'item à mettre à jour",
+                required=True
+            ),
+            auth_header_param
+        ],
+        request_body=BillItemCreateSerializer,  # ou un serializer spécifique si nécessaire
+        responses={200: openapi.Response('Item mis à jour', BillItemSerializer)},
+        tags=["bill"]
+    )
+    @action(methods=['put'], detail=True, url_path="bill-items/update", permission_classes=permission_classes)
+    @transaction.atomic
+    def update_bill_item(self, request, id=None):
+        """
+        Met à jour un BillItem et recalcule le total.
+        """
+        bill = self.get_object()
+        item_id = request.query_params.get('item_id')
+
+        if not item_id:
+            return Response({"error": "Paramètre 'item_id' manquant"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            bill_item = BillItem.objects.get(id=item_id, bill=bill)
+        except BillItem.DoesNotExist:
+            return Response({"error": "BillItem introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BillItemCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        validated_data = serializer.validated_data
+        validated_data['bill'] = bill
+
+        # Supprimer l'ancien item pour recréer un nouveau proprement
+        bill_item.delete()
+
+        bill_service = BillService()
+        try:
+            new_item = bill_service.create_bill_item(validated_data, is_accounting=not bool(bill.patient))
+        except serializer.ValidationError as e:
+            transaction.set_rollback(True)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Mettre à jour le montant total de la facture
+        bill.amount = sum(item.total for item in BillItem.objects.filter(bill=bill))
+        bill.save()
+
+        response_serializer = BillItemSerializer(new_item)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         method='get',

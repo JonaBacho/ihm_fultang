@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
+from django.db import transaction
 
 tags = ["medical-folder"]
 auth_header_param = openapi.Parameter(
@@ -217,6 +218,7 @@ class MedicalFolderViewSet(ModelViewSet):
         tags=tags
     )
     @action(methods=['post'], detail=True, url_path='new-params', permission_classes=permission_classes)
+    @transaction.atomic
     def new_params(self, request, *args, **kwargs):
         user = self.request.user
         medical_folder = self.get_object()

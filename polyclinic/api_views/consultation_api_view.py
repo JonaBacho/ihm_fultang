@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from django.utils.timezone import now
+from django.db import transaction
 
 from polyclinic.serializers.patient_access_serializers import PatientAccessSerializer
 
@@ -129,6 +130,7 @@ class ConsultationViewSet(ModelViewSet):
         else:
             return ConsultationSerializer
 
+    @transaction.atomic
     def perform_create(self, serializer):
         user = self.request.user
         if 'id' in serializer.validated_data:

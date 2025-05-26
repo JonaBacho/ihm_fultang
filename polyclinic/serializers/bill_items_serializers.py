@@ -12,6 +12,12 @@ class BillItemCreateSerializer(serializers.ModelSerializer):
         model = BillItem
         exclude = ['id', 'bill']
 
+class BillItemUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    class Meta:
+        model = BillItem
+        exclude = ['bill']
+
 
 
 

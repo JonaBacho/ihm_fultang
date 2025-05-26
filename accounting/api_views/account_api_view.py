@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from accounting.models import FinancialOperation
 from accounting.serializers import FinancialOperationSerializer
+from django.db import transaction
 
 tags = ["account"]
 auth_header_param = openapi.Parameter(
@@ -99,6 +100,7 @@ class AccountViewSet(ModelViewSet):
     def get_queryset(self):
         return Account.objects.all()
 
+    @transaction.atomic
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')

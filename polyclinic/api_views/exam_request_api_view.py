@@ -9,6 +9,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
+from django.db import transaction
 
 tags = ["exam-request"]
 auth_header_param = openapi.Parameter(
@@ -110,6 +111,8 @@ class ExamRequestViewSet(ModelViewSet):
         elif self.action in ["partial_update", "update"]:
             return ExamRequestCreateSerializer
         return ExamRequestSerializer
+
+    @transaction.atomic
     def perform_create(self, serializer):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')

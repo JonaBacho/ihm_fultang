@@ -4,7 +4,7 @@ from rest_framework import serializers
 from accounting.serializers import FinancialOperationSerializer
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 from polyclinic.models import Bill, BillItem, Patient
-from polyclinic.serializers.bill_items_serializers import BillItemCreateSerializer, BillItemSerializer
+from polyclinic.serializers.bill_items_serializers import BillItemCreateSerializer, BillItemSerializer, BillItemUpdateSerializer
 from polyclinic.services.bill_service import BillService
 
 class BillSerializer(serializers.ModelSerializer):
@@ -59,3 +59,40 @@ class BillCreateSerializer(serializers.ModelSerializer):
         print("Final Bill Amount:", bill.amount)
 
         return bill
+
+
+class BillUpdateSerializer(serializers.ModelSerializer):
+    bill_items = BillItemCreateSerializer(many=True, required=False)
+
+    class Meta:
+        model = Bill
+        exclude = ['billCode', 'date', 'isAccounted']
+
+    def update(self, instance, validated_data):
+        # Update des champs simples de la facture
+        instance.operation = validated_data.get('operation', instance.operation)
+        instance.operator = validated_data.get('operator', instance.operator)
+        instance.patient = validated_data.get('patient', instance.patient)
+        instance.save()
+
+        # Supprimer les anciens items
+        instance.billitem_set.all().delete()
+
+        # Recréer les nouveaux items
+        bill_items_data = validated_data.get('bill_items')
+        if not bill_items_data:
+            raise serializers.ValidationError({"detail": "Bill items required for update"})
+
+        total = 0
+        is_accounting = not bool(instance.patient)
+
+        for item_data in bill_items_data:
+            item_data['bill'] = instance
+            bill_service = BillService()
+            bill_item = bill_service.create_bill_item(item_data, is_accounting=is_accounting)
+            total += bill_item.total
+
+        instance.amount = total
+        instance.save()
+
+        return instance
