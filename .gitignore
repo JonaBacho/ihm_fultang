@@ -23,4 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# à cause du backend present sur une autre branche
 accounting/
+authentication/
+polyclinic/
+fultang/
+db.sqlite3
