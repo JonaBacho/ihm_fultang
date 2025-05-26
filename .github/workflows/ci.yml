@@ -66,12 +66,12 @@ jobs:
                 sudo docker rm fultang-frontend
               fi
               # Remove old image
-              sudo docker rmi -f \$FULTANG_IMAGE || true
+              sudo docker rmi -f $FULTANG_IMAGE || true
               # Pull latest image
-              sudo docker pull \$FULTANG_IMAGE
+              sudo docker pull $FULTANG_IMAGE
               # Run container with port binding
               sudo docker run -d \
                 --name fultang-frontend \
                 -p 9000:9000 \
-                \$FULTANG_IMAGE
+                $FULTANG_IMAGE
             ENDSSH
