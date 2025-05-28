@@ -11,7 +11,9 @@ export default defineConfig({
   plugins: [react()],
   preview: {
     port: 9000,
-    strictPort: true
+    strictPort: true,
+    host: true,
+    allowedHosts: ['fultang.ddns.net'],
   },
   server: {
     port: 9000,
