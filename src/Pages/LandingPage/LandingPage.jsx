@@ -62,7 +62,7 @@ export function LandingPage() {
     {/* Image en background avec overlay */}
     <div className="absolute inset-0">
         <img 
-            src="/welcomeImage.png" 
+            src="/welcomeImage.png"
             alt="Background"
             className="w-full h-full md-5 object-cover" 
         />
