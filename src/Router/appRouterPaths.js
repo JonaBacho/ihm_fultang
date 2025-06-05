@@ -59,6 +59,14 @@ export const AppRoutesPaths = {
     laboratoryExamenDetail: "/laboratory-assistant/exams-list/details/:id",
     laboratoryExamenHistories: "/laboratory-assistant/exams-history",
     laboratoryExamResultDetails: "/laboratory-assistant/exams-history/details/:id",
-    laboratoryNotification: "/laboratory-assistant/notifications"
+    laboratoryNotification: "/laboratory-assistant/notifications",
+
+    financialAccountantHome: "/accountant-financial/home",
+    financialAccountantJournalEntries: "/accountant-financial/journat-entries",
+    financialAccountantInvoices: "/accountant-financial/invoices",
+    financialAccountantPayments: "/accountant-financial/payments",
+    financialAccountantBudgets: "/accountant-financial/budgets",
+    financialAccountantReports: "/accountant-financial/reports",
+
 
 }
