@@ -129,6 +129,7 @@ class BillViewSet(ModelViewSet):
         bill = serializer.save()
 
         bill_items = self.request.data.get('bill_items', None)
+        print(bill_items)
         if not bill_items:
             raise ValidationError({"detail": "Bill items required"})
 
