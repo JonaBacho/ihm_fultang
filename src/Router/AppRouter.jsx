@@ -73,12 +73,8 @@ export function AppRoute()
     const LaboratoryNotifications = React.lazy(async () => ({default: (await import("../Pages/Laboratory/Notification.jsx")).Notification,}));
 
 
-    const FinancialAccountantHomePage = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/HomePage.jsx")).HomePage,}));
-    const FinancialAccountantJournalEntries = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/Accounting/JournalEntries.jsx")).JournalEntriesPage,}));
-    const FinancialAccountantInvoices = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/Accounting/Invoices.jsx")).InvoicesPage,}));
-    const FinancialAccountantPayments = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/Accounting/Payments.jsx")).PaymentsPage,}));
-    const FinancialAccountantBudgets = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/Report&Budgets/Budgets.jsx")).BudgetsPage,}));
-    const FinancialAccountantReports = React.lazy(async () => ({default: (await import("../Pages/FinancialAccountant/Report&Budgets/Reports.jsx")).ReportsAnalyticsPage,}));
+
+
 
 
     return (
@@ -147,14 +143,6 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.laboratoryExamenHistories} element={<LaboratoryExamenHistories/>}/>
                 <Route path={AppRoutesPaths.laboratoryExamResultDetails} element={<LaboratoryExamResulDetails/>}/>
                 <Route path={AppRoutesPaths.laboratoryNotification} element={<LaboratoryNotifications/>}/>
-
-
-                <Route path={AppRoutesPaths.financialAccountantHome} element={<FinancialAccountantHomePage/>}/>
-                <Route path={AppRoutesPaths.financialAccountantJournalEntries} element={<FinancialAccountantJournalEntries/>}/>
-                <Route path={AppRoutesPaths.financialAccountantInvoices} element={<FinancialAccountantInvoices/>}/>
-                <Route path={AppRoutesPaths.financialAccountantPayments} element={<FinancialAccountantPayments/>}/>
-                <Route path={AppRoutesPaths.financialAccountantBudgets} element={<FinancialAccountantBudgets/>}/>
-                <Route path={AppRoutesPaths.financialAccountantReports} element={<FinancialAccountantReports/>}/>
 
 
 
