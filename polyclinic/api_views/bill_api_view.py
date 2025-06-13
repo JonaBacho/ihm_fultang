@@ -133,6 +133,7 @@ class BillViewSet(ModelViewSet):
             raise ValidationError({"detail": "Bill items required"})
 
         bill_items = [dict(item) for item in bill_items]
+        print(bill_items)
 
         total_amount = sum(item['unityPrice'] * item['quantity'] for item in bill_items)
 
