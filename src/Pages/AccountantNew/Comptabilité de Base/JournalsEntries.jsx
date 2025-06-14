@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Plus, Edit2, Trash2, Eye, CalendarDays, BookOpen, CheckCircle, XCircle, FileText, TrendingDown, TrendingUp, AlertTriangle, Save, Send, Filter } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye, BookOpen, CheckCircle, FileText, TrendingDown, TrendingUp, AlertTriangle, Save, Send, Filter } from "lucide-react";
 import {AccountantDashBoard} from "../../Accountant/Components/AccountantDashboard.jsx";
-// Pour générer des IDs uniques pour les lignes d'écriture
 import { v4 as uuidv4 } from 'uuid';
 import {FinancialAccountantNavLink} from "../NavLink.js";
 import {AccountantNavBar} from "../../Accountant/Components/AccountantNavBar.jsx";
@@ -424,16 +423,7 @@ export function JournalEntries() {
         );
     }
 
-    if (isLoading && !showEntryModal) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center p-4">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-teal-600 mx-auto mb-4"></div>
-                    <p className="text-teal-700 font-medium">Chargement des écritures...</p>
-                </div>
-            </div>
-        );
-    }
+
 
     if (errorStatus) {
         return (
@@ -449,7 +439,7 @@ export function JournalEntries() {
     return (
         <AccountantDashBoard linkList={FinancialAccountantNavLink} requiredRole={"Accountant"}>
             <AccountantNavBar></AccountantNavBar>
-        <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8">
+        <div className="bg-white min-h-screen p-4 md:p-8">
             <div className="max-w-full mx-auto">
                 {/* Header modernisé */}
                 <div className="bg-gradient-to-r from-primary-end to-primary-start  rounded-2xl text-white p-8 mb-8 shadow-2xl relative overflow-hidden">
@@ -471,24 +461,24 @@ export function JournalEntries() {
                 </div>
 
                 {/* Filtres modernisés */}
-                <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
+                <div className="bg-gray-100 rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
                     <div className="flex items-center mb-4">
-                        <Filter className="h-6 w-6 text-teal-600 mr-2" />
+                        <Filter className="h-6 w-6 text-primary-end mr-2" />
                         <h2 className="text-xl font-semibold text-gray-800">Filtres de recherche</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="relative">
                             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                             <input type="text" placeholder=" Rechercher par N° Pièce ou Libellé..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                                   className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-teal-400" />
+                                   className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:bg-primary-end focus:border-primary-end transition-all hover:border-primary-end" />
                         </div>
                         <select value={journalFilter} onChange={(e) => setJournalFilter(e.target.value)}
-                                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-teal-400">
+                                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-end focus:border-primary-end transition-all hover:border-primary-end">
                             <option value=""> Tous les journaux</option>
                             {journalTypes.map(jt => <option key={jt.code} value={jt.code}>{jt.name} ({jt.code})</option>)}
                         </select>
                         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-                                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-teal-400">
+                                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-end focus:border-primary-end transition-all hover:border-primary-end">
                             <option value=""> Tous les statuts</option>
                             <option value="Brouillon"> Brouillon</option>
                             <option value="Équilibrée"> Équilibrée</option>
@@ -500,9 +490,9 @@ export function JournalEntries() {
                 {/* Tableau modernisé */}
                 {filteredEntries && filteredEntries.length > 0 ? (
                     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                        <div className="overflow-x-auto">
+                        <div>
                             <table className="w-full">
-                                <thead className="bg-gradient-to-r from-teal-600 to-teal-800">
+                                <thead className="bg-gradient-to-r from-primary-end to-primary-start">
                                 <tr>
                                     {[' Date', ' N° Pièce', ' Journal', ' Libellé', ' Débit', ' Crédit', ' Statut', ' Actions'].map((header, index) => (
                                         <th key={header} className={`px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider ${index === 0 ? 'rounded-tl-2xl' : ''} ${index === 7 ? 'rounded-tr-2xl' : ''}`}>
@@ -564,10 +554,12 @@ export function JournalEntries() {
                             </table>
                         </div>
                     </div>
+
                 ) : (
+
                     <div className="text-center bg-white p-16 rounded-2xl shadow-xl border border-gray-100">
                         <div className="mb-8 relative">
-                            <FileText className="h-24 w-24 mx-auto text-teal-600 opacity-70" />
+                            <FileText className="h-24 w-24 mx-auto text-primary-end opacity-70" />
                             <span className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full bg-teal-200 rounded-full animate-ping opacity-25"></span>
                         </div>
                         <h2 className="text-3xl font-bold text-teal-700 mb-4"> Aucune écriture trouvée</h2>
@@ -575,7 +567,7 @@ export function JournalEntries() {
                             Commencez à enregistrer vos opérations financières ou ajustez vos filtres de recherche pour trouver les écritures existantes.
                         </p>
                         <button onClick={handleOpenCreateModal}
-                                className="inline-flex items-center px-8 py-4 text-white rounded-xl bg-gradient-to-r from-teal-600 to-teal-800 font-semibold hover:from-teal-700 hover:to-teal-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                className="inline-flex items-center px-8 py-4 text-white rounded-xl bg-gradient-to-r from-primary-end to-teal-800 font-semibold hover:from-teal-700 hover:to-teal-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                             <Plus size={24} className="mr-3" />
                              Créer votre première écriture
                         </button>

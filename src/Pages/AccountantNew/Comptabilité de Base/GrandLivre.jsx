@@ -278,15 +278,15 @@ export function GrandLivreBalance() {
                 <div className="ml-5 bg-gradient-to-r from-primary-end to-primary-start rounded-xl text-white p-6 md:p-8 mb-8 shadow-xl">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <div>
-                            <h1 className="text-3xl font-bold mb-1">Grand Livre et Balance</h1>
-                            <p className="opacity-90 text-sm">Consultez les soldes et mouvements comptables détaillés</p>
+                            <h1 className="text-3xl font-bold mb-1">General Ledger and Trial Balance</h1>
+                            <p className="opacity-90 text-sm">View detailed accounting balances and movements</p>
                         </div>
                         <div className="flex space-x-3 mt-4 md:mt-0">
                             <button
                                 onClick={() => setActiveView('balance')}
                                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                                     activeView === 'balance'
-                                        ? 'bg-white text-blue-600'
+                                        ? 'bg-primary-start text-white font-bold'
                                         : 'bg-blue-600/20 text-white hover:bg-blue-600/30'
                                 }`}
                             >
@@ -297,7 +297,7 @@ export function GrandLivreBalance() {
                                 onClick={() => setActiveView('trial')}
                                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                                     activeView === 'trial'
-                                        ? 'bg-white text-blue-600'
+                                        ? 'bg-white text-primary-end'
                                         : 'bg-blue-600/20 text-white hover:bg-blue-600/30'
                                 }`}
                             >
@@ -339,7 +339,7 @@ export function GrandLivreBalance() {
                             <div className="lg:col-span-1">
                                 <div className="bg-white rounded-xl shadow-sm border">
                                     <div className="p-6 border-b">
-                                        <h3 className="text-lg font-semibold text-gray-900">Filtres</h3>
+                                        <h3 className="text-lg font-semibold text-gray-900">Filter</h3>
                                     </div>
                                     <div className="p-4">
                                         {/* Recherche */}
@@ -392,7 +392,7 @@ export function GrandLivreBalance() {
                                             <select
                                                 value={dateRange}
                                                 onChange={(e) => setDateRange(e.target.value)}
-                                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-end"
                                             >
                                                 <option value="month">Ce mois</option>
                                                 <option value="quarter">Ce trimestre</option>
@@ -416,7 +416,7 @@ export function GrandLivreBalance() {
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="text-gray-600">Total Crédits</span>
-                                                <span className="font-semibold text-blue-600">
+                                                <span className="font-semibold text-primary-end">
                                                     {totalCredit.toLocaleString()} FCFA
                                                 </span>
                                             </div>
@@ -458,7 +458,7 @@ export function GrandLivreBalance() {
                                                     <Download className="w-4 h-4 mr-1" />
                                                     Export
                                                 </button>
-                                                <button className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                                                <button className="bg-teal-700 text-white px-3 py-2 rounded-lg hover:bg-primary-end flex items-center duration-300 transition-all">
                                                     <BarChart3 className="w-4 h-4 mr-1" />
                                                     Analyser
                                                 </button>
@@ -548,7 +548,7 @@ export function GrandLivreBalance() {
                                                                 e.stopPropagation();
                                                                 handleAccountClick(account);
                                                             }}
-                                                            className="text-blue-600 hover:text-blue-900"
+                                                            className="text-primary-end hover:text-teal-800"
                                                         >
                                                             <Eye className="w-4 h-4" />
                                                         </button>
@@ -564,7 +564,7 @@ export function GrandLivreBalance() {
                                                 <td className="px-6 py-4 text-right text-sm font-semibold text-green-600">
                                                     {totalDebit.toLocaleString()}
                                                 </td>
-                                                <td className="px-6 py-4 text-right text-sm font-semibold text-blue-600">
+                                                <td className="px-6 py-4 text-right text-sm font-semibold text-primary-end">
                                                     {totalCredit.toLocaleString()}
                                                 </td>
                                                 <td className="px-6 py-4 text-right text-sm font-semibold text-gray-900">
@@ -664,7 +664,7 @@ export function GrandLivreBalance() {
                                                 {movement.date}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-teal-800">
                                                         {movement.journal}
                                                     </span>
                                             </td>
@@ -741,7 +741,7 @@ export function GrandLivreBalance() {
                                         </div>
                                         <button
                                             onClick={exportData}
-                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+                                            className="bg-primary-end text-white px-4 py-2 rounded-lg hover:bg-teal-700 duration-300 transition-all flex items-center"
                                         >
                                             <Download className="w-4 h-4 mr-2" />
                                             Export PDF
@@ -763,7 +763,7 @@ export function GrandLivreBalance() {
                                     </div>
                                     <div className="bg-white rounded-lg p-4 border">
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold text-blue-600">
+                                            <div className="text-2xl font-bold text-primary-end">
                                                 {totalCredit.toLocaleString()}
                                             </div>
                                             <div className="text-sm text-gray-600 mt-1">Total Crédits (FCFA)</div>
@@ -838,7 +838,7 @@ export function GrandLivreBalance() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-green-600 font-medium">
                                                     {debitTotal.toLocaleString()}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-blue-600 font-medium">
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-primary-end font-medium">
                                                     {creditTotal.toLocaleString()}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

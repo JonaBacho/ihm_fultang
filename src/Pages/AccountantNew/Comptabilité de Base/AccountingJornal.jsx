@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import  { useState } from 'react';
 import {
-    BookOpen,
     FileText,
     CreditCard,
     Wallet,
     Settings,
     TrendingUp,
-    Download,
     Filter,
-    Calendar,
     Search,
     Eye,
-    Lock,
     CheckCircle,
     AlertCircle,
-    Plus,
     BarChart3,
     PieChart
 } from 'lucide-react';
@@ -22,8 +17,9 @@ import {AccountantDashBoard} from "../../Accountant/Components/AccountantDashboa
 import {FinancialAccountantNavLink} from "../NavLink.js";
 import {AccountantNavBar} from "../../Accountant/Components/AccountantNavBar.jsx";
 
-export function JournauxComptables  ()
+export function JournauxComptables()
 {
+
     const [selectedJournal, setSelectedJournal] = useState('VTE');
     const [dateRange, setDateRange] = useState('week');
     const [searchTerm, setSearchTerm] = useState('');
@@ -217,14 +213,14 @@ export function JournauxComptables  ()
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">Validées</span>
                                             <span className="font-semibold text-green-600">
-                      {currentJournal.entries.filter(e => e.status === 'validated').length}
-                    </span>
+                                                 {currentJournal.entries.filter(e => e.status === 'validated').length}
+                                             </span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">En attente</span>
                                             <span className="font-semibold text-orange-600">
-                      {currentJournal.entries.filter(e => e.status === 'pending').length}
-                    </span>
+                                                {currentJournal.entries.filter(e => e.status === 'pending').length}
+                                             </span>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +250,7 @@ export function JournauxComptables  ()
                                                 Filtres
                                             </button>
                                             <button
-                                                className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                                                className="bg-primary-end text-white px-3 py-2 rounded-lg hover:bg-primary-end flex items-center">
                                                 <PieChart className="w-4 h-4 mr-1"/>
                                                 Analyser
                                             </button>
@@ -271,7 +267,7 @@ export function JournauxComptables  ()
                                                 <select
                                                     value={dateRange}
                                                     onChange={(e) => setDateRange(e.target.value)}
-                                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:bg-primary-end focus:border-transparent"
                                                 >
                                                     <option value="week">Cette semaine</option>
                                                     <option value="month">Ce mois</option>
@@ -283,7 +279,7 @@ export function JournauxComptables  ()
                                                 <label
                                                     className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
                                                 <select
-                                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:bg-primary-end focus:border-transparent">
                                                     <option value="">Tous les statuts</option>
                                                     <option value="validated">Validées</option>
                                                     <option value="pending">En attente</option>
@@ -300,7 +296,7 @@ export function JournauxComptables  ()
                                                         value={searchTerm}
                                                         onChange={(e) => setSearchTerm(e.target.value)}
                                                         placeholder="Rechercher..."
-                                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:bg-primary-end focus:border-transparent"
                                                     />
                                                 </div>
                                             </div>
@@ -346,28 +342,27 @@ export function JournauxComptables  ()
                                                     {entry.patient || entry.fournisseur || entry.reference || '-'}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <span className={entry.montant >= 0 ? 'text-green-600' : 'text-red-600'}>
-                            {entry.montant >= 0 ? '+' : ''}{entry.montant.toLocaleString()} FCFA
-                          </span>
+                                                  <span className={entry.montant >= 0 ? 'text-green-600' : 'text-red-600'}>
+                                                    {entry.montant >= 0 ? '+' : ''}{entry.montant.toLocaleString()} FCFA
+                                                  </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                                     {entry.status === 'validated' ? (
-                                                        <span
-                                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              <CheckCircle className="w-3 h-3 mr-1"/>
-                              Validée
-                            </span>
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                          <CheckCircle className="w-3 h-3 mr-1"/>
+                                                          Validée
+                                                        </span>
                                                     ) : (
                                                         <span
                                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                              <AlertCircle className="w-3 h-3 mr-1"/>
-                              En attente
-                            </span>
+                                                            <AlertCircle className="w-3 h-3 mr-1"/>
+                                                            En attente
+                                                        </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                                     <div className="flex justify-center space-x-2">
-                                                        <button className="text-blue-600 hover:text-blue-900">
+                                                        <button className="text-primary-end hover:text-teal-800">
                                                             <Eye className="w-4 h-4"/>
                                                         </button>
                                                         {entry.status === 'pending' && (
@@ -396,7 +391,7 @@ export function JournauxComptables  ()
                                             Précédent
                                         </button>
                                         <button
-                                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                                            className="px-3 py-1 bg-primary-end text-white text-sm rounded hover:bg-teal-700">
                                             1
                                         </button>
                                         <button

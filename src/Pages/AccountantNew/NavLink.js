@@ -229,7 +229,7 @@ export const FinancialAccountantNavLink = [
                 description: "Track tax deadlines"
             }
         ]
-    },*/
+    },
 
     // Financial Analysis
     {
