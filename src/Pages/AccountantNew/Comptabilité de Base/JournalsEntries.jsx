@@ -422,9 +422,9 @@ export function JournalEntries() {
     return (
         <AccountantDashBoard linkList={FinancialAccountantNavLink} requiredRole={"Accountant"}>
             <AccountantNavBar />
-            <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+            <div className="min-h-screen  p-4 md:p-8">
                 <div className="max-w-full mx-auto">
-                    <div className={`bg-gradient-to-r from-${themeColors.primaryStart} to-${themeColors.primaryEnd} rounded-xl text-white p-6 md:p-8 mb-8 shadow-xl`}>
+                    <div className={`bg-gradient-to-r from-primary-end to-primary-start rounded-xl text-white p-6 md:p-8 mb-8 shadow-xl`}>
                         <div className="flex flex-col md:flex-row justify-between items-center">
                             <div>
                                 <h1 className="text-3xl font-bold mb-1">Saisie des Écritures Comptables</h1>

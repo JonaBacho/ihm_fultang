@@ -59,13 +59,13 @@ export const FinancialAccountantNavLink = [
             {
                 icon: FaBook,
                 name: "Accounting Journals",
-                link: appRoutes.accountingJournals,
+                link: appRoutes.financialAccountantAccountingJournals,
                 description: "View journals (Sales, Purchases, Bank, Cash, Adjustments)"
             },
             {
                 icon: FaBook,
                 name: "Ledger & Trial Balance",
-                link: appRoutes.ledgerAndBalance,
+                link: appRoutes.financialAccountantAccountingGrandLivre,
                 description: "View the ledger and trial balance"
             }
         ]
