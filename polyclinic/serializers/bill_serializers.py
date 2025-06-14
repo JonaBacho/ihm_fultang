@@ -33,8 +33,16 @@ class BillCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        operation = validated_data['operation']
+        if not operation:
+            raise serializers.ValidationError({"details": "Aucune opération financière associée à cette facture."})
+
+        account = operation.account
+        if not account:
+            raise serializers.ValidationError({"details": "Aucun compte associé à cette opération financière."})
+
         bill_data = {
-            'operation': validated_data['operation'],
+            'operation': operation,
             'operator': validated_data['operator'],
         }
         is_accounting = True

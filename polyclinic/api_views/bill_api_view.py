@@ -128,31 +128,6 @@ class BillViewSet(ModelViewSet):
 
         bill = serializer.save()
 
-        bill_items = self.request.data.get('bill_items', None)
-        print(bill_items)
-        if not bill_items:
-            raise ValidationError({"detail": "Bill items required"})
-
-        bill_items = [dict(item) for item in bill_items]
-        print(bill_items)
-
-        total_amount = sum(item['unityPrice'] * item['quantity'] for item in bill_items)
-
-        bill.amount = total_amount
-        bill.save()
-
-        for item in bill_items:
-            item.pop('bill', None)
-            BillItem.objects.create(bill=bill, **item)
-
-        operation = bill.operation
-        if not operation:
-            raise ValidationError({"details": "Aucune opération financière associée à cette facture."})
-
-        account = operation.account
-        if not account:
-            raise ValidationError({"details": "Aucun compte associé à cette opération financière."})
-
         current_date = timezone.now().date()
         budget_exercises = BudgetExercise.objects.filter(
             start__lte=current_date,
