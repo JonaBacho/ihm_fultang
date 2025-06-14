@@ -72,7 +72,7 @@ export function LoginPage()
         }
         else if (response === "Accountant")
         {
-            navigate(appRouterPaths.accountantPage)
+            navigate(appRouterPaths.financialAccountantHome)
         }
         else if (response === "bad role")
         {

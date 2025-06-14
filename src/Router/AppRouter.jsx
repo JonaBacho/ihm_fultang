@@ -75,6 +75,7 @@ export function AppRoute()
 
     const FinancialAccountantHome = React.lazy(async () => ({default: (await import("../Pages/AccountantNew/Home/HomePage.jsx")).FinancialAccountantHomePage,}));
     const FinancialAccountantChartOfAccount = React.lazy(async () => ({default: (await import("../Pages/AccountantNew/Comptabilité de Base/PlanComptable.jsx")).ChartOfAccounts,}));
+    const FinancialAccountantJournalEntries = React.lazy(async () => ({default: (await import("../Pages/AccountantNew/Comptabilité de Base/JournalsEntries.jsx")).JournalEntries,}));
 
 
 
@@ -151,6 +152,7 @@ export function AppRoute()
 
                 <Route path={AppRoutesPaths.financialAccountantHome} element={<FinancialAccountantHome/>}/>
                 <Route path={AppRoutesPaths.financialAccountantChartOfAccount} element={<FinancialAccountantChartOfAccount/>}/>
+                <Route path={AppRoutesPaths.financialAccountantJournalEntries} element={<FinancialAccountantJournalEntries/>}/>
 
 
 

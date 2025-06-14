@@ -53,7 +53,7 @@ export const FinancialAccountantNavLink = [
             {
                 icon: FaEdit,
                 name: "Journal Entries",
-                link: appRoutes.journalEntries,
+                link: appRoutes.financialAccountantJournalEntries,
                 description: "Record accounting transactions"
             },
             {
