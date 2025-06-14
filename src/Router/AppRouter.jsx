@@ -73,6 +73,10 @@ export function AppRoute()
     const LaboratoryNotifications = React.lazy(async () => ({default: (await import("../Pages/Laboratory/Notification.jsx")).Notification,}));
 
 
+    const FinancialAccountantHome = React.lazy(async () => ({default: (await import("../Pages/AccountantNew/Home/HomePage.jsx")).FinancialAccountantHomePage,}));
+    const FinancialAccountantChartOfAccount = React.lazy(async () => ({default: (await import("../Pages/AccountantNew/Comptabilité de Base/PlanComptable.jsx")).ChartOfAccounts,}));
+
+
 
 
 
@@ -143,6 +147,11 @@ export function AppRoute()
                 <Route path={AppRoutesPaths.laboratoryExamenHistories} element={<LaboratoryExamenHistories/>}/>
                 <Route path={AppRoutesPaths.laboratoryExamResultDetails} element={<LaboratoryExamResulDetails/>}/>
                 <Route path={AppRoutesPaths.laboratoryNotification} element={<LaboratoryNotifications/>}/>
+
+
+                <Route path={AppRoutesPaths.financialAccountantHome} element={<FinancialAccountantHome/>}/>
+                <Route path={AppRoutesPaths.financialAccountantChartOfAccount} element={<FinancialAccountantChartOfAccount/>}/>
+
 
 
 

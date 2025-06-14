@@ -62,6 +62,7 @@ export const AppRoutesPaths = {
     laboratoryNotification: "/laboratory-assistant/notifications",
 
     financialAccountantHome: "/accountant-financial/home",
+    financialAccountantChartOfAccount : "/accountant-financial/chart-account",
     financialAccountantJournalEntries: "/accountant-financial/journat-entries",
     financialAccountantInvoices: "/accountant-financial/invoices",
     financialAccountantPayments: "/accountant-financial/payments",
