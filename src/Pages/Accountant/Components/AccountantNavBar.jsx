@@ -14,7 +14,7 @@ export function AccountantNavBar() {
     <>
       <div className="border-b-2 m-3  border-b-gray-300">
         <div className="w-full h-[70px] flex justify-between">
-          <h1 className="ml-3 text-4xl text-secondary mt-3.5 font-bold">
+          <h1 className="ml-7 text-4xl text-secondary mt-3.5 font-bold">
             Accountant
           </h1>
           <div className="flex gap-3 mt-3.5 mb-4 mr-5">
