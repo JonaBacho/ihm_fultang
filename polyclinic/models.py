@@ -414,6 +414,14 @@ class Bill(models.Model):
 
         return f"{today}-{operation_code}-{self.operator.cniNumber}-{unique_id}"
 
+    def create_accounting_entry(self):
+        """Génère automatiquement l'écriture comptable pour la facture"""
+        return AccountingService.create_consultation_entry(self.consultation)
+    
+    def record_payment(self, amount, method='CASH'):
+        """Enregistre un paiement sur la facture"""
+        return AccountingService.create_payment_entry(self, amount, method)
+
     def save(self, *args, **kwargs):
         if not self.billCode:  # Génère un billCode uniquement s'il n'existe pas encore
             self.billCode = self.generate_bill_code()
