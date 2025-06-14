@@ -132,10 +132,10 @@ export function FinancialAccountantHomePage() {
                         color="bg-yellow-500"
                     />
                 </div>
-                
+
 
                 {/* Actions rapides */}
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         <FaChartBar className="mr-2" />
                         Accès Rapide - Comptabilité
@@ -167,7 +167,7 @@ export function FinancialAccountantHomePage() {
                 {/* Tableaux de bord et activités récentes */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Répartition des dépenses */}
-                    <div className="bg-white rounded-lg shadow-lg p-6">
+                    <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <PieChart className="mr-2" />
                             Répartition des Charges
@@ -239,49 +239,6 @@ export function FinancialAccountantHomePage() {
                                     </div>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Alertes et notifications */}
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <FaBell className="mr-2 text-yellow-500" />
-                        Alertes & Notifications
-                    </h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                            <AlertTriangle className="text-yellow-600 mr-3" size={20} />
-                            <div>
-                                <p className="text-sm font-medium text-yellow-800">
-                                    Rapprochement bancaire en retard
-                                </p>
-                                <p className="text-xs text-yellow-600">
-                                    Le rapprochement de février n'a pas été effectué
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
-                            <FaFileInvoiceDollar className="text-blue-600 mr-3" size={20} />
-                            <div>
-                                <p className="text-sm font-medium text-blue-800">
-                                    Déclaration TVA à préparer
-                                </p>
-                                <p className="text-xs text-blue-600">
-                                    Échéance : 15 avril 2025
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center p-3 bg-green-50 border-l-4 border-green-400 rounded">
-                            <FaChartBar className="text-green-600 mr-3" size={20} />
-                            <div>
-                                <p className="text-sm font-medium text-green-800">
-                                    Budget mensuel respecté
-                                </p>
-                                <p className="text-xs text-green-600">
-                                    Félicitations ! Objectifs atteints ce mois-ci
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
