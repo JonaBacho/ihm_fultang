@@ -199,7 +199,7 @@ export const FinancialAccountantNavLink = [
             {
                 icon: FaChartLine,
                 name: "HR Cost Analysis",
-                link: appRoutes.hrCostAnalysis,
+                link: appRoutes.financialAccountantCostAnalytic,
                 description: "Analyze costs by department"
             }
         ]
