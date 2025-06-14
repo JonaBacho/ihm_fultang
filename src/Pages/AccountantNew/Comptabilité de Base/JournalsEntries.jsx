@@ -452,7 +452,7 @@ export function JournalEntries() {
         <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8">
             <div className="max-w-full mx-auto">
                 {/* Header modernisé */}
-                <div className="bg-gradient-to-r from-teal-600 to-teal-800 rounded-2xl text-white p-8 mb-8 shadow-2xl relative overflow-hidden">
+                <div className="bg-gradient-to-r from-primary-end to-primary-start  rounded-2xl text-white p-8 mb-8 shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-center">

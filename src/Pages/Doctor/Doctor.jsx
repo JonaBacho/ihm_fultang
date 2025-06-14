@@ -13,7 +13,6 @@ export function Doctor() {
 
 
     const navigate = useNavigate();
-
     const stats = {
         patients: 5,
         medicalStaff: 6,
@@ -89,8 +88,6 @@ export function Doctor() {
                             label="View Consultations List"
                             onClick={() => navigate(AppRouterPaths.doctorConsultationList)}
                         />
-
-
                     </div>
                 </div>
             </div>

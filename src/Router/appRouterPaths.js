@@ -64,10 +64,13 @@ export const AppRoutesPaths = {
     financialAccountantHome: "/accountant-financial/home",
     financialAccountantChartOfAccount : "/accountant-financial/chart-account",
     financialAccountantJournalEntries: "/accountant-financial/journat-entries",
+    financialAccountantAccountingJournals: "/accountant-financial/accounting-journals",
+    financialAccountantAccountingGrandLivre: "/accountant-financial/accounting-grand-livre",
     financialAccountantInvoices: "/accountant-financial/invoices",
     financialAccountantPayments: "/accountant-financial/payments",
     financialAccountantBudgets: "/accountant-financial/budgets",
     financialAccountantReports: "/accountant-financial/reports",
+    financialAccountPayroll : "/accountant-financial/payroll-journal"
 
 
 }

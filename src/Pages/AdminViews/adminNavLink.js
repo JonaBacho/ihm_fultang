@@ -34,7 +34,7 @@ export const adminNavLink = [
             }
         ]
     },
-    {
+  /*  {
         name: 'Consultation List',
         icon: FiList,
         link: appRoutes.adminConsultationListPage,
