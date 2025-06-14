@@ -1,5 +1,6 @@
 from django.utils.timezone import now
 from rest_framework import serializers
+from django.utils import timezone
 
 from accounting.serializers import FinancialOperationSerializer
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
