@@ -187,7 +187,7 @@ export const FinancialAccountantNavLink = [
             {
                 icon: FaUserTie,
                 name: "Payroll Accounting",
-                link: appRoutes.payrollAccounting,
+                link: appRoutes.financialAccountPayroll,
                 description: "Account for payroll"
             },
             {

@@ -70,6 +70,7 @@ export const AppRoutesPaths = {
     financialAccountantPayments: "/accountant-financial/payments",
     financialAccountantBudgets: "/accountant-financial/budgets",
     financialAccountantReports: "/accountant-financial/reports",
+    financialAccountPayroll : "/accountant-financial/payroll-journal"
 
 
 }
