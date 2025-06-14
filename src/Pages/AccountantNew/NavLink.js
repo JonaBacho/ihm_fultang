@@ -184,16 +184,16 @@ export const FinancialAccountantNavLink = [
         name: 'Payroll & Social Charges',
         icon: FaUserTie,
         subLinks: [
-            {
+            /*{
                 icon: FaUserTie,
                 name: "Payroll Accounting",
                 link: appRoutes.financialAccountPayroll,
                 description: "Account for payroll"
-            },
+            },*/
             {
                 icon: FaFileInvoiceDollar,
                 name: "Social Charges",
-                link: appRoutes.socialCharges,
+                link: appRoutes.financialAccountPayroll,
                 description: "Manage social security, training taxes, etc."
             },
             {
