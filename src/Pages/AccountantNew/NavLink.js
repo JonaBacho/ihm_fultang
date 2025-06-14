@@ -4,34 +4,18 @@ import {
     FaBookOpen,
     FaEdit,
     FaBook,
-    FaMoneyBillWave,
-    FaUsers,
-    FaTruck,
-    FaUniversity,
-    FaBuilding,
-    FaBoxes,
     FaUserTie,
     FaFileInvoiceDollar,
     FaChartLine,
     FaCalculator,
-    FaLock,
-    FaFileAlt,
     FaBell,
     FaQuestionCircle,
-    FaCog,
-    FaHistory
 } from "react-icons/fa";
 import { AppRoutesPaths as appRoutes } from "../../Router/appRouterPaths.js";
-import {
-    TrendingUp,
-    FileText,
-    Receipt,
-    CreditCard,
-    Banknote
-} from "lucide-react";
+import {TrendingUp,} from "lucide-react";
 
 export const FinancialAccountantNavLink = [
-    // Main Dashboard
+
     {
         name: "Dashboard",
         link: appRoutes.financialAccountantHome,
@@ -71,7 +55,7 @@ export const FinancialAccountantNavLink = [
         ]
     },
 
-    // Revenue & Receivables
+    /* Revenue & Receivables
     {
         name: 'Revenue & Receivables',
         icon: FaMoneyBillWave,
@@ -95,9 +79,9 @@ export const FinancialAccountantNavLink = [
                 description: "Track receivables and collections"
             }
         ]
-    },
+    },*/
 
-    // Suppliers & Payables
+    /* Suppliers & Payables
     {
         name: 'Suppliers & Payables',
         icon: FaTruck,
@@ -121,9 +105,9 @@ export const FinancialAccountantNavLink = [
                 description: "Manage due dates and payments"
             }
         ]
-    },
+    },*/
 
-    // Cash Management
+    /* Cash Management
     {
         name: 'Cash Management',
         icon: FaUniversity,
@@ -147,9 +131,9 @@ export const FinancialAccountantNavLink = [
                 description: "Forecast cash flows"
             }
         ]
-    },
+    },*/
 
-    // Fixed Assets
+    /* Fixed Assets
     {
         name: 'Fixed Assets',
         icon: FaBuilding,
@@ -167,9 +151,9 @@ export const FinancialAccountantNavLink = [
                 description: "Calculate and record depreciation"
             }
         ]
-    },
+    },*/
 
-    // Inventory & Stock
+    /* Inventory & Stock
     {
         name: 'Inventory & Stock',
         icon: FaBoxes,
@@ -193,7 +177,7 @@ export const FinancialAccountantNavLink = [
                 description: "Classify and analyze stock"
             }
         ]
-    },
+    }, */
 
     // Payroll & Social Charges
     {
@@ -221,7 +205,7 @@ export const FinancialAccountantNavLink = [
         ]
     },
 
-    // VAT & Taxation
+    /* VAT & Taxation
     {
         name: 'VAT & Taxation',
         icon: FaFileInvoiceDollar,
@@ -245,7 +229,7 @@ export const FinancialAccountantNavLink = [
                 description: "Track tax deadlines"
             }
         ]
-    },
+    },*/
 
     // Financial Analysis
     {
@@ -299,7 +283,7 @@ export const FinancialAccountantNavLink = [
         ]
     },
 
-    // Closing & Reporting
+    /* Closing & Reporting
     {
         name: 'Closing & Reporting',
         icon: FaLock,
@@ -323,21 +307,8 @@ export const FinancialAccountantNavLink = [
                 description: "Create tailored reports"
             }
         ]
-    },
+    },*/
 
-    // Utility Navigation
-    {
-        name: "History",
-        link: appRoutes.activityHistory,
-        icon: FaHistory,
-        description: "View operation history"
-    },
-    {
-        icon: FaBell,
-        name: "Notifications",
-        link: appRoutes.notifications,
-        description: "Accounting alerts and reminders"
-    },
     {
         name: 'Help Center',
         icon: FaQuestionCircle,
