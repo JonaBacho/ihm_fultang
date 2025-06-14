@@ -1,18 +1,14 @@
 import {
     FaChartLine,
-    FaFileInvoiceDollar,
     FaCalculator,
     FaEdit,
     FaChartBar,
     FaUserTie,
-    FaBell
 } from 'react-icons/fa';
 import {
     TrendingUp,
-    DollarSign,
     FileText,
     Calendar,
-    AlertTriangle,
     PieChart
 } from 'lucide-react';
 
@@ -23,7 +19,6 @@ import StatCard from "../../../GlobalComponents/StatCard.jsx";
 import QuickActionButton from "../../../GlobalComponents/QuickActionButton.jsx";
 import { useState, useEffect } from 'react';
 import { FinancialAccountantNavBar } from "../NavBar.jsx";
-import axiosInstance from "../../../Utils/axiosInstance.js";
 import { FinancialAccountantNavLink } from "../NavLink.js";
 
 export function FinancialAccountantHomePage() {
@@ -135,7 +130,7 @@ export function FinancialAccountantHomePage() {
 
 
                 {/* Actions rapides */}
-                <div className="bg-gray-100 rounded-lg shadow-lg p-6">
+                <div className="bg-white rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         <FaChartBar className="mr-2" />
                         Accès Rapide - Comptabilité
@@ -213,14 +208,14 @@ export function FinancialAccountantHomePage() {
                     </div>
 
                     {/* Activités récentes */}
-                    <div className="bg-white rounded-lg shadow-lg p-6">
+                    <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <Calendar className="mr-2" />
                             Activités Récentes
                         </h3>
                         <div className="space-y-3">
                             {recentActivities.map((activity) => (
-                                <div key={activity.id} className="flex items-start p-3 bg-gray-50 rounded-lg">
+                                <div key={activity.id} className="bg-white flex items-start p-3  rounded-lg">
                                     <div className={`p-2 rounded-full mr-3 ${
                                         activity.type === 'journal' ? 'bg-blue-100 text-blue-600' :
                                             activity.type === 'reconciliation' ? 'bg-green-100 text-green-600' :
