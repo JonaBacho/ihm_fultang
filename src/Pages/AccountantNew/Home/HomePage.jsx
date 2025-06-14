@@ -1,3 +1,5 @@
+// CHEMIN : src/Pages/AccountantNew/Home/HomePage.jsx
+
 import {
     FaChartLine,
     FaCalculator,
@@ -9,11 +11,14 @@ import {
     TrendingUp,
     FileText,
     Calendar,
-    PieChart
+    PieChart,
+    // === NOUVELLE LIGNE À AJOUTER ===
+    PackageSearch,
 } from 'lucide-react';
 
 import { useNavigate } from "react-router-dom";
-import { AppRoutesPaths as AppRouterPaths } from "../../../Router/appRouterPaths.js";
+// === NOUVELLE LIGNE À AJOUTER ===
+import { AppRoutesPaths } from "../../../Router/appRouterPaths.js";
 import { CustomDashboard } from "../../../GlobalComponents/CustomDashboard.jsx";
 import StatCard from "../../../GlobalComponents/StatCard.jsx";
 import QuickActionButton from "../../../GlobalComponents/QuickActionButton.jsx";
@@ -39,29 +44,19 @@ export function FinancialAccountantHomePage() {
     useEffect(() => {
         async function fetchFinancialStats() {
             try {
-                // Simuler des appels API pour récupérer les données financières
-                // Dans un vrai projet, ces appels seraient faits vers votre backend
-
-                // Exemple d'appel pour les écritures comptables
-                // const journalResponse = await axiosInstance.get('/journal-entries/');
-                // const payrollResponse = await axiosInstance.get('/payroll/summary/');
-                // const cashResponse = await axiosInstance.get('/cash-management/balance/');
-
-                // Pour la démonstration, on utilise des données simulées
                 setStats({
-                    totalRevenue: 2450000, // Revenus du mois en FCFA
-                    monthlyExpenses: 1850000, // Dépenses du mois
-                    pendingInvoices: 15, // Factures en attente
-                    cashBalance: 8500000, // Solde de trésorerie
-                    journalEntries: 342, // Écritures comptables du mois
-                    payrollCost: 12500000, // Coût salarial mensuel
-                    budgetVariance: 5.2, // Écart budgétaire en %
-                    pendingReconciliations: 3 // Rapprochements bancaires en attente
+                    totalRevenue: 2450000,
+                    monthlyExpenses: 1850000,
+                    pendingInvoices: 15,
+                    cashBalance: 8500000,
+                    journalEntries: 342,
+                    payrollCost: 12500000,
+                    budgetVariance: 5.2,
+                    pendingReconciliations: 3
                 });
 
                 setRecentActivities([
                     { id: 1, action: "Écriture comptable", description: "Facturation services médicaux", time: "Il y a 2h", type: "journal" },
-                    { id: 2, action: "Rapprochement bancaire", description: "Banque BICEC - Mars 2025", time: "Il y a 4h", type: "reconciliation" },
                     { id: 3, action: "Calcul paie", description: "Personnel médical - Mars", time: "Hier", type: "payroll" },
                     { id: 4, action: "Analyse budgétaire", description: "Écart budget vs réalisé", time: "Hier", type: "analysis" }
                 ]);
@@ -73,7 +68,6 @@ export function FinancialAccountantHomePage() {
         fetchFinancialStats();
     }, []);
 
-    // Fonction pour formater les montants en FCFA
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('fr-FR', {
             minimumFractionDigits: 0,
@@ -128,38 +122,43 @@ export function FinancialAccountantHomePage() {
                     />
                 </div>
 
-
                 {/* Actions rapides */}
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         <FaChartBar className="mr-2" />
                         Accès Rapide - Comptabilité
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4"> {/* Changé md:grid-cols-4 à 5 */}
                         <QuickActionButton
                             icon={FaEdit}
                             label="Nouvelle Écriture"
-                            onClick={() => navigate(AppRouterPaths.financialAccountantJournalEntries)}
+                            onClick={() => navigate(AppRoutesPaths.financialAccountantJournalEntries)}
                         />
                         <QuickActionButton
                             icon={FaChartLine}
                             label="Analyse Financière"
-                            onClick={() => navigate(AppRouterPaths.financialRatios)}
+                            onClick={() => navigate(AppRoutesPaths.financialRatios)}
                         />
                         <QuickActionButton
                             icon={FaUserTie}
                             label="Comptabilité Paie"
-                            onClick={() => navigate(AppRouterPaths.financialAccountPayroll)}
+                            onClick={() => navigate(AppRoutesPaths.financialAccountPayroll)}
                         />
                         <QuickActionButton
                             icon={FaCalculator}
                             label="Budget & Contrôle"
-                            onClick={() => navigate(AppRouterPaths.budgetEntry)}
+                            onClick={() => navigate(AppRoutesPaths.budgetEntry)}
+                        />
+                        {/* === NOUVEAU BLOC À AJOUTER === */}
+                        <QuickActionButton
+                            icon={PackageSearch}
+                            label="Comptabilité Matière"
+                            onClick={() => navigate(AppRoutesPaths.financialAccountantMaterialsAccounting)}
                         />
                     </div>
                 </div>
 
-                {/* Tableaux de bord et activités récentes */}
+                {/* ... le reste du composant reste inchangé ... */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Répartition des dépenses */}
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
@@ -218,12 +217,10 @@ export function FinancialAccountantHomePage() {
                                 <div key={activity.id} className="bg-white flex items-start p-3  rounded-lg">
                                     <div className={`p-2 rounded-full mr-3 ${
                                         activity.type === 'journal' ? 'bg-blue-100 text-blue-600' :
-                                            activity.type === 'reconciliation' ? 'bg-green-100 text-green-600' :
-                                                activity.type === 'payroll' ? 'bg-purple-100 text-purple-600' :
-                                                    'bg-orange-100 text-orange-600'
+                                            activity.type === 'payroll' ? 'bg-purple-100 text-purple-600' :
+                                                'bg-orange-100 text-orange-600'
                                     }`}>
                                         {activity.type === 'journal' && <FaEdit className="w-3 h-3" />}
-                                        {activity.type === 'reconciliation' && <FaCalculator className="w-3 h-3" />}
                                         {activity.type === 'payroll' && <FaUserTie className="w-3 h-3" />}
                                         {activity.type === 'analysis' && <FaChartLine className="w-3 h-3" />}
                                     </div>

@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import {Loading} from "../GlobalComponents/Loading.jsx";
 import {AppRoutesPaths} from "./appRouterPaths.js";
 
+import { FinancialAccountingProvider } from "../Pages/AccountantNew/FinancialAccountingContext.jsx";
 
 
 
@@ -85,12 +86,18 @@ export function AppRoute()
 
 
 
+// NOUVELLE LIGNE CORRECTE
+    const FinancialMaterialsAccounting = React.lazy(() => import("../Pages/AccountantNew/MaterialsAccounting/MaterialsAccountingWorkspace.jsx"));
+
+
 
 
 
     return (
         <React.Suspense fallback={<Loading />}>
-            <Routes>
+            <FinancialAccountingProvider> {/* === ON ENVELOPPE TOUTES LES ROUTES ICI === */}
+
+                <Routes>
                 <Route path={AppRoutesPaths.welcomePage} element={<LandingPage />}/>
                 <Route path={AppRoutesPaths.loginPage} element={<LoginPage />}/>
                 <Route path={AppRoutesPaths.forgottenPasswordPage} element={<ForgottenPage />}/>
@@ -167,10 +174,45 @@ export function AppRoute()
 
 
 
+                <Route path={AppRoutesPaths.financialAccountantMaterialsAccounting} element={<FinancialMaterialsAccounting />} />
 
 
+
+                {/* === MODIFICATION : Envelopper la route avec le Provider === */}
+                <Route path={AppRoutesPaths.financialAccountantHome} element={
+                    <FinancialAccountingProvider>
+                        <FinancialAccountantHome />
+                    </FinancialAccountingProvider>
+                }/>
+
+                {/* Nous devrons faire de même pour les autres routes de ce module */}
+                <Route path={AppRoutesPaths.financialAccountantChartOfAccount} element={
+                    <FinancialAccountingProvider>
+                        <FinancialAccountantChartOfAccount />
+                    </FinancialAccountingProvider>
+                }/>
+                <Route path={AppRoutesPaths.financialAccountantJournalEntries} element={
+                    <FinancialAccountingProvider>
+                        <FinancialAccountantJournalEntries />
+                    </FinancialAccountingProvider>
+                }/>
+                <Route path={AppRoutesPaths.financialAccountantAccountingJournals} element={
+                    <FinancialAccountingProvider>
+                        <FinancialAccountingJournal />
+                    </FinancialAccountingProvider>
+                }/>
+                <Route path={AppRoutesPaths.financialAccountantAccountingGrandLivre} element={
+                    <FinancialAccountingProvider>
+                        <FinancialGrandLivre />
+                    </FinancialAccountingProvider>
+                }/>
+
+                {/* ... autres routes du module ... */}
 
             </Routes>
+
+            </FinancialAccountingProvider>
+
         </React.Suspense>
     )
 }
