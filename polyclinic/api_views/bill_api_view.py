@@ -126,29 +126,7 @@ class BillViewSet(ModelViewSet):
         if 'id' in serializer.validated_data:
             serializer.validated_data.pop('id')
 
-        bill = serializer.save()
-
-        current_date = timezone.now().date()
-        budget_exercises = BudgetExercise.objects.filter(
-            start__lte=current_date,
-            end__gte=current_date
-        )
-
-        if not budget_exercises.exists():
-            raise ValidationError({"details": "Aucun exercice budgétaire en cours trouvé."})
-
-        account_state = AccountState.objects.filter(
-            account=account,
-            budgetExercise__in=budget_exercises
-        ).first()
-
-        if account_state is None:
-            raise ValidationError({"details": "Aucun état de compte trouvé pour la période budgétaire actuelle."})
-
-        account_state.balance += bill.amount
-        account_state.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.save()
 
     @transaction.atomic
     def perform_update(self, serializer):

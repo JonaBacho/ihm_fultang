@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import Patient, Appointment, Parameters, ConsultationType, Consultation, MedicalFolder, MedicalFolderPage, Exam, ExamRequest, ExamResult, PolyclinicProductCategory, PolyclinicProduct
+from .models import Patient, Appointment, Parameters, ConsultationType, Consultation, MedicalFolder, MedicalFolderPage, Exam, ExamRequest, ExamResult, PolyclinicProductCategory, PolyclinicProduct, Bill, BillItem
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
@@ -73,6 +73,20 @@ class PolyclinicProductAdmin(admin.ModelAdmin):
     list_filter = ('category', 'status')
     search_fields = ('name', 'category__name')
     ordering = ('name',)
+
+@admin.register(Bill)
+class BillAdmin(admin.ModelAdmin):
+    list_display = ('billCode', 'date', 'amount', 'operation', 'isAccounted', 'operator', 'patient')
+    list_filter = ('date', 'operation', 'isAccounted', 'operator', 'patient')
+    search_fields = ('date', 'isAccounted')
+    ordering = ('date',)
+
+@admin.register(BillItem)
+class BillItemAdmin(admin.ModelAdmin):
+    list_display = ('bill', 'medicament', 'consultation', 'hospitalisation', 'prescription', 'examRequest', 'quantity', 'unityPrice', 'total')
+    list_filter = ('bill', 'medicament', 'quantity', 'unityPrice', 'total')
+    search_fields = ('bill', 'unityPrice')
+    ordering = ('total',)
 
 
 class CustomMPTTModelAdmin(MPTTModelAdmin):

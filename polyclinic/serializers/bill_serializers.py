@@ -4,6 +4,7 @@ from rest_framework import serializers
 from accounting.serializers import FinancialOperationSerializer
 from authentication.serializers.medical_staff_serializers import MedicalStaffSerializer
 from polyclinic.models import Bill, BillItem, Patient
+from accounting.models import AccountState, BudgetExercise, FinancialOperation, Account
 from polyclinic.serializers.bill_items_serializers import BillItemCreateSerializer, BillItemSerializer, BillItemUpdateSerializer
 from polyclinic.services.bill_service import BillService
 
@@ -65,6 +66,28 @@ class BillCreateSerializer(serializers.ModelSerializer):
         bill.amount = total
         bill.save()
         print("Final Bill Amount:", bill.amount)
+
+        ######## operation nécessaire pour le module comptabilité ##############
+
+        current_date = timezone.now().date()
+        budget_exercises = BudgetExercise.objects.filter(
+            start__lte=current_date,
+            end__gte=current_date
+        )
+
+        if not budget_exercises.exists():
+            raise ValidationError({"details": "Aucun exercice budgétaire en cours trouvé."})
+
+        account_state = AccountState.objects.filter(
+            account=account,
+            budgetExercise__in=budget_exercises
+        ).first()
+
+        if account_state is None:
+            raise ValidationError({"details": "Aucun état de compte trouvé pour la période budgétaire actuelle."})
+
+        account_state.balance += bill.amount
+        account_state.save()
 
         return bill
 
