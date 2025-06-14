@@ -9,9 +9,9 @@ class MedicalFolderPermission(BasePermission):
         if view.action in ["destroy"]:
             return user.is_authenticated and user.role == "Admin"
         elif view.action in ["list", "retrieve", "update", "partial_update", "create"]:
-            return user.is_authenticated and (user.role in ["Admin", "Receptionist", "Nurse", "Doctor"])
+            return user.is_authenticated and (user.role in ["Receptionist", "Nurse", "Doctor"])
         elif request.method in ["GET", "POST", "PUT", "PATCH"]:
-            return user.is_authenticated
+            return user.is_authenticated and (user.role in ["Receptionist", "Nurse", "Doctor"])
         return False
 
     def has_object_permission(self, request, view, obj):
@@ -19,7 +19,7 @@ class MedicalFolderPermission(BasePermission):
         # Autoriser un utilisateur avec le rôle 'Admin' pour toutes les actions
         if user.role == "Admin":
             return True
-        elif view.action in ["list", "retrieve"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
+        elif view.action in ["list", "retrieve", "update", "partial_update", "create"] or request.method in ["GET", "POST", "PUT", "PATCH"]:
             if user.role in ["Receptionist", "Nurse"]:
                 return True
             else:
