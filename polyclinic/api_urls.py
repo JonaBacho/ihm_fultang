@@ -20,6 +20,7 @@ from authentication.api_views.medical_staff_api_views import MedicalStaffViewSet
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 from polyclinic.api_views.chat_api_view import ChatbotView
+from polyclinic.api_views.dataset_api_view import DatasetExportAllView, DatasetExportRecentView
 
 
 router = DefaultRouter()
@@ -45,5 +46,7 @@ router.register(r'category-product', PolyclinicProductCategoryViewSet, basename=
 router.register(r'product', PolyclinicProductViewSet, basename='product')
 
 
-urlpatterns = [path('chatbot/', ChatbotView.as_view(), name='chatbot'),]
+urlpatterns = [path('chatbot/', ChatbotView.as_view(), name='chatbot'),
+               path('dataset/all/', DatasetExportAllView.as_view(), name='dataset-export-all'),
+            path('dataset/recent/', DatasetExportRecentView.as_view(), name='dataset-export-recent')]
 urlpatterns += router.urls
