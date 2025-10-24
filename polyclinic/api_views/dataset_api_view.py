@@ -7,12 +7,14 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from polyclinic.models import (
     Patient, Parameters, ConsultationType, Consultation, MedicalFolder,
     MedicalFolderPage, Exam, ExamRequest, ExamResult, PolyclinicProduct,
     Prescription, PrescriptionDrug
 )
+from polyclinic.permissions.dataset_permissions import IsDatasetAPIUser
 from authentication.models import MedicalStaff
 from polyclinic.serializers.dataset_serializers import (
     PatientDatasetSerializer, ParametersDatasetSerializer, ConsultationTypeDatasetSerializer,
@@ -24,7 +26,7 @@ from polyclinic.serializers.dataset_serializers import (
 from datetime import datetime, timedelta
 import pytz
 
-
+User = get_user_model()
 class DatasetTokenAuthentication(TokenAuthentication):
     """
     Authentification basée sur un token unique pour le dataset.
@@ -41,16 +43,26 @@ class DatasetTokenAuthentication(TokenAuthentication):
             raise NotImplementedError("DATASET_API_TOKEN n'est pas configuré dans settings.py")
 
         if key == expected_token:
-            # Si le token correspond, on renvoie un utilisateur fictif et None pour l'authentification.
-            # Pour un vrai utilisateur, vous devriez chercher un utilisateur lié à ce token.
-            # Pour un usage dataset, un utilisateur anonyme ou fictif suffit.
-            return (AnonymousUser(), None)
+            # Nous devons renvoyer un utilisateur qui sera considéré comme authentifié.
+            # Créons un utilisateur "de service" s'il n'existe pas, ou utilisons-le.
+            try:
+                # Cherche un utilisateur spécifique pour le dataset.
+                # Créez cet utilisateur via l'admin ou un management command.
+                # Par exemple, un utilisateur avec le username 'dataset_user'
+                user, created = User.objects.get_or_create(username='dataset_api_user', defaults={'is_active': False})
+                if created:
+                    print("Created a new dataset_api_user. Please ensure it has minimal permissions if needed.")
+                return (user, None)  # Le second élément est le token, que nous n'utilisons pas ici
+            except Exception as e:
+                print(f"Error getting/creating dataset_api_user: {e}")
+                raise AuthenticationFailed('Could not retrieve/create dataset API user.')
+
         raise AuthenticationFailed('Invalid token for dataset access.')
 
 
 class DatasetExportAllView(APIView):
     authentication_classes = [DatasetTokenAuthentication]
-    permission_classes = [IsAuthenticated] # S'assure qu'un token valide est fourni
+    permission_classes = [IsDatasetAPIUser] # S'assure qu'un token valide est fourni
 
     def get(self, request, *args, **kwargs):
         data = {}
@@ -75,7 +87,7 @@ class DatasetExportAllView(APIView):
 
 class DatasetExportRecentView(APIView):
     authentication_classes = [DatasetTokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsDatasetAPIUser]
 
     def get(self, request, *args, **kwargs):
         # Récupérer le paramètre 'days' de l'URL, par défaut 7 jours
