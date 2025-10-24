@@ -36,10 +36,10 @@ jobs:
         python manage.py test
 
     - name: Log in to GitHub Packages
-      #run: echo ${PERSONAL_ACCESS_TOKEN} | docker login ghcr.io -u ${{ secrets.NAMESPACE }} --password-stdin
-      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      #env:
-      #  PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      run: echo ${PERSONAL_ACCESS_TOKEN} | docker login ghcr.io -u ${{ secrets.NAMESPACE }} --password-stdin
+      #run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      env:
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
     - name: Build images
       run: |
@@ -62,8 +62,8 @@ jobs:
       run: |
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo FULTANG_IMAGE=${{ env.FULTANG_IMAGE }} >> .env
-          echo NAMESPACE=${{ github.actor }}>> .env
-          echo PERSONAL_ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }} >> .env
+          echo NAMESPACE=${{ secrets.NAMESPACE }}>> .env
+          echo PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} >> .env
 
     - name: Add the private SSH key to the ssh-agent
       env:
@@ -82,7 +82,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP_ADDRESS }} << 'ENDSSH'
             cd /home/${{ secrets.REMOTE_USER }}/fultang/backend
             source .env
-            sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            sudo docker login ghcr.io -u ${{ secrets.NAMESPACE }} -p ${{ secrets.PERSONAL_ACCESS_TOKEN }}
             sudo docker compose -f ./docker-compose.yml down
             sudo docker rmi -f $IMAGE_NAME
             sudo docker pull $FULTANG_IMAGE
