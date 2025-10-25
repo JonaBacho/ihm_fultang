@@ -91,8 +91,6 @@ class ExamRequestDatasetSerializer(serializers.ModelSerializer):
     idConsultation = serializers.PrimaryKeyRelatedField(read_only=True) # ID de la consultation
     idPatient = PatientDatasetSerializer(read_only=True)
     idMedicalStaff = MedicalStaffDatasetSerializer(read_only=True)
-    examStatus = serializers.CharField(source='get_examStatus_display')
-    patientStatus = serializers.CharField(source='get_patientStatus_display')
 
     class Meta:
         model = ExamRequest
