@@ -40,6 +40,7 @@ services:
 
     celery:
       image: "${FULTANG_IMAGE}"
+      container_name: celery-fultang
       restart: always
       user: django-user
       command: ["sh", "-c", "celery -A fultang worker --loglevel=info" ]
@@ -53,6 +54,7 @@ services:
 
     celery-beat:
       image: "${FULTANG_IMAGE}"
+      container_name: celery-beat-fultang
       restart: always
       user: django-user
       command: ["sh", "-c", "celery -A fultang beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler" ]
